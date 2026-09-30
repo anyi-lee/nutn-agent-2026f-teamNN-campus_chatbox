@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "source": {
+    "source_id": "nutn-csie-faculty",
+    "source_url": "https://csie.nutn.edu.tw/faculty",
+    "retrieved_at": "2026-09-30",
+    "index_version": "faculty-index-v1",
+    "authority": "official",
+    "validity": "active"
+  },
+  "chunks": [
+    {
+      "chunk_id": "faculty-mikelin",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "林朝興",
+      "title": "教授兼系主任",
+      "research_areas": [
+        "AI 神經網路及應用",
+        "深度學習",
+        "多媒體內容分析辨識與生成",
+        "媒體串流與編碼技術",
+        "行動普適計算",
+        "物聯網"
+      ],
+      "public_email": "mikelin@mail.nutn.edu.tw",
+      "content": "林朝興為國立臺南大學資訊工程學系教授兼系主任，研究領域包含 AI 神經網路及應用、深度學習、多媒體內容分析辨識與生成、媒體串流與編碼技術、行動普適計算及物聯網。官方公開 Email 為 mikelin@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-leecs",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "李健興",
+      "title": "教授",
+      "research_areas": [
+        "人工智慧應用",
+        "知識工程",
+        "智慧型代理人"
+      ],
+      "public_email": "leecs@mail.nutn.edu.tw",
+      "content": "李健興為國立臺南大學資訊工程學系教授，研究領域包含人工智慧應用、知識工程及智慧型代理人。官方公開 Email 為 leecs@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-cslee",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "李建樹",
+      "title": "教授",
+      "research_areas": [
+        "AI 人工智慧",
+        "深度學習",
+        "影像辨識",
+        "電腦視覺",
+        "AOI 自動光學檢測",
+        "智慧穿戴",
+        "大數據分析"
+      ],
+      "public_email": "cslee@mail.nutn.edu.tw",
+      "content": "李建樹為國立臺南大學資訊工程學系教授，研究領域包含 AI 人工智慧、深度學習、影像辨識、電腦視覺、AOI 自動光學檢測、智慧穿戴及大數據分析。官方公開 Email 為 cslee@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-chents",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "陳宗禧",
+      "title": "教授兼圖資處圖資長",
+      "research_areas": [
+        "無線網路",
+        "行動計算",
+        "物聯網",
+        "行動學習"
+      ],
+      "public_email": "chents@mail.nutn.edu.tw",
+      "content": "陳宗禧為國立臺南大學資訊工程學系教授兼圖資處圖資長，研究領域包含無線網路、行動計算、物聯網及行動學習。官方公開 Email 為 chents@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-rmchen",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "陳榮銘",
+      "title": "教授",
+      "research_areas": [
+        "資料科學",
+        "生醫資訊",
+        "智慧計算",
+        "估測理論",
+        "訊號處理"
+      ],
+      "public_email": "rmchen@mail.nutn.edu.tw",
+      "content": "陳榮銘為國立臺南大學資訊工程學系教授，研究領域包含資料科學、生醫資訊、智慧計算、估測理論及訊號處理。官方公開 Email 為 rmchen@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-cckao",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "高啟洲",
+      "title": "教授",
+      "research_areas": [
+        "圖形理論",
+        "嵌入式系統晶片設計",
+        "積體電路電腦輔助設計"
+      ],
+      "public_email": "cckao@mail.nutn.edu.tw",
+      "content": "高啟洲為國立臺南大學資訊工程學系教授，研究領域包含圖形理論、嵌入式系統晶片設計及積體電路電腦輔助設計。官方公開 Email 為 cckao@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-myju",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "朱明毅",
+      "title": "副教授",
+      "research_areas": [
+        "機器人學",
+        "軟式計算",
+        "嵌入式系統"
+      ],
+      "public_email": "myju@mail.nutn.edu.tw",
+      "content": "朱明毅為國立臺南大學資訊工程學系副教授，研究領域包含機器人學、軟式計算及嵌入式系統。官方公開 Email 為 myju@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    },
+    {
+      "chunk_id": "faculty-ifangsu",
+      "source_id": "nutn-csie-faculty",
+      "category": "faculty_contact",
+      "teacher_name": "蘇溢芳",
+      "title": "副教授",
+      "research_areas": [
+        "人工智慧應用",
+        "巨量資料分析",
+        "時空資料庫應用",
+        "雲端運算"
+      ],
+      "public_email": "ifangsu@mail.nutn.edu.tw",
+      "content": "蘇溢芳為國立臺南大學資訊工程學系副教授，研究領域包含人工智慧應用、巨量資料分析、時空資料庫應用及雲端運算。官方公開 Email 為 ifangsu@mail.nutn.edu.tw。",
+      "source_url": "https://csie.nutn.edu.tw/faculty",
+      "retrieved_at": "2026-09-30",
+      "index_version": "faculty-index-v1",
+      "authority": "official",
+      "validity": "active"
+    }
+  ]
+}

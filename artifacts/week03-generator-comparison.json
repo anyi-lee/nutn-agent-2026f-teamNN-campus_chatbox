@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0",
+  "comparison_id": "week03-faculty-email-generator-comparison",
+  "query_id": "q-normal-email",
+  "query": "林朝興教授的 Email 是什麼？",
+  "frozen_evidence": {
+    "selected_evidence_ids": [
+      "faculty-mikelin"
+    ],
+    "evidence": [
+      {
+        "chunk_id": "faculty-mikelin",
+        "teacher_name": "林朝興",
+        "title": "教授兼系主任",
+        "research_areas": [
+          "AI 神經網路及應用",
+          "深度學習",
+          "多媒體內容分析辨識與生成",
+          "媒體串流與編碼技術",
+          "行動普適計算",
+          "物聯網"
+        ],
+        "public_email": "mikelin@mail.nutn.edu.tw",
+        "source_url": "https://csie.nutn.edu.tw/faculty"
+      }
+    ],
+    "citations": [
+      {
+        "source_id": "nutn-csie-faculty",
+        "chunk_id": "faculty-mikelin",
+        "url": "https://csie.nutn.edu.tw/faculty"
+      }
+    ],
+    "sha256": "ac1961fc5c2eef5b693bc091bc3b78af027e7e7657421dc76666d57ca4014dd8"
+  },
+  "evidence_gate": {
+    "passed": true,
+    "coverage": {
+      "required": [
+        "teacher_identity",
+        "public_email"
+      ],
+      "covered": [
+        "teacher_identity",
+        "public_email"
+      ],
+      "missing": [],
+      "covered_count": 2,
+      "required_count": 2,
+      "passed": true
+    }
+  },
+  "generators": [
+    {
+      "path": "offline",
+      "provider": "offline",
+      "model": null,
+      "llm_actually_called": false,
+      "selected_evidence_ids": [
+        "faculty-mikelin"
+      ],
+      "frozen_evidence_hash": "ac1961fc5c2eef5b693bc091bc3b78af027e7e7657421dc76666d57ca4014dd8",
+      "answer": "教師：林朝興\n職稱：教授兼系主任\n研究領域：AI 神經網路及應用、深度學習、多媒體內容分析辨識與生成、媒體串流與編碼技術、行動普適計算、物聯網\n公開 Email：mikelin@mail.nutn.edu.tw",
+      "citations": [
+        {
+          "source_id": "nutn-csie-faculty",
+          "chunk_id": "faculty-mikelin",
+          "url": "https://csie.nutn.edu.tw/faculty"
+        }
+      ],
+      "unsupported_claims": [],
+      "send_status": "not_sent"
+    },
+    {
+      "path": "gemini_fixture",
+      "provider": "gemini_fixture",
+      "model": "fixture-v1",
+      "llm_actually_called": false,
+      "selected_evidence_ids": [
+        "faculty-mikelin"
+      ],
+      "frozen_evidence_hash": "ac1961fc5c2eef5b693bc091bc3b78af027e7e7657421dc76666d57ca4014dd8",
+      "answer": "林朝興老師目前為教授兼系主任，研究領域包括AI 神經網路及應用、深度學習、多媒體內容分析辨識與生成、媒體串流與編碼技術、行動普適計算、物聯網。官方公開 Email 是 mikelin@mail.nutn.edu.tw。你可以先確認收件人與郵件內容，再自行決定是否寄出。",
+      "citations": [
+        {
+          "source_id": "nutn-csie-faculty",
+          "chunk_id": "faculty-mikelin",
+          "url": "https://csie.nutn.edu.tw/faculty"
+        }
+      ],
+      "unsupported_claims": [],
+      "send_status": "not_sent"
+    }
+  ],
+  "checks": {
+    "same_selected_evidence": true,
+    "same_frozen_evidence": true,
+    "same_citations": true,
+    "fact_coverage": {
+      "required": [
+        "teacher_identity",
+        "public_email"
+      ],
+      "covered": [
+        "teacher_identity",
+        "public_email"
+      ],
+      "missing": [],
+      "covered_count": 2,
+      "required_count": 2,
+      "passed": true
+    },
+    "unsupported_claims": [],
+    "all_send_status_not_sent": true,
+    "live_llm_called": false
+  },
+  "checks_passed": true,
+  "failure_observation": {
+    "query_id": "q-no-answer-office-hours",
+    "query": "林朝興教授今天幾點會在研究室？",
+    "retrieved_candidate_ids": [
+      "faculty-mikelin",
+      "faculty-leecs",
+      "faculty-myju"
+    ],
+    "selected_evidence_ids": [],
+    "can_answer": false,
+    "failure_code": "INSUFFICIENT_EVIDENCE",
+    "generator_called": false,
+    "reason": "教師姓名可被檢索，但官方教師資料不包含今日研究室時間；Evidence Gate 阻擋所有 Generator。"
+  },
+  "live_path": {
+    "executed": false,
+    "reason": "Gemini Live is optional; this comparison uses the reproducible fixture path."
+  },
+  "generated_at": "2026-09-30T11:39:32.035700+08:00",
+  "inputs": {
+    "retrieval_trace": "artifacts/week03-initial-retrieval.json",
+    "queries": "data/fixed_queries.json"
+  },
+  "reproducible_command": "python3 -m scripts.run_generator_comparison"
+}

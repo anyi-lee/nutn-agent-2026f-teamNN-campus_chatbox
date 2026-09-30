@@ -1,0 +1,714 @@
+{
+  "schema_version": "1.0",
+  "comparison_id": "week03-bm25-vs-dense-stub",
+  "corpus": {
+    "index_version": "faculty-index-v1",
+    "chunk_count": 8,
+    "top_k": 3
+  },
+  "retrievers": {
+    "bm25": {
+      "tokenizer_version": "cjk-unigram-bigram-latin-v1",
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "dense_stub": {
+      "model_version": "faculty-concepts-v1",
+      "concept_count": 17,
+      "concepts": [
+        "faculty_mikelin",
+        "faculty_leecs",
+        "faculty_cslee",
+        "faculty_chents",
+        "faculty_rmchen",
+        "faculty_cckao",
+        "faculty_myju",
+        "faculty_ifangsu",
+        "contact",
+        "research",
+        "ai",
+        "data",
+        "network_iot",
+        "embedded_robotics",
+        "vision_media",
+        "cloud",
+        "live_status"
+      ],
+      "learned_embedding": false
+    }
+  },
+  "metrics": {
+    "bm25": {
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "mean_latency_ms": 0.142042
+    },
+    "dense_stub": {
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "mean_latency_ms": 0.187472
+    }
+  },
+  "query_traces": [
+    {
+      "query_id": "q-normal-email",
+      "query_type": "normal",
+      "query": "林朝興教授的 Email 是什麼？",
+      "gold_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "should_abstain": false,
+      "bm25": {
+        "latency_ms": 0.164833,
+        "candidates": [
+          {
+            "rank": 1,
+            "chunk_id": "faculty-mikelin",
+            "raw_score": 10.643553,
+            "normalized_score": 1.0,
+            "matched_terms": [
+              "email",
+              "授",
+              "教",
+              "教授",
+              "朝",
+              "朝興",
+              "林",
+              "林朝",
+              "興"
+            ]
+          },
+          {
+            "rank": 2,
+            "chunk_id": "faculty-leecs",
+            "raw_score": 2.278228,
+            "normalized_score": 0.214048,
+            "matched_terms": [
+              "email",
+              "授",
+              "教",
+              "教授",
+              "興"
+            ]
+          },
+          {
+            "rank": 3,
+            "chunk_id": "faculty-myju",
+            "raw_score": 0.330525,
+            "normalized_score": 0.031054,
+            "matched_terms": [
+              "email",
+              "授",
+              "教",
+              "教授"
+            ]
+          }
+        ]
+      },
+      "dense_stub": {
+        "latency_ms": 0.161042,
+        "query_vector": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "query_active_concepts": [
+          "faculty_mikelin",
+          "contact"
+        ],
+        "query_is_zero_vector": false,
+        "candidates": [
+          {
+            "rank": 1,
+            "chunk_id": "faculty-mikelin",
+            "cosine_score": 0.57735,
+            "document_vector": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_mikelin",
+              "contact",
+              "research",
+              "ai",
+              "network_iot",
+              "vision_media"
+            ]
+          },
+          {
+            "rank": 2,
+            "chunk_id": "faculty-cckao",
+            "cosine_score": 0.353553,
+            "document_vector": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_cckao",
+              "contact",
+              "research",
+              "embedded_robotics"
+            ]
+          },
+          {
+            "rank": 3,
+            "chunk_id": "faculty-chents",
+            "cosine_score": 0.353553,
+            "document_vector": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_chents",
+              "contact",
+              "research",
+              "network_iot"
+            ]
+          }
+        ]
+      },
+      "same_top_1": true
+    },
+    {
+      "query_id": "q-paraphrase-contact",
+      "query_type": "paraphrase",
+      "query": "我要怎麼聯絡林朝興老師？",
+      "gold_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "should_abstain": false,
+      "bm25": {
+        "latency_ms": 0.120834,
+        "candidates": [
+          {
+            "rank": 1,
+            "chunk_id": "faculty-mikelin",
+            "raw_score": 11.960956,
+            "normalized_score": 1.0,
+            "matched_terms": [
+              "朝",
+              "朝興",
+              "林",
+              "林朝",
+              "聯",
+              "興"
+            ]
+          },
+          {
+            "rank": 2,
+            "chunk_id": "faculty-leecs",
+            "raw_score": 1.953928,
+            "normalized_score": 0.163359,
+            "matched_terms": [
+              "興"
+            ]
+          },
+          {
+            "rank": 3,
+            "chunk_id": "faculty-chents",
+            "raw_score": 1.864944,
+            "normalized_score": 0.155919,
+            "matched_terms": [
+              "聯"
+            ]
+          }
+        ]
+      },
+      "dense_stub": {
+        "latency_ms": 0.272291,
+        "query_vector": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "query_active_concepts": [
+          "faculty_mikelin",
+          "contact"
+        ],
+        "query_is_zero_vector": false,
+        "candidates": [
+          {
+            "rank": 1,
+            "chunk_id": "faculty-mikelin",
+            "cosine_score": 0.57735,
+            "document_vector": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_mikelin",
+              "contact",
+              "research",
+              "ai",
+              "network_iot",
+              "vision_media"
+            ]
+          },
+          {
+            "rank": 2,
+            "chunk_id": "faculty-cckao",
+            "cosine_score": 0.353553,
+            "document_vector": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_cckao",
+              "contact",
+              "research",
+              "embedded_robotics"
+            ]
+          },
+          {
+            "rank": 3,
+            "chunk_id": "faculty-chents",
+            "cosine_score": 0.353553,
+            "document_vector": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_chents",
+              "contact",
+              "research",
+              "network_iot"
+            ]
+          }
+        ]
+      },
+      "same_top_1": true
+    },
+    {
+      "query_id": "q-no-answer-office-hours",
+      "query_type": "no_answer",
+      "query": "林朝興教授今天幾點會在研究室？",
+      "gold_chunk_ids": [],
+      "should_abstain": true,
+      "bm25": {
+        "latency_ms": 0.140458,
+        "candidates": [
+          {
+            "rank": 1,
+            "chunk_id": "faculty-mikelin",
+            "raw_score": 10.736737,
+            "normalized_score": 1.0,
+            "matched_terms": [
+              "授",
+              "教",
+              "教授",
+              "朝",
+              "朝興",
+              "林",
+              "林朝",
+              "研",
+              "研究",
+              "究",
+              "興"
+            ]
+          },
+          {
+            "rank": 2,
+            "chunk_id": "faculty-leecs",
+            "raw_score": 2.403694,
+            "normalized_score": 0.223876,
+            "matched_terms": [
+              "授",
+              "教",
+              "教授",
+              "研",
+              "研究",
+              "究",
+              "興"
+            ]
+          },
+          {
+            "rank": 3,
+            "chunk_id": "faculty-myju",
+            "raw_score": 0.459204,
+            "normalized_score": 0.042769,
+            "matched_terms": [
+              "授",
+              "教",
+              "教授",
+              "研",
+              "研究",
+              "究"
+            ]
+          }
+        ]
+      },
+      "dense_stub": {
+        "latency_ms": 0.129084,
+        "query_vector": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "query_active_concepts": [
+          "faculty_mikelin",
+          "research",
+          "live_status"
+        ],
+        "query_is_zero_vector": false,
+        "candidates": [
+          {
+            "rank": 1,
+            "chunk_id": "faculty-mikelin",
+            "cosine_score": 0.471405,
+            "document_vector": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_mikelin",
+              "contact",
+              "research",
+              "ai",
+              "network_iot",
+              "vision_media"
+            ]
+          },
+          {
+            "rank": 2,
+            "chunk_id": "faculty-cckao",
+            "cosine_score": 0.288675,
+            "document_vector": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_cckao",
+              "contact",
+              "research",
+              "embedded_robotics"
+            ]
+          },
+          {
+            "rank": 3,
+            "chunk_id": "faculty-chents",
+            "cosine_score": 0.288675,
+            "document_vector": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "document_active_concepts": [
+              "faculty_chents",
+              "contact",
+              "research",
+              "network_iot"
+            ]
+          }
+        ]
+      },
+      "same_top_1": true
+    }
+  ],
+  "zero_vector_observation": {
+    "query": "請協助處理這件事情",
+    "query_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "query_active_concepts": [],
+    "query_is_zero_vector": true,
+    "candidates": [
+      {
+        "rank": 1,
+        "chunk_id": "faculty-cckao",
+        "cosine_score": 0.0,
+        "document_vector": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "document_active_concepts": [
+          "faculty_cckao",
+          "contact",
+          "research",
+          "embedded_robotics"
+        ]
+      },
+      {
+        "rank": 2,
+        "chunk_id": "faculty-chents",
+        "cosine_score": 0.0,
+        "document_vector": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "document_active_concepts": [
+          "faculty_chents",
+          "contact",
+          "research",
+          "network_iot"
+        ]
+      },
+      {
+        "rank": 3,
+        "chunk_id": "faculty-cslee",
+        "cosine_score": 0.0,
+        "document_vector": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "document_active_concepts": [
+          "faculty_cslee",
+          "contact",
+          "research",
+          "ai",
+          "data",
+          "vision_media"
+        ]
+      }
+    ],
+    "all_cosine_scores_zero": true,
+    "reason": "Query 未命中任何人工 alias，因此向量為全 0，cosine 回傳 0。"
+  },
+  "limitations": [
+    "dense_stub 使用人工 alias，不代表真實語言理解。",
+    "新增或修改 alias 等同修改 model version。",
+    "小型合成資料的 Recall、MRR 與 latency 不可外推 production。"
+  ],
+  "generated_at": "2026-09-30T11:53:55.084549+08:00",
+  "inputs": {
+    "chunks": "data/faculty_chunks.json",
+    "queries": "data/fixed_queries.json"
+  },
+  "reproducible_command": "python3 -m scripts.compare_retrievers"
+}

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="南大資工系校園辦事導航 Agent 原型">
+    <title>南大校務通｜Campus Agent</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js?v=context-1" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主要導覽">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40"><path d="M7 12.5 20 6l13 6.5L20 19 7 12.5Z"/><path d="M11 17.5V25c0 3 4 6 9 6s9-3 9-6v-7.5L20 22l-9-4.5Z"/><path d="M33 14v10"/></svg>
+          </div>
+          <div>
+            <strong>南大校務通</strong>
+            <span>Campus Agent</span>
+          </div>
+        </div>
+
+        <button class="new-chat" id="new-chat" type="button">
+          <span aria-hidden="true">＋</span> 新增對話
+        </button>
+
+        <nav class="side-nav">
+          <button class="nav-item active" type="button" data-view="chat">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h9a4 4 0 0 1 4 4v8Z"/></svg>
+            校務問答
+          </button>
+          <button class="nav-item" id="nav-email" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>
+            Email 草稿
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="source-status">
+          <div class="status-heading"><span class="status-dot"></span> 官方資料已載入</div>
+          <p>南大資工系師資陣容</p>
+          <a id="official-source" href="https://csie.nutn.edu.tw/faculty" target="_blank" rel="noreferrer">查看資料來源 <span>↗</span></a>
+        </div>
+
+        <div class="scope-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg>
+          <div><strong>安全模式</strong><span>只產生草稿，不會寄信</span></div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobile-menu" type="button" aria-label="開啟選單">☰</button>
+          <div>
+            <p class="eyebrow">NUTN · CSIE</p>
+            <h1>校園辦事導航</h1>
+          </div>
+          <label class="retriever-control">
+            <span>檢索方式</span>
+            <select id="retriever" aria-label="選擇檢索方式">
+              <option value="bm25">BM25</option>
+              <option value="dense_stub">Dense Stub</option>
+            </select>
+          </label>
+        </header>
+
+        <section class="chat-stage" id="chat-stage" aria-live="polite">
+          <div class="welcome" id="welcome">
+            <div class="welcome-symbol" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M12 21 32 11l20 10-20 10-20-10Z"/><path d="M18 29v11c0 6 7 11 14 11s14-5 14-11V29"/><path d="M52 23v17"/><circle cx="52" cy="44" r="2"/></svg>
+            </div>
+            <div class="welcome-badge"><span></span> 資工系官方資料</div>
+            <h2>今天想處理什麼校園事務？</h2>
+            <p>查詢教師聯絡資訊、研究方向，或讓我協助產生一封有來源依據的 Email 草稿。</p>
+
+            <div class="quick-grid">
+              <button class="quick-card" type="button" data-query="林朝興教授的 Email 是什麼？">
+                <span class="quick-icon blue">
+                  <svg viewBox="0 0 24 24"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>
+                </span>
+                <span><strong>查教師聯絡方式</strong><small>取得官方公開 Email</small></span>
+                <b>→</b>
+              </button>
+              <button class="quick-card" type="button" data-query="林朝興教授的研究領域有哪些？">
+                <span class="quick-icon teal">
+                  <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H7a2 2 0 0 1-2-2V4Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>
+                </span>
+                <span><strong>查詢研究方向</strong><small>依教師頁面整理資訊</small></span>
+                <b>→</b>
+              </button>
+              <button class="quick-card" id="quick-email" type="button">
+                <span class="quick-icon amber">
+                  <svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10L4 20Z"/><path d="m13.5 7 3.5 3.5"/></svg>
+                </span>
+                <span><strong>代擬 Email</strong><small>預覽、確認並複製草稿</small></span>
+                <b>→</b>
+              </button>
+              <button class="quick-card" type="button" data-query="林朝興教授今天幾點會在研究室？">
+                <span class="quick-icon rose">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </span>
+                <span><strong>測試證據不足</strong><small>即時資訊不會自行推測</small></span>
+                <b>→</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="messages" id="messages"></div>
+        </section>
+
+        <footer class="composer-wrap">
+          <form class="composer" id="chat-form">
+            <textarea id="message-input" rows="1" maxlength="500" placeholder="輸入問題，例如：我要怎麼聯絡林朝興老師？" aria-label="輸入校園問題"></textarea>
+            <button class="send-button" id="send-button" type="submit" aria-label="送出訊息">
+              <svg viewBox="0 0 24 24"><path d="m5 12 14-8-4 16-3-6-7-2Z"/><path d="m12 14 7-10"/></svg>
+            </button>
+          </form>
+          <p class="composer-note">回答以官方公開資料為準；請在使用前再次確認重要資訊。</p>
+        </footer>
+      </main>
+    </div>
+
+    <dialog class="draft-dialog" id="draft-dialog">
+      <div class="dialog-layout">
+        <header class="dialog-header">
+          <div>
+            <p class="eyebrow">GROUNDED EMAIL DRAFT</p>
+            <h2>Email 草稿助手</h2>
+            <p>收件人會從官方教師資料取得，草稿不會自動寄出。</p>
+            <span class="provider-pill" id="generator-status">本機模板</span>
+          </div>
+          <button class="dialog-close" id="dialog-close" type="button" aria-label="關閉">×</button>
+        </header>
+
+        <form id="draft-form" class="draft-form">
+          <div class="form-grid">
+            <label><span>教師姓名 *</span><select name="teacher_name" id="teacher-name" required></select></label>
+            <label><span>寄信目的 *</span><select name="purpose" id="purpose" required></select></label>
+            <label><span>你的姓名 *</span><input name="student_name" autocomplete="name" placeholder="例如：李安以" required></label>
+            <label><span>年級</span><input name="student_grade" placeholder="例如：大四"></label>
+            <label class="full"><span>系所</span><input name="student_department" value="資訊工程學系"></label>
+            <label class="full"><span>想詢問的內容 *</span><textarea name="request_details" rows="4" minlength="5" placeholder="請具體描述希望詢問老師的事情……" required></textarea></label>
+            <label class="full"><span>補充背景（選填）</span><textarea name="background" rows="2" placeholder="例如：已修過哪些相關課程"></textarea></label>
+          </div>
+          <div class="form-error" id="form-error" role="alert"></div>
+          <div class="dialog-actions">
+            <button class="button ghost" id="cancel-draft" type="button">取消</button>
+            <button class="button primary" type="submit">產生草稿 <span>→</span></button>
+          </div>
+        </form>
+
+        <section class="draft-result" id="draft-result" hidden>
+          <div class="draft-success"><span>✓</span><div><strong>草稿已建立</strong><p id="draft-generation-note">收件人已由官方資料驗證，目前尚未寄出。</p></div></div>
+          <dl class="mail-fields">
+            <div><dt>收件人</dt><dd id="draft-to"></dd></div>
+            <div><dt>主旨</dt><dd id="draft-subject"></dd></div>
+          </dl>
+          <pre id="draft-body"></pre>
+          <div class="dialog-actions">
+            <button class="button ghost" id="edit-draft" type="button">返回修改</button>
+            <button class="button primary" id="copy-draft" type="button">複製草稿</button>
+          </div>
+        </section>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status"></div>
+  </body>
+</html>

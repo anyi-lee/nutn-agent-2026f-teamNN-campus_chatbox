@@ -1,0 +1,335 @@
+{
+  "schema_version": "1.0",
+  "retriever": {
+    "type": "bm25",
+    "tokenizer_version": "cjk-unigram-bigram-latin-v1",
+    "k1": 1.5,
+    "b": 0.75,
+    "top_k": 3,
+    "index_version": "faculty-index-v1",
+    "chunk_count": 8
+  },
+  "summary": {
+    "query_count": 3,
+    "expectations_passed": 3,
+    "recall_at_3_answerable": 1.0,
+    "mrr_answerable": 1.0,
+    "abstention_accuracy": 1.0
+  },
+  "traces": [
+    {
+      "query_id": "q-normal-email",
+      "query_type": "normal",
+      "query": "林朝興教授的 Email 是什麼？",
+      "category": "faculty_contact",
+      "top_k": 3,
+      "gold_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "acceptable_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "faculty-mikelin",
+          "raw_score": 10.643553,
+          "normalized_score": 1.0,
+          "matched_terms": [
+            "email",
+            "授",
+            "教",
+            "教授",
+            "朝",
+            "朝興",
+            "林",
+            "林朝",
+            "興"
+          ],
+          "is_gold": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "faculty-leecs",
+          "raw_score": 2.278228,
+          "normalized_score": 0.214048,
+          "matched_terms": [
+            "email",
+            "授",
+            "教",
+            "教授",
+            "興"
+          ],
+          "is_gold": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "faculty-myju",
+          "raw_score": 0.330525,
+          "normalized_score": 0.031054,
+          "matched_terms": [
+            "email",
+            "授",
+            "教",
+            "教授"
+          ],
+          "is_gold": false
+        }
+      ],
+      "gold_in_top_k": true,
+      "gate_trace": [
+        {
+          "chunk_id": "faculty-mikelin",
+          "checks": {
+            "category": true,
+            "source": true,
+            "authority": true,
+            "validity": true,
+            "claim_support": true
+          },
+          "passed": true
+        }
+      ],
+      "selected_evidence_ids": [
+        "faculty-mikelin"
+      ],
+      "selected_evidence": [
+        {
+          "chunk_id": "faculty-mikelin",
+          "teacher_name": "林朝興",
+          "title": "教授兼系主任",
+          "research_areas": [
+            "AI 神經網路及應用",
+            "深度學習",
+            "多媒體內容分析辨識與生成",
+            "媒體串流與編碼技術",
+            "行動普適計算",
+            "物聯網"
+          ],
+          "public_email": "mikelin@mail.nutn.edu.tw",
+          "source_url": "https://csie.nutn.edu.tw/faculty"
+        }
+      ],
+      "citations": [
+        {
+          "source_id": "nutn-csie-faculty",
+          "chunk_id": "faculty-mikelin",
+          "url": "https://csie.nutn.edu.tw/faculty"
+        }
+      ],
+      "can_answer": true,
+      "should_abstain": false,
+      "failure_code": null,
+      "expected_failure_code": null,
+      "expectation_passed": true
+    },
+    {
+      "query_id": "q-paraphrase-contact",
+      "query_type": "paraphrase",
+      "query": "我要怎麼聯絡林朝興老師？",
+      "category": "faculty_contact",
+      "top_k": 3,
+      "gold_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "acceptable_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "faculty-mikelin",
+          "raw_score": 11.960956,
+          "normalized_score": 1.0,
+          "matched_terms": [
+            "朝",
+            "朝興",
+            "林",
+            "林朝",
+            "聯",
+            "興"
+          ],
+          "is_gold": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "faculty-leecs",
+          "raw_score": 1.953928,
+          "normalized_score": 0.163359,
+          "matched_terms": [
+            "興"
+          ],
+          "is_gold": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "faculty-chents",
+          "raw_score": 1.864944,
+          "normalized_score": 0.155919,
+          "matched_terms": [
+            "聯"
+          ],
+          "is_gold": false
+        }
+      ],
+      "gold_in_top_k": true,
+      "gate_trace": [
+        {
+          "chunk_id": "faculty-mikelin",
+          "checks": {
+            "category": true,
+            "source": true,
+            "authority": true,
+            "validity": true,
+            "claim_support": true
+          },
+          "passed": true
+        }
+      ],
+      "selected_evidence_ids": [
+        "faculty-mikelin"
+      ],
+      "selected_evidence": [
+        {
+          "chunk_id": "faculty-mikelin",
+          "teacher_name": "林朝興",
+          "title": "教授兼系主任",
+          "research_areas": [
+            "AI 神經網路及應用",
+            "深度學習",
+            "多媒體內容分析辨識與生成",
+            "媒體串流與編碼技術",
+            "行動普適計算",
+            "物聯網"
+          ],
+          "public_email": "mikelin@mail.nutn.edu.tw",
+          "source_url": "https://csie.nutn.edu.tw/faculty"
+        }
+      ],
+      "citations": [
+        {
+          "source_id": "nutn-csie-faculty",
+          "chunk_id": "faculty-mikelin",
+          "url": "https://csie.nutn.edu.tw/faculty"
+        }
+      ],
+      "can_answer": true,
+      "should_abstain": false,
+      "failure_code": null,
+      "expected_failure_code": null,
+      "expectation_passed": true
+    },
+    {
+      "query_id": "q-no-answer-office-hours",
+      "query_type": "no_answer",
+      "query": "林朝興教授今天幾點會在研究室？",
+      "category": "faculty_live_status",
+      "top_k": 3,
+      "gold_chunk_ids": [],
+      "acceptable_chunk_ids": [],
+      "candidates": [
+        {
+          "rank": 1,
+          "chunk_id": "faculty-mikelin",
+          "raw_score": 10.736737,
+          "normalized_score": 1.0,
+          "matched_terms": [
+            "授",
+            "教",
+            "教授",
+            "朝",
+            "朝興",
+            "林",
+            "林朝",
+            "研",
+            "研究",
+            "究",
+            "興"
+          ],
+          "is_gold": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "faculty-leecs",
+          "raw_score": 2.403694,
+          "normalized_score": 0.223876,
+          "matched_terms": [
+            "授",
+            "教",
+            "教授",
+            "研",
+            "研究",
+            "究",
+            "興"
+          ],
+          "is_gold": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "faculty-myju",
+          "raw_score": 0.459204,
+          "normalized_score": 0.042769,
+          "matched_terms": [
+            "授",
+            "教",
+            "教授",
+            "研",
+            "研究",
+            "究"
+          ],
+          "is_gold": false
+        }
+      ],
+      "gold_in_top_k": null,
+      "gate_trace": [
+        {
+          "chunk_id": "faculty-mikelin",
+          "checks": {
+            "category": false,
+            "source": true,
+            "authority": true,
+            "validity": true,
+            "claim_support": false
+          },
+          "passed": false
+        },
+        {
+          "chunk_id": "faculty-leecs",
+          "checks": {
+            "category": false,
+            "source": true,
+            "authority": true,
+            "validity": true,
+            "claim_support": false
+          },
+          "passed": false
+        },
+        {
+          "chunk_id": "faculty-myju",
+          "checks": {
+            "category": false,
+            "source": true,
+            "authority": true,
+            "validity": true,
+            "claim_support": false
+          },
+          "passed": false
+        }
+      ],
+      "selected_evidence_ids": [],
+      "selected_evidence": [],
+      "citations": [],
+      "can_answer": false,
+      "should_abstain": true,
+      "failure_code": "INSUFFICIENT_EVIDENCE",
+      "expected_failure_code": "INSUFFICIENT_EVIDENCE",
+      "expectation_passed": true
+    }
+  ],
+  "generated_at": "2026-09-30T11:35:55.102723+08:00",
+  "inputs": {
+    "chunks": "data/faculty_chunks.json",
+    "queries": "data/fixed_queries.json"
+  },
+  "reproducible_command": "python3 -m scripts.run_initial_retrieval"
+}

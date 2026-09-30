@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "index_version": "faculty-index-v1",
+  "top_k": 3,
+  "queries": [
+    {
+      "query_id": "q-normal-email",
+      "query_type": "normal",
+      "query": "林朝興教授的 Email 是什麼？",
+      "category": "faculty_contact",
+      "allowed_sources": [
+        "nutn-csie-faculty"
+      ],
+      "gold_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "acceptable_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "required_aspects": [
+        "teacher_identity",
+        "public_email"
+      ],
+      "should_abstain": false,
+      "expected_selected_evidence_ids": [
+        "faculty-mikelin"
+      ],
+      "expected_failure_code": null,
+      "expected_answer_contains": [
+        "林朝興",
+        "mikelin@mail.nutn.edu.tw"
+      ]
+    },
+    {
+      "query_id": "q-paraphrase-contact",
+      "query_type": "paraphrase",
+      "query": "我要怎麼聯絡林朝興老師？",
+      "category": "faculty_contact",
+      "allowed_sources": [
+        "nutn-csie-faculty"
+      ],
+      "gold_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "acceptable_chunk_ids": [
+        "faculty-mikelin"
+      ],
+      "required_aspects": [
+        "teacher_identity",
+        "public_email"
+      ],
+      "should_abstain": false,
+      "expected_selected_evidence_ids": [
+        "faculty-mikelin"
+      ],
+      "expected_failure_code": null,
+      "expected_answer_contains": [
+        "林朝興",
+        "mikelin@mail.nutn.edu.tw"
+      ]
+    },
+    {
+      "query_id": "q-no-answer-office-hours",
+      "query_type": "no_answer",
+      "query": "林朝興教授今天幾點會在研究室？",
+      "category": "faculty_live_status",
+      "allowed_sources": [
+        "nutn-csie-faculty"
+      ],
+      "gold_chunk_ids": [],
+      "acceptable_chunk_ids": [],
+      "required_aspects": [
+        "teacher_live_location",
+        "available_time"
+      ],
+      "should_abstain": true,
+      "expected_selected_evidence_ids": [],
+      "expected_failure_code": "INSUFFICIENT_EVIDENCE",
+      "expected_answer_contains": []
+    }
+  ]
+}
