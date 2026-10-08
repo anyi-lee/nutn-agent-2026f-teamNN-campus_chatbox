@@ -84,7 +84,140 @@ class GeminiEmailGeneratorTests(unittest.TestCase):
         self.assertIn("不是複製學生輸入", system_instruction)
         self.assertIn("多媒體系統課程加簽詢問", system_instruction)
         response_format = request_body["generationConfig"]["responseFormat"]
-        self.assertEqual(response_format["text"]["mimeType"], "application/json")
+        self.assertEqual(response_format["text"]["mimeType"], "APPLICATION_JSON")
+
+    @patch("gemini_email.request.urlopen")
+    def test_function_call_round_trip_uses_host_validated_read_tool(self, urlopen) -> None:
+        generated = {
+            "subject": "多媒體系統課程加簽詢問",
+            "body": (
+                "林老師您好：\n\n我是資訊工程學系大四學生李安以，"
+                "想請問多媒體系統課程的加簽程序。\n\n"
+                "感謝老師撥冗閱讀。\n\n學生 李安以 敬上"
+            ),
+        }
+        urlopen.side_effect = [
+            FakeResponse(
+                {
+                    "candidates": [
+                        {
+                            "content": {
+                                "role": "model",
+                                "parts": [
+                                    {
+                                        "functionCall": {
+                                            "id": "call-contact-001",
+                                            "name": "get_teacher_contact",
+                                            "args": {"teacher_query": "林朝興"},
+                                        }
+                                    }
+                                ],
+                            }
+                        }
+                    ]
+                }
+            ),
+            FakeResponse(
+                {
+                    "candidates": [
+                        {"content": {"parts": [{"text": json.dumps(generated, ensure_ascii=False)}]}}
+                    ]
+                }
+            ),
+        ]
+        calls = []
+
+        def call_tool(name, arguments):
+            calls.append((name, dict(arguments)))
+            return {
+                "status": "found",
+                "teacher": {
+                    "teacher_id": "faculty-mikelin",
+                    "name": "林朝興",
+                    "public_email": "mikelin@mail.nutn.edu.tw",
+                },
+            }
+
+        generator = GeminiEmailGenerator(api_key="test-secret", model="gemini-test")
+        result, trace = generator.generate_with_contact_tool(
+            FACTS,
+            tool_definition={
+                "name": "get_teacher_contact",
+                "description": "查詢教師公開聯絡資料",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "teacher_query": {
+                            "type": "string",
+                            "description": "教師姓名",
+                            "minLength": 1,
+                        }
+                    },
+                    "required": ["teacher_query"],
+                    "additionalProperties": False,
+                },
+            },
+            call_tool=call_tool,
+        )
+
+        self.assertEqual(result, generated)
+        self.assertEqual(calls, [("get_teacher_contact", {"teacher_query": "林朝興"})])
+        self.assertEqual(trace[0]["stage"], "functionCall")
+        self.assertEqual(trace[1]["stage"], "functionResponse")
+        proposal_body = json.loads(urlopen.call_args_list[0].args[0].data.decode("utf-8"))
+        completion_body = json.loads(urlopen.call_args_list[1].args[0].data.decode("utf-8"))
+        self.assertEqual(
+            proposal_body["tools"][0]["functionDeclarations"][0]["name"],
+            "get_teacher_contact",
+        )
+        function_schema = proposal_body["tools"][0]["functionDeclarations"][0]["parameters"]
+        self.assertNotIn("additionalProperties", function_schema)
+        self.assertNotIn("minLength", function_schema["properties"]["teacher_query"])
+        function_response = completion_body["contents"][2]["parts"][0]["functionResponse"]
+        self.assertEqual(function_response["response"]["status"], "found")
+        self.assertEqual(function_response["id"], "call-contact-001")
+        self.assertEqual(
+            completion_body["tools"][0]["functionDeclarations"][0]["name"],
+            "get_teacher_contact",
+        )
+        self.assertEqual(
+            completion_body["toolConfig"]["functionCallingConfig"]["mode"],
+            "NONE",
+        )
+
+    @patch("gemini_email.request.urlopen")
+    def test_function_call_cannot_change_confirmed_teacher(self, urlopen) -> None:
+        urlopen.return_value = FakeResponse(
+            {
+                "candidates": [
+                    {
+                        "content": {
+                            "role": "model",
+                            "parts": [
+                                {
+                                    "functionCall": {
+                                        "name": "get_teacher_contact",
+                                        "args": {"teacher_query": "其他老師"},
+                                    }
+                                }
+                            ],
+                        }
+                    }
+                ]
+            }
+        )
+        generator = GeminiEmailGenerator(api_key="test-secret")
+
+        with self.assertRaises(GeminiEmailError):
+            generator.generate_with_contact_tool(
+                FACTS,
+                tool_definition={
+                    "name": "get_teacher_contact",
+                    "description": "查詢教師公開聯絡資料",
+                    "inputSchema": {"type": "object"},
+                },
+                call_tool=lambda name, arguments: self.fail("tool must not run"),
+            )
 
     @patch("gemini_email.request.urlopen")
     def test_low_quality_template_like_draft_is_rejected(self, urlopen) -> None:

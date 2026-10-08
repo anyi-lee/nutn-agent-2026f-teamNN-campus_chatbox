@@ -13,13 +13,14 @@
 本階段使用南大資工系官方「師資陣容」頁面的版本化資料，支援：
 
 - 查詢教師姓名、職稱、研究領域與公開 Email。
+- 查詢資工系辦地址、電話分機與 Email；若詢問官網未公布的辦公時間，會明確標示證據不足並提供確認管道。
 - BM25 與透明 Dense Stub 檢索比較。
 - 顯示官方 Citation、Top-3 排名與檢索分數。
 - 追問時沿用上一輪教師脈絡。
 - 使用 Gemini 或本機模板產生 Email 草稿。
 - 資料不足或超出來源範圍時拒答。
 
-目前**不包含**課程開設資料、教師即時位置、私人聯絡方式與實際寄信功能。
+目前**不包含**課程開設資料、教師即時位置、私人聯絡方式、其他系所、校長等校級行政主管資料與真實寄信功能。資工系官網也未公布固定系辦辦公時間，因此系統不會自行推測。Email 的 Write Tool 只會寫入本機 Sandbox outbox，畫面與 receipt 均會清楚標示沒有寄到外部信箱。
 
 ## 組員
 
@@ -117,9 +118,21 @@
 
 Week 03 原型已完成：官方教師資料快照、BM25 Baseline、Dense Stub、Evidence Gate、Generator Comparison、Email 草稿與本機 Web UI 均可重現執行。評估結果位於 `artifacts/`。
 
+Week 04 加入共用 Tool Server 與 stdio MCP adapter：
+
+- `get_teacher_contact`：從版本化官方資料取得教師公開 Email。
+- `send_email`：經明確確認後寫入 Sandbox outbox，不寄真實郵件。
+- `get_email_status`：用 `request_id` 查詢執行狀態。
+- 設定 Gemini Key 時，草稿流程會執行 `functionCall → Host 驗證 → tools/call → functionResponse`；未設定時明確退回本機模板。
+- 寄送草稿由 Host 保存，瀏覽器不能替換已確認的收件人與正文。
+- SQLite primary key 提供 idempotency，重複請求不會新增第二封。
+
+完整契約、安全規則與 Known Failure 見 `week04_tool_contract.md`。
+Week 04 自評、執行證據與尚未完成項目分別見 `week04_self_check.md` 與 `evidence/`。
+
 ## 本機 UI 原型
 
-目前提供不需安裝第三方套件的 Web UI，可查詢資工系教師公開資訊、切換 BM25／Dense Stub 檢索方式，並產生 Email 草稿。此原型不會實際寄送郵件。
+目前提供不需安裝第三方套件的 Web UI，可查詢資工系教師公開資訊、切換 BM25／Dense Stub 檢索方式、產生 Email 草稿，並在人工確認後執行 Sandbox Write Tool。此原型不會實際寄送郵件。
 
 ```bash
 python3 app.py
@@ -131,6 +144,14 @@ python3 app.py
 python3 -m unittest discover -s tests -v
 ```
 
+MCP stdio 的完整讀取、拒絕、確認、重複請求與狀態查詢可執行：
+
+```bash
+python3 scripts/run_week04_tool_demo.py
+```
+
+輸出中的 `MCP_LOCAL_PASS` 只代表本機 MCP 與 Sandbox 工具流程通過，不代表 Gemini 或真實 Email 服務已成功執行。
+
 ### 使用 Gemini 產生 Email 草稿
 
 請勿將 API Key 寫入程式碼或提交到 Git。可使用互動式啟動腳本，Key 只會保留在該次程序的環境變數中：
@@ -139,7 +160,7 @@ python3 -m unittest discover -s tests -v
 bash scripts/run_with_gemini.sh
 ```
 
-未設定 Key 或 Gemini 暫時失敗時，系統會改用本機模板，且不會實際寄出郵件。預設模型可透過 `GEMINI_MODEL` 調整。
+`.env.example` 只列出變數名稱與安全的模型預設值，不含真實 Key；目前啟動腳本不會自動載入 `.env`，而是於終端機互動輸入 Key。未設定 Key 或 Gemini 暫時失敗時，系統會改用本機模板，且不會實際寄出郵件。預設模型可透過 `GEMINI_MODEL` 調整。
 
 ## 專案結構
 
@@ -150,4 +171,5 @@ src/        檢索、Evidence Gate、Gemini 與應用服務
 ui/         Web UI
 scripts/    可重現執行腳本
 tests/      自動化測試
+runtime/    本機 Sandbox outbox（Git 忽略）
 ```

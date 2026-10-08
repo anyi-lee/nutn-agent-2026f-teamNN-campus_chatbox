@@ -21,7 +21,7 @@ SERVICE = CampusService()
 
 
 class CampusRequestHandler(SimpleHTTPRequestHandler):
-    """Serve the static UI and its two JSON endpoints."""
+    """Serve the static UI and its JSON host endpoints."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, directory=str(UI_ROOT), **kwargs)
@@ -51,6 +51,9 @@ class CampusRequestHandler(SimpleHTTPRequestHandler):
         if self.path == "/api/config":
             self._send_json(SERVICE.config())
             return
+        if self.path == "/api/tools":
+            self._send_json(SERVICE.tool_server.list_tools())
+            return
         if self.path == "/":
             self.path = "/index.html"
         super().do_GET()
@@ -68,6 +71,16 @@ class CampusRequestHandler(SimpleHTTPRequestHandler):
                 return
             if self.path == "/api/email-draft":
                 status, response = SERVICE.create_email_draft(payload)
+                self._send_json(response, status)
+                return
+            if self.path == "/api/email-send":
+                status, response = SERVICE.send_email_draft(payload)
+                self._send_json(response, status)
+                return
+            if self.path == "/api/email-status":
+                status, response = SERVICE.get_email_status(
+                    str(payload.get("request_id") or "")
+                )
                 self._send_json(response, status)
                 return
             self._send_json(

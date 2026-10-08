@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import os
 import re
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 from urllib import error, parse, request
 
 
@@ -93,28 +93,144 @@ class GeminiEmailGenerator:
                 "parts": [{"text": EMAIL_SYSTEM_PROMPT}],
             },
             "contents": [{"parts": [{"text": self._build_prompt(facts)}]}],
-            "generationConfig": {
-                "responseFormat": {
-                    "text": {
-                        "mimeType": "application/json",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "subject": {
-                                    "type": "string",
-                                    "description": "具體、禮貌且不超過 40 個中文字的郵件主旨",
-                                },
-                                "body": {
-                                    "type": "string",
-                                    "description": "繁體中文正式郵件正文，包含稱謂、說明、請求、致謝與署名",
-                                },
-                            },
-                            "required": ["subject", "body"],
-                        },
-                    }
+            "generationConfig": self._draft_generation_config(),
+        }
+        response_payload = self._post(payload)
+        return self._parse_and_validate_draft(response_payload, facts)
+
+    def generate_with_contact_tool(
+        self,
+        facts: Mapping[str, Any],
+        *,
+        tool_definition: Mapping[str, Any],
+        call_tool: Callable[[str, Mapping[str, Any]], Mapping[str, Any]],
+    ) -> tuple[dict[str, str], list[dict[str, Any]]]:
+        """Complete a Gemini functionCall/functionResponse round trip.
+
+        The host accepts only the read-only ``get_teacher_contact`` call and
+        requires the model argument to match the teacher already selected by
+        the user.  A write tool is never exposed during draft generation.
+        """
+
+        if not self.configured:
+            raise GeminiEmailError(
+                "GEMINI_API_KEY has an invalid format"
+                if self.api_key
+                else "GEMINI_API_KEY is not configured"
+            )
+
+        function_declaration = {
+            "name": tool_definition["name"],
+            "description": tool_definition["description"],
+            "parameters": self._gemini_function_schema(tool_definition["inputSchema"]),
+        }
+        user_content = {
+            "role": "user",
+            "parts": [
+                {
+                    "text": (
+                        "先呼叫 get_teacher_contact 驗證收件人，再根據工具結果產生草稿。\n\n"
+                        + self._build_prompt(facts)
+                    )
+                }
+            ],
+        }
+        proposal_payload = {
+            "systemInstruction": {"parts": [{"text": EMAIL_SYSTEM_PROMPT}]},
+            "contents": [user_content],
+            "tools": [{"functionDeclarations": [function_declaration]}],
+            "toolConfig": {
+                "functionCallingConfig": {
+                    "mode": "ANY",
+                    "allowedFunctionNames": ["get_teacher_contact"],
                 }
             },
         }
+        try:
+            proposal_response = self._post(proposal_payload)
+        except GeminiEmailError as exc:
+            raise GeminiEmailError(f"functionCall stage: {exc}") from exc
+        try:
+            model_content = proposal_response["candidates"][0]["content"]
+            function_call = next(
+                part["functionCall"]
+                for part in model_content["parts"]
+                if "functionCall" in part
+            )
+            tool_name = str(function_call["name"])
+            tool_arguments = function_call.get("args") or {}
+            tool_call_id = str(function_call.get("id") or "").strip()
+        except (KeyError, IndexError, StopIteration, TypeError) as exc:
+            raise GeminiEmailError("Gemini did not propose a valid functionCall") from exc
+
+        expected_teacher = str(facts["teacher_name"])
+        if tool_name != "get_teacher_contact":
+            raise GeminiEmailError("Gemini proposed a tool outside the read-only allowlist")
+        if not isinstance(tool_arguments, Mapping):
+            raise GeminiEmailError("Gemini tool arguments must be an object")
+        if set(tool_arguments) != {"teacher_query"}:
+            raise GeminiEmailError("Gemini tool arguments failed the host schema allowlist")
+        if str(tool_arguments.get("teacher_query") or "").strip() != expected_teacher:
+            raise GeminiEmailError("Gemini changed the user-confirmed teacher")
+
+        try:
+            tool_result = dict(call_tool(tool_name, tool_arguments))
+        except Exception as exc:
+            raise GeminiEmailError("The contact tool failed") from exc
+        if tool_result.get("status") != "found":
+            raise GeminiEmailError("The contact tool did not return grounded evidence")
+
+        function_response: dict[str, Any] = {
+            "name": tool_name,
+            "response": tool_result,
+        }
+        if tool_call_id:
+            function_response["id"] = tool_call_id
+
+        completion_payload = {
+            "systemInstruction": {"parts": [{"text": EMAIL_SYSTEM_PROMPT}]},
+            "contents": [
+                user_content,
+                model_content,
+                {
+                    "role": "user",
+                    "parts": [
+                        {
+                            "functionResponse": function_response
+                        }
+                    ],
+                },
+            ],
+            "tools": [{"functionDeclarations": [function_declaration]}],
+            "toolConfig": {
+                "functionCallingConfig": {
+                    "mode": "NONE",
+                }
+            },
+            "generationConfig": self._draft_generation_config(),
+        }
+        try:
+            completion_response = self._post(completion_payload)
+        except GeminiEmailError as exc:
+            raise GeminiEmailError(f"functionResponse stage: {exc}") from exc
+        draft = self._parse_and_validate_draft(completion_response, facts)
+        trace = [
+            {
+                "stage": "functionCall",
+                "tool": tool_name,
+                "arguments": {"teacher_query": expected_teacher},
+                "host_validation": "passed",
+                "call_id_present": bool(tool_call_id),
+            },
+            {
+                "stage": "functionResponse",
+                "tool": tool_name,
+                "status": tool_result["status"],
+            },
+        ]
+        return draft, trace
+
+    def _post(self, payload: Mapping[str, Any]) -> dict[str, Any]:
         endpoint = f"{API_ROOT}/{parse.quote(self.model, safe='-_.')}:generateContent"
         api_request = request.Request(
             endpoint,
@@ -130,10 +246,24 @@ class GeminiEmailGenerator:
             with request.urlopen(api_request, timeout=self.timeout_seconds) as response:
                 response_payload = json.loads(response.read().decode("utf-8"))
         except error.HTTPError as exc:
-            raise GeminiEmailError(f"Gemini HTTP {exc.code}") from exc
+            provider_message = ""
+            try:
+                error_payload = json.loads(exc.read().decode("utf-8"))
+                provider_message = str(error_payload.get("error", {}).get("message") or "").strip()
+            except (AttributeError, json.JSONDecodeError, UnicodeDecodeError):
+                provider_message = ""
+            safe_detail = f": {provider_message[:240]}" if provider_message else ""
+            raise GeminiEmailError(f"Gemini HTTP {exc.code}{safe_detail}") from exc
         except (error.URLError, TimeoutError, json.JSONDecodeError) as exc:
             raise GeminiEmailError("Gemini request failed") from exc
 
+        return response_payload
+
+    def _parse_and_validate_draft(
+        self,
+        response_payload: Mapping[str, Any],
+        facts: Mapping[str, Any],
+    ) -> dict[str, str]:
         try:
             text = response_payload["candidates"][0]["content"]["parts"][0]["text"]
             draft = json.loads(text)
@@ -152,6 +282,53 @@ class GeminiEmailGenerator:
         if "想加簽" in raw_details and raw_details in body:
             raise GeminiEmailError("Gemini copied the raw course-add request")
         return {"subject": subject, "body": body}
+
+    @staticmethod
+    def _draft_generation_config() -> dict[str, Any]:
+        return {
+            "responseFormat": {
+                "text": {
+                    "mimeType": "APPLICATION_JSON",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "description": "具體、禮貌且不超過 40 個中文字的郵件主旨",
+                            },
+                            "body": {
+                                "type": "string",
+                                "description": "繁體中文正式郵件正文，包含稱謂、說明、請求、致謝與署名",
+                            },
+                        },
+                        "required": ["subject", "body"],
+                    },
+                }
+            }
+        }
+
+    @staticmethod
+    def _gemini_function_schema(schema: Mapping[str, Any]) -> dict[str, Any]:
+        """Keep only the OpenAPI subset accepted by Gemini function declarations."""
+
+        cleaned: dict[str, Any] = {"type": str(schema.get("type") or "object")}
+        properties = schema.get("properties") or {}
+        if isinstance(properties, Mapping):
+            cleaned_properties: dict[str, Any] = {}
+            for name, raw_property in properties.items():
+                if not isinstance(raw_property, Mapping):
+                    continue
+                cleaned_property = {
+                    key: raw_property[key]
+                    for key in ("type", "description", "enum")
+                    if key in raw_property
+                }
+                cleaned_properties[str(name)] = cleaned_property
+            cleaned["properties"] = cleaned_properties
+        required = schema.get("required")
+        if isinstance(required, list):
+            cleaned["required"] = [str(name) for name in required]
+        return cleaned
 
     @staticmethod
     def _build_prompt(facts: Mapping[str, Any]) -> str:

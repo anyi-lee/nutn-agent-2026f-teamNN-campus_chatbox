@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import sys
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -11,6 +13,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from campus_service import CampusService  # noqa: E402
+from email_tools import CampusToolServer  # noqa: E402
 from gemini_email import GeminiEmailError, GeminiEmailGenerator  # noqa: E402
 
 
@@ -75,6 +78,18 @@ class CampusServiceTests(unittest.TestCase):
         self.assertEqual(response["evidence"]["teacher_name"], "陳宗禧")
         self.assertIn("無線網路", response["answer"])
 
+    def test_unrelated_weather_query_does_not_reuse_teacher_context(self) -> None:
+        response = self.service.chat(
+            "今天天氣如何",
+            "bm25",
+            context_teacher="林朝興",
+        )
+
+        self.assertEqual(response["status"], "insufficient_evidence")
+        self.assertEqual(response["error"]["code"], "INSUFFICIENT_EVIDENCE")
+        self.assertFalse(response["used_context"])
+        self.assertNotIn("林朝興", response["answer"])
+
     def test_explicit_teacher_overrides_previous_context(self) -> None:
         response = self.service.chat(
             "朱明毅老師的研究方向",
@@ -98,6 +113,88 @@ class CampusServiceTests(unittest.TestCase):
         self.assertEqual(response["error"]["code"], "OUT_OF_SCOPE_SOURCE")
         self.assertIsNone(response["retrieval"])
         self.assertIn("沒有當學期開課資訊", response["answer"])
+
+    def test_office_hours_query_reports_missing_official_hours(self) -> None:
+        response = self.service.chat(
+            "資工系辦營業時間是幾點？",
+            "bm25",
+            context_teacher="林朝興",
+        )
+
+        self.assertEqual(response["status"], "insufficient_evidence")
+        self.assertEqual(response["error"]["code"], "OFFICE_HOURS_NOT_PUBLISHED")
+        self.assertFalse(response["used_context"])
+        self.assertIsNone(response["evidence"]["office_hours"])
+        self.assertEqual(
+            response["evidence"]["office_hours_status"],
+            "not_published_on_source",
+        )
+        self.assertIn("7701", response["answer"])
+        self.assertIn("csie@mail.nutn.edu.tw", response["answer"])
+        self.assertFalse(response["retrieval"]["evidence_gate"]["passed"])
+
+    def test_office_contact_query_returns_official_record(self) -> None:
+        response = self.service.chat("系辦電話和地址", "bm25")
+
+        self.assertEqual(response["status"], "ok")
+        self.assertEqual(response["evidence"]["extensions"], ["7701", "7702"])
+        self.assertEqual(
+            response["citations"][0]["source_id"],
+            "nutn-csie-homepage-contact",
+        )
+        self.assertTrue(response["retrieval"]["evidence_gate"]["passed"])
+
+    def test_admin_role_does_not_reuse_previous_teacher_context(self) -> None:
+        response = self.service.chat(
+            "想聯繫校長",
+            "bm25",
+            context_teacher="陳宗禧",
+        )
+
+        self.assertEqual(response["status"], "insufficient_evidence")
+        self.assertEqual(response["error"]["code"], "OUT_OF_SCOPE_ADMIN_ROLE")
+        self.assertFalse(response["used_context"])
+        self.assertIsNone(response["detected_teacher"])
+        self.assertNotIn("chents@mail.nutn.edu.tw", response["answer"])
+
+    def test_other_department_chair_is_blocked_before_retrieval(self) -> None:
+        response = self.service.chat(
+            "想詢問國文系主任",
+            "bm25",
+            context_teacher="林朝興",
+        )
+
+        self.assertEqual(response["status"], "insufficient_evidence")
+        self.assertEqual(response["error"]["code"], "OUT_OF_SCOPE_DEPARTMENT")
+        self.assertIsNone(response["retrieval"])
+        self.assertFalse(response["used_context"])
+        self.assertIsNone(response["detected_teacher"])
+        self.assertNotIn("林朝興", response["answer"])
+
+    def test_unanchored_contact_query_fails_evidence_gate(self) -> None:
+        response = self.service.chat("想聯絡老師", "bm25")
+
+        self.assertEqual(response["status"], "insufficient_evidence")
+        self.assertEqual(response["error"]["code"], "MISSING_TEACHER_IDENTITY")
+        self.assertFalse(response["retrieval"]["evidence_gate"]["passed"])
+        self.assertIsNone(response["detected_teacher"])
+
+    def test_ambiguous_expertise_query_does_not_force_top_one_answer(self) -> None:
+        response = self.service.chat("誰研究人工智慧", "bm25")
+
+        self.assertEqual(response["status"], "insufficient_evidence")
+        self.assertEqual(response["error"]["code"], "AMBIGUOUS_EVIDENCE")
+        self.assertGreaterEqual(
+            response["retrieval"]["evidence_gate"]["second_to_top_ratio"],
+            0.75,
+        )
+
+    def test_distinctive_expertise_query_passes_evidence_gate(self) -> None:
+        response = self.service.chat("有做機器人研究的老師嗎", "bm25")
+
+        self.assertEqual(response["status"], "ok")
+        self.assertEqual(response["evidence"]["teacher_name"], "朱明毅")
+        self.assertTrue(response["retrieval"]["evidence_gate"]["passed"])
 
     def test_email_draft_uses_official_faculty_email_and_does_not_send(self) -> None:
         status, response = self.service.create_email_draft(
@@ -177,6 +274,48 @@ class CampusServiceTests(unittest.TestCase):
 
         self.assertEqual(status, 404)
         self.assertEqual(response["error"]["code"], "TEACHER_NOT_FOUND")
+
+    def test_sandbox_send_requires_confirmation_and_is_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            document = json.loads(
+                (REPOSITORY_ROOT / "data" / "faculty_chunks.json").read_text(encoding="utf-8")
+            )
+            tools = CampusToolServer(document, Path(directory) / "outbox.sqlite3")
+            service = CampusService(
+                email_generator=GeminiEmailGenerator(api_key=""),
+                tool_server=tools,
+            )
+            draft_status, draft = service.create_email_draft(
+                {
+                    "teacher_name": "林朝興",
+                    "purpose": "course_add_request",
+                    "student_name": "李安以",
+                    "request_details": "多媒體想加簽",
+                }
+            )
+
+            rejected_status, rejected = service.send_email_draft(
+                {"draft_id": draft["draft_id"], "confirmed": False}
+            )
+            sent_status, sent = service.send_email_draft(
+                {"draft_id": draft["draft_id"], "confirmed": True}
+            )
+            replay_status, replay = service.send_email_draft(
+                {"draft_id": draft["draft_id"], "confirmed": True}
+            )
+
+            self.assertEqual(draft_status, 200)
+            self.assertEqual(rejected_status, 409)
+            self.assertEqual(rejected["error"]["code"], "CONFIRMATION_REQUIRED")
+            self.assertEqual(sent_status, 200)
+            self.assertEqual(sent["status"], "simulated_sent")
+            self.assertFalse(sent["delivery"]["real_email_sent"])
+            self.assertEqual(replay_status, 200)
+            self.assertEqual(replay["status"], "already_processed")
+            self.assertEqual(
+                sent["receipt"]["message_id"],
+                replay["receipt"]["message_id"],
+            )
 
 
 if __name__ == "__main__":

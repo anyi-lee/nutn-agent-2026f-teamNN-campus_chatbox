@@ -1,0 +1,45 @@
+{
+  "recorded_at": "2026-10-08T14:35:21Z",
+  "evidence_status": "LIVE_PASS",
+  "run_id": "mail-3076e583fcce4dce884b5e82b5500e1b",
+  "draft_id": "draft-b2bbd525c22b4c86",
+  "test_identity": "測試學生",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash",
+  "fallback_used": false,
+  "subject": "多媒體系統課程加簽詢問",
+  "recipient_source": {
+    "teacher_id": "faculty-mikelin",
+    "source_id": "nutn-csie-faculty",
+    "source_url": "https://csie.nutn.edu.tw/faculty",
+    "authority": "official"
+  },
+  "tool_trace": [
+    {
+      "tool": "get_teacher_contact",
+      "kind": "read",
+      "status": "found",
+      "stage": "host_prevalidation"
+    },
+    {
+      "stage": "functionCall",
+      "tool": "get_teacher_contact",
+      "arguments": {
+        "teacher_query": "林朝興"
+      },
+      "host_validation": "passed",
+      "call_id_present": true
+    },
+    {
+      "stage": "functionResponse",
+      "tool": "get_teacher_contact",
+      "status": "found"
+    }
+  ],
+  "requires_confirmation": true,
+  "send_status": "not_sent",
+  "delivery_mode": "sandbox",
+  "real_email_sent": false,
+  "contains_api_key": false,
+  "notes": "以虛構學生資料呼叫本機 /api/email-draft；只建立草稿，未執行 Write Tool。"
+}

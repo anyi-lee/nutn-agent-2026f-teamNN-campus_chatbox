@@ -158,3 +158,19 @@ Source：https://csie.nutn.edu.tw/faculty
 - 固定資料來源與 Metadata
 
 後續仍需補上正式擷取指令、網站變更差異紀錄與重新索引操作紀錄。
+
+## 12. 擴充來源：資工系辦公開資訊
+
+| 項目 | 內容 |
+| --- | --- |
+| `source_id` | `nutn-csie-homepage-contact` |
+| 資料名稱 | 南大資工系官網系辦聯絡資訊 |
+| Owner | 國立臺南大學資訊工程學系 |
+| Authority | 資工系官方網站 |
+| 原始 URL | <https://csie.nutn.edu.tw/> |
+| 本次擷取日期 | `2026-10-08` |
+| 初始版本 | `office-index-v1` |
+
+官網可支持的 Claims 包含系辦地址、電話分機 `7701`、`7702`、傳真與公開 Email。官網未列出固定辦公時間，因此 `office_hours = null`、`office_hours_status = not_published_on_source`；詢問營業或辦公時間時必須拒絕猜測，並提供官方聯絡方式供使用者確認。
+
+對應資料檔：`data/office_chunks.json`。

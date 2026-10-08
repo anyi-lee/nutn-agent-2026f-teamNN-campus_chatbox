@@ -92,7 +92,13 @@ function addTyping() {
 
 function retrievalTrace(retrieval) {
   if (!retrieval) return "";
-  const modelLabel = retrieval.model === "bm25" ? "BM25" : "Dense Stub";
+  const modelLabel = retrieval.model === "bm25"
+    ? "BM25"
+    : (retrieval.model === "official_record" ? "Official Record" : "Dense Stub");
+  const gate = retrieval.evidence_gate;
+  const gateBadge = gate
+    ? `<span class="meta-chip ${gate.passed ? "official" : "gate-failed"}">Evidence Gate · ${escapeHtml(gate.passed ? "PASS" : gate.failure_code)}</span>`
+    : "";
   const concepts = retrieval.query_concepts?.length
     ? `<span class="meta-chip">概念：${escapeHtml(retrieval.query_concepts.join(" · "))}</span>`
     : "";
@@ -103,7 +109,7 @@ function retrievalTrace(retrieval) {
       <span>${escapeHtml(candidate.score_label)} ${Number(candidate.score).toFixed(3)}</span>
     </div>`).join("");
   return `
-    <div class="answer-meta"><span class="meta-chip">${modelLabel} · Top 3</span>${concepts}</div>
+    <div class="answer-meta"><span class="meta-chip">${modelLabel} · Top 3</span>${concepts}${gateBadge}</div>
     <details class="trace">
       <summary>查看檢索軌跡與分數</summary>
       <div class="trace-list">${rows}</div>
@@ -180,6 +186,7 @@ function resizeInput() {
 function openDraft(teacher = "", purpose = "other") {
   elements.draftForm.hidden = false;
   elements.draftResult.hidden = true;
+  state.draft = null;
   $("#form-error").textContent = "";
   if (teacher && [...elements.teacher.options].some((option) => option.value === teacher)) elements.teacher.value = teacher;
   if ([...elements.purpose.options].some((option) => option.value === purpose)) elements.purpose.value = purpose;
@@ -201,6 +208,17 @@ async function submitDraft(event) {
     $("#draft-to").textContent = state.draft.email_draft.to;
     $("#draft-subject").textContent = state.draft.email_draft.subject;
     $("#draft-body").textContent = state.draft.email_draft.body;
+    $("#draft-status-title").textContent = "草稿已建立";
+    $("#tool-trace-note").textContent = state.draft.generation.provider === "gemini"
+      ? "GEMINI · functionCall → functionResponse · passed"
+      : "HOST · get_teacher_contact · found";
+    $("#confirm-send").checked = false;
+    $("#confirm-send").disabled = false;
+    $("#confirmation-panel").hidden = false;
+    $("#send-email").disabled = true;
+    $("#send-email").textContent = "確認並模擬寄出";
+    $("#send-receipt").hidden = true;
+    $("#send-error").textContent = "";
     const generation = state.draft.generation;
     $("#draft-generation-note").textContent = generation.provider === "gemini"
       ? `由 ${generation.model} 潤稿；收件人已驗證，目前尚未寄出。`
@@ -211,6 +229,38 @@ async function submitDraft(event) {
     $("#form-error").textContent = error.message;
   } finally {
     submit.disabled = false;
+  }
+}
+
+async function sendSandboxEmail() {
+  if (!state.draft || !$("#confirm-send").checked) return;
+  const sendButton = $("#send-email");
+  sendButton.disabled = true;
+  sendButton.textContent = "Sandbox 執行中…";
+  $("#send-error").textContent = "";
+  try {
+    const result = await request("/api/email-send", {
+      method: "POST",
+      body: JSON.stringify({ draft_id: state.draft.draft_id, confirmed: true }),
+    });
+    const receipt = result.receipt;
+    $("#draft-status-title").textContent = result.status === "already_processed"
+      ? "Sandbox 已處理（未重複寫入）"
+      : "Sandbox 執行完成";
+    $("#draft-generation-note").textContent = "Write Tool 已回傳執行結果；未寄到真實信箱。";
+    $("#tool-trace-note").textContent = `WRITE · send_email · ${result.status}`;
+    $("#receipt-status").textContent = result.status;
+    $("#receipt-request-id").textContent = receipt.request_id;
+    $("#receipt-message-id").textContent = receipt.message_id;
+    $("#receipt-time").textContent = receipt.sent_at;
+    $("#send-receipt").hidden = false;
+    $("#confirmation-panel").hidden = true;
+    sendButton.textContent = "已寫入 Sandbox";
+    showToast("Sandbox 執行完成；沒有寄出真實郵件");
+  } catch (error) {
+    $("#send-error").textContent = `${error.payload?.error?.code || "TOOL_FAILED"}：${error.message}`;
+    sendButton.disabled = false;
+    sendButton.textContent = "重試 Sandbox 執行";
   }
 }
 
@@ -248,6 +298,10 @@ $("#dialog-close").addEventListener("click", closeDraft);
 $("#cancel-draft").addEventListener("click", closeDraft);
 $("#edit-draft").addEventListener("click", () => { elements.draftResult.hidden = true; elements.draftForm.hidden = false; });
 $("#copy-draft").addEventListener("click", copyDraft);
+$("#confirm-send").addEventListener("change", (event) => {
+  $("#send-email").disabled = !event.currentTarget.checked;
+});
+$("#send-email").addEventListener("click", sendSandboxEmail);
 elements.draftForm.addEventListener("submit", submitDraft);
 elements.dialog.addEventListener("click", (event) => { if (event.target === elements.dialog) closeDraft(); });
 $("#mobile-menu").addEventListener("click", () => $(".sidebar").classList.toggle("open"));

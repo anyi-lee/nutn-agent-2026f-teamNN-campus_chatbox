@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "source": {
+    "source_id": "nutn-csie-homepage-contact",
+    "source_url": "https://csie.nutn.edu.tw/",
+    "retrieved_at": "2026-10-08",
+    "index_version": "office-index-v1",
+    "authority": "official",
+    "validity": "active"
+  },
+  "chunks": [
+    {
+      "chunk_id": "office-csie-main",
+      "source_id": "nutn-csie-homepage-contact",
+      "category": "department_office_contact",
+      "office_name": "國立臺南大學資訊工程學系辦公室",
+      "address": "700 台南市中西區樹林街二段33號",
+      "telephone": "(06) 2606123",
+      "extensions": ["7701", "7702"],
+      "fax": "(06) 2606125",
+      "public_email": "csie@mail.nutn.edu.tw",
+      "office_hours": null,
+      "office_hours_status": "not_published_on_source",
+      "content": "南大資工系官方網站公布系辦地址、電話分機、傳真與 Email，但截至擷取日期未公布固定辦公時間。",
+      "source_url": "https://csie.nutn.edu.tw/",
+      "retrieved_at": "2026-10-08",
+      "index_version": "office-index-v1",
+      "authority": "official",
+      "validity": "active"
+    }
+  ]
+}

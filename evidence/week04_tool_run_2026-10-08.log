@@ -1,0 +1,94 @@
+Week 04 Tool Use / MCP Local Evidence
+Date: 2026-10-08 (Asia/Taipei)
+
+Command:
+python3 -W error::ResourceWarning -m unittest discover -s tests -v
+
+Result:
+Ran 56 tests in 0.048s
+OK
+
+Regression verification:
+- Query: 想聯繫校長
+- Previous context: 陳宗禧
+- Expected: reject as OUT_OF_SCOPE_ADMIN_ROLE and do not reuse the teacher context
+- Result: PASS
+- Query: 想詢問國文系主任
+- Previous context: 林朝興
+- Expected: reject as OUT_OF_SCOPE_DEPARTMENT before retrieval and do not reuse the teacher context
+- Result: PASS
+- Query: 想聯絡老師
+- Expected: reject as MISSING_TEACHER_IDENTITY instead of forcing a Top 1 answer
+- Result: PASS
+- Query: 誰研究人工智慧
+- Expected: reject as AMBIGUOUS_EVIDENCE because Top 1 is not clearly separated
+- Result: PASS
+- Query: 有做機器人研究的老師嗎
+- Expected: pass the Evidence Gate and return 朱明毅
+- Result: PASS
+- Query sequence: 國文系主任 → 今天天氣如何
+- Previous context: 林朝興
+- Expected: weather query must not reuse teacher context and must return INSUFFICIENT_EVIDENCE
+- Result: PASS
+- Query: 資工系辦營業時間是幾點？
+- Expected: return OFFICE_HOURS_NOT_PUBLISHED, preserve official contact evidence, and do not guess hours
+- Result: PASS
+- Query: 系辦電話和地址
+- Expected: return the official address, extensions 7701/7702, and csie@mail.nutn.edu.tw
+- Result: PASS
+
+Command:
+python3 scripts/run_week04_tool_demo.py
+
+Result:
+{
+  "run_id": "week04-20261008T143601Z-23c581",
+  "evidence_status": "MCP_LOCAL_PASS",
+  "real_email_sent": false,
+  "protocol_version": "2026-07-28",
+  "tools": [
+    "get_teacher_contact",
+    "send_email",
+    "get_email_status"
+  ],
+  "read_result": "found",
+  "unconfirmed_write": "CONFIRMATION_REQUIRED",
+  "confirmed_write": {
+    "status": "simulated_sent",
+    "delivery_mode": "sandbox",
+    "request_id": "mail-demo-4bcd7bbad2a54850ae64550c4b24825c",
+    "message_id": "sandbox-69f42b7ed3d24a21",
+    "teacher_id": "faculty-mikelin",
+    "to": "mikelin@mail.nutn.edu.tw",
+    "subject": "Week 04 Sandbox 測試",
+    "sent_at": "2026-10-08T14:36:01.636100+00:00",
+    "idempotent_replay": false
+  },
+  "idempotent_replay": "already_processed",
+  "status_lookup": "simulated_sent"
+}
+
+UI browser verification:
+- confirmation button disabled before checkbox: PASS
+- confirmation button enabled after checkbox: PASS
+- Sandbox receipt rendered: PASS
+- browser console warnings/errors: none
+- offline Gemini functionCall/functionResponse contract tests: PASS
+- Gemini LIVE_PASS UI screenshot: evidence/week04_gemini_function_call_live_pass_ui.png
+- Sandbox Write Tool UI screenshot: evidence/week04_sandbox_write_simulated_sent_ui.png
+
+Evidence labels:
+- MCP stdio and local Sandbox tools: MCP_LOCAL_PASS
+- Gemini API configuration: CONFIGURED (gemini-3.5-flash)
+- Gemini live generation: LIVE_PASS
+- LIVE_PASS request_id: mail-3076e583fcce4dce884b5e82b5500e1b
+- LIVE_PASS draft_id: draft-b2bbd525c22b4c86
+- LIVE_PASS recorded_at: 2026-10-08T14:35:21Z
+- LIVE_PASS trace: functionCall get_teacher_contact -> Host validation passed -> functionResponse found -> Gemini structured draft
+- LIVE_PASS fallback_used: false
+- Earlier live failure: functionCall stage, Gemini HTTP 503 high demand
+- Latest live failure: functionResponse stage, Gemini HTTP 400 because responseFormat.text.mimeType rejected "application/json"
+- Payload fix: responseFormat.text.mimeType changed to the REST enum "APPLICATION_JSON"
+- Post-fix live verification: PASS with a new synthetic draft request
+- Fallback behavior: local template returned a grounded draft
+- real email delivery: LIVE_NOT_RUN
