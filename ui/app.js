@@ -57,7 +57,9 @@ async function loadConfig() {
     generatorStatus.textContent = "Gemini Key 格式不正確 · 請重新啟動";
     generatorStatus.classList.remove("gemini");
   } else if (generation.configured) {
-    generatorStatus.textContent = `Gemini · ${generation.model}`;
+    generatorStatus.textContent = generation.backend === "langchain"
+      ? `LangChain · Gemini · ${generation.model}`
+      : `Manual · Gemini · ${generation.model}`;
     generatorStatus.classList.add("gemini");
   } else {
     generatorStatus.textContent = "本機模板 · 尚未設定 Gemini Key";
@@ -210,7 +212,9 @@ async function submitDraft(event) {
     $("#draft-body").textContent = state.draft.email_draft.body;
     $("#draft-status-title").textContent = "草稿已建立";
     $("#tool-trace-note").textContent = state.draft.generation.provider === "gemini"
-      ? "GEMINI · functionCall → functionResponse · passed"
+      ? (state.draft.generation.backend === "langchain"
+        ? "LANGCHAIN · create_agent → get_teacher_contact · passed"
+        : "GEMINI · functionCall → functionResponse · passed")
       : "HOST · get_teacher_contact · found";
     $("#confirm-send").checked = false;
     $("#confirm-send").disabled = false;
@@ -221,7 +225,7 @@ async function submitDraft(event) {
     $("#send-error").textContent = "";
     const generation = state.draft.generation;
     $("#draft-generation-note").textContent = generation.provider === "gemini"
-      ? `由 ${generation.model} 潤稿；收件人已驗證，目前尚未寄出。`
+      ? `由 ${generation.backend === "langchain" ? "LangChain + " : ""}${generation.model} 潤稿；收件人已驗證，目前尚未寄出。`
       : (generation.warning || "由本機模板產生；收件人已驗證，目前尚未寄出。");
     elements.draftForm.hidden = true;
     elements.draftResult.hidden = false;

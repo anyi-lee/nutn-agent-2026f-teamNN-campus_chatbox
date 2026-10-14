@@ -8,6 +8,7 @@ answer was selected.
 from __future__ import annotations
 
 import json
+import os
 import re
 import threading
 import uuid
@@ -107,6 +108,21 @@ MIN_BM25_RAW_SCORE = 2.0
 MAX_UNANCHORED_SCORE_RATIO = 0.75
 
 
+def _build_email_generator() -> Any:
+    """Select the Week 04 baseline or Week 05 candidate at process startup."""
+
+    backend = os.getenv("EMAIL_AGENT_BACKEND", "manual").strip().lower()
+    if backend == "manual":
+        generator = GeminiEmailGenerator()
+        generator.backend = "manual"
+        return generator
+    if backend == "langchain":
+        from langchain_email import LangChainEmailGenerator
+
+        return LangChainEmailGenerator()
+    raise ValueError("EMAIL_AGENT_BACKEND must be 'manual' or 'langchain'")
+
+
 def _contains_any(text: str, terms: tuple[str, ...]) -> bool:
     normalized = text.lower()
     return any(term.lower() in normalized for term in terms)
@@ -156,7 +172,7 @@ class CampusService:
         data_path: Path = FACULTY_DATA_PATH,
         *,
         office_data_path: Path = OFFICE_DATA_PATH,
-        email_generator: GeminiEmailGenerator | None = None,
+        email_generator: Any | None = None,
         tool_server: CampusToolServer | None = None,
     ) -> None:
         self.document = json.loads(data_path.read_text(encoding="utf-8"))
@@ -171,7 +187,10 @@ class CampusService:
         self.teacher_by_name = {chunk["teacher_name"]: chunk for chunk in self.chunks}
         self.bm25 = BM25Retriever(self.chunks)
         self.dense_stub = DenseStubRetriever(self.chunks)
-        self.email_generator = email_generator or GeminiEmailGenerator()
+        self.email_generator = email_generator or _build_email_generator()
+        self.email_backend = str(
+            getattr(self.email_generator, "backend", "manual")
+        )
         self.tool_server = tool_server or CampusToolServer(
             self.document,
             SANDBOX_OUTBOX_PATH,
@@ -219,6 +238,10 @@ class CampusService:
                     self.email_generator, "configuration_error", None
                 ),
                 "function_calling": True,
+                "backend": self.email_backend,
+                "framework": (
+                    "langchain" if self.email_backend == "langchain" else None
+                ),
             },
         }
 
@@ -766,6 +789,10 @@ class CampusService:
             ],
             "generation": {
                 "provider": generation_provider,
+                "backend": self.email_backend,
+                "framework": (
+                    "langchain" if self.email_backend == "langchain" else None
+                ),
                 "model": (
                     self.email_generator.model
                     if generation_provider == "gemini"

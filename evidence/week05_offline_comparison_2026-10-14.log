@@ -1,0 +1,74 @@
+Week 05 Framework Refactor — Offline and Live Evidence
+Date: 2026-10-14 (Asia/Taipei)
+Run ID: week05-20261014T025551Z-4fc2e3
+
+Evidence status: LIVE_PASS
+Offline comparison status: WEEK05_OFFLINE_PASS
+Live status: LIVE_PASS
+Sandbox write status: SANDBOX_PASS
+Live model called: true
+Real email sent: false
+
+Selected boundary
+- Baseline: manual Gemini functionCall -> host tool -> functionResponse loop
+- Candidate: LangChain create_agent -> get_teacher_contact tool -> structured response
+- Business rules retained: recipient grounding, same-teacher validation, draft quality gate,
+  explicit confirmation before sandbox write, idempotent write execution
+- Default/backout: EMAIL_AGENT_BACKEND=manual
+
+Runtime proof
+- Framework API exercised: langchain.agents.create_agent
+- Model: scripted offline BaseChatModel (no Gemini/network call)
+- Tool executed by framework runtime before the model produced the draft
+- langchain: 1.4.5
+- langchain-google-genai: 4.4.2
+
+Fixed comparison cases
+1. Manual baseline function roundtrip: PASS
+2. LangChain create_agent offline tool loop: PASS
+3. Changed-teacher tool call rejected: PASS
+4. Skipped tool call rejected: PASS
+5. Confirmation gate retained: PASS
+6. Sandbox write idempotency retained: PASS
+
+Comparison result
+- Cases run: 6
+- Failures: 0
+- Errors: 0
+- Elapsed: 0.024s
+
+Live verification
+- Evidence image: evidence/week05_langchain_live_draft.png
+- Backend: langchain
+- Provider/model: Gemini / gemini-3.5-flash
+- Visible framework trace: create_agent -> get_teacher_contact -> passed
+- Recipient grounding: mikelin@mail.nutn.edu.tw
+- Draft generation: passed
+- Status: LIVE_PASS
+
+Sandbox write verification
+- Evidence image: evidence/week05_sandbox_write_pass.png
+- Write tool: send_email
+- Result: simulated_sent
+- Request ID: mail-71ebacbbf0dd4639a6e27e892c3a239d
+- Message ID: sandbox-1bf9a096d3b94bca
+- Recorded time: 2026-10-14T03:02:14.949025+00:00
+- External delivery: false
+- Status: SANDBOX_PASS
+
+Full regression suite
+- Command: .venv/bin/python -W error::ResourceWarning -m unittest discover -s tests -v
+- Tests run: 63
+- Failures: 0
+- Errors: 0
+- Elapsed: 0.061s
+
+Interpretation
+- WEEK05_OFFLINE_PASS proves the candidate is connected to the existing service entry point,
+  executes the real LangChain agent graph, calls only the allowed read tool, and preserves
+  the existing safety/write workflow under deterministic offline tests.
+- LIVE_PASS proves the LangChain candidate successfully used Gemini to produce a grounded
+  draft after the visible create_agent -> get_teacher_contact flow passed.
+- SANDBOX_PASS proves the confirmed draft reached the existing write tool and was recorded
+  as simulated_sent without external email delivery.
+- No real email was sent during this verification.

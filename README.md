@@ -130,18 +130,36 @@ Week 04 加入共用 Tool Server 與 stdio MCP adapter：
 完整契約、安全規則與 Known Failure 見 `week04_tool_contract.md`。
 Week 04 自評、執行證據與尚未完成項目分別見 `week04_self_check.md` 與 `evidence/`。
 
+Week 05 新增可回退的 LangChain 候選版，只替換 Email 草稿中的模型／Read Tool 往返：
+
+- 原版：`EMAIL_AGENT_BACKEND=manual`，由 `GeminiEmailGenerator` 維護 function calling 迴圈。
+- 候選：`EMAIL_AGENT_BACKEND=langchain`，由 `langchain.agents.create_agent` 維護迴圈。
+- 替換原因：第一次模型請求、Tool Call 解析、Tool Response 組裝與第二次模型請求屬於通用 Agent 編排；交由框架維護可減少專題自行處理模型訊息協定的責任。
+- 兩版共用官方資料、Host 驗證、人工確認、Sandbox Write Tool 與冪等規則。
+- `send_email` 不會公開給 LangChain Agent，模型無法自行寄送或模擬寄送。
+- 固定離線比較 6/6 PASS，完整回歸測試 63/63 PASS。
+- LangChain＋Gemini 草稿流程為 `LIVE_PASS`；確認後的本機 Write Tool 為 `SANDBOX_PASS`；`real_email_sent: false`。
+
+本次有條件採用 LangChain 作為 Week 05 課堂展示實作，並保留 `manual` 作為立即回退路徑。替換理由、驗收限制與完整決策見 [`week05_refactor_decision.md`](week05_refactor_decision.md)，執行紀錄見 [`evidence/week05_offline_comparison_2026-10-14.log`](evidence/week05_offline_comparison_2026-10-14.log)。
+
 ## 本機 UI 原型
 
-目前提供不需安裝第三方套件的 Web UI，可查詢資工系教師公開資訊、切換 BM25／Dense Stub 檢索方式、產生 Email 草稿，並在人工確認後執行 Sandbox Write Tool。此原型不會實際寄送郵件。
+目前提供本機 Web UI，可查詢資工系教師公開資訊、切換 BM25／Dense Stub 檢索方式、產生 Email 草稿，並在人工確認後執行 Sandbox Write Tool。Manual 後端不需第三方套件；LangChain 候選版需安裝 Week 05 依賴。兩種後端都不會實際寄送郵件。
 
 ```bash
 python3 app.py
 ```
 
-啟動後開啟 `http://127.0.0.1:8000`。完整測試可執行：
+啟動後開啟 `http://127.0.0.1:8000`。未安裝 Week 05 依賴時可執行基礎測試；LangChain 測試會明確標示為 skipped：
 
 ```bash
 python3 -m unittest discover -s tests -v
+```
+
+安裝 Week 05 依賴後，完整 63 項測試可執行：
+
+```bash
+.venv/bin/python -W error::ResourceWarning -m unittest discover -s tests -v
 ```
 
 MCP stdio 的完整讀取、拒絕、確認、重複請求與狀態查詢可執行：
@@ -162,11 +180,52 @@ bash scripts/run_with_gemini.sh
 
 `.env.example` 只列出變數名稱與安全的模型預設值，不含真實 Key；目前啟動腳本不會自動載入 `.env`，而是於終端機互動輸入 Key。未設定 Key 或 Gemini 暫時失敗時，系統會改用本機模板，且不會實際寄出郵件。預設模型可透過 `GEMINI_MODEL` 調整。
 
+### Week 05 LangChain 候選版
+
+先建立專案虛擬環境並安裝固定版本依賴：
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-week05.txt
+```
+
+執行離線前後驗收（不呼叫 Gemini）：
+
+```bash
+.venv/bin/python scripts/run_week05_comparison.py
+```
+
+啟動原版：
+
+```bash
+EMAIL_AGENT_BACKEND=manual bash scripts/run_with_gemini.sh
+```
+
+啟動候選版：
+
+```bash
+EMAIL_AGENT_BACKEND=langchain bash scripts/run_with_gemini.sh
+```
+
+目前狀態：
+
+- `WEEK05_OFFLINE_PASS`：固定比較 6/6 PASS，且測試真的執行 `langchain.agents.create_agent`。
+- `LIVE_PASS`：LangChain＋`gemini-3.5-flash` 成功呼叫 `get_teacher_contact` 並產生 grounded 草稿。
+- `SANDBOX_PASS`：人工確認後 `send_email` 回傳 `simulated_sent`。
+- `real_email_sent: false`：沒有郵件寄至外部信箱。
+
+證據：
+
+- [LangChain Live 草稿](evidence/week05_langchain_live_draft.png)
+- [Sandbox Write Tool](evidence/week05_sandbox_write_pass.png)
+- [完整狀態與測試紀錄](evidence/week05_offline_comparison_2026-10-14.log)
+
 ## 專案結構
 
 ```text
 data/       教師 Chunks 與 Fixed Queries
 artifacts/  Retrieval／Generator 比較結果
+evidence/   離線測試、Live 與 Sandbox 執行證據
 src/        檢索、Evidence Gate、Gemini 與應用服務
 ui/         Web UI
 scripts/    可重現執行腳本

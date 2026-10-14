@@ -13,7 +13,7 @@ from typing import Any, Callable, Mapping
 from urllib import error, parse, request
 
 
-DEFAULT_MODEL = "gemini-3.8-flash"
+DEFAULT_MODEL = "gemini-3.5-flash"
 API_ROOT = "https://generativelanguage.googleapis.com/v1beta/models"
 _UNSET = object()
 _API_KEY_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -49,6 +49,41 @@ EMAIL_SYSTEM_PROMPT = """你是臺灣大學校園情境的專業 Email 編輯。
 禁止輸出這種低品質句型：
 「想向老師請教以下事項：多媒體系統想加簽。再請老師於方便時回覆。」
 """
+
+
+def build_email_prompt(facts: Mapping[str, Any]) -> str:
+    """Serialize only the host-validated facts that may reach the model."""
+
+    serialized_facts = json.dumps(facts, ensure_ascii=False, indent=2)
+    return f"""請根據已驗證資料產生郵件，只輸出符合 schema 的 subject 與 body。
+
+已驗證資料：
+{serialized_facts}
+"""
+
+
+def validate_email_draft(
+    draft: Mapping[str, Any],
+    facts: Mapping[str, Any],
+) -> dict[str, str]:
+    """Apply the same host-side output and writing-quality gate to every backend."""
+
+    try:
+        subject = str(draft["subject"]).strip()
+        body = str(draft["body"]).strip()
+    except (KeyError, TypeError) as exc:
+        raise GeminiEmailError("Gemini returned an invalid structured draft") from exc
+
+    if not subject or len(subject) > 80 or not body or len(body) > 4000:
+        raise GeminiEmailError("Gemini draft failed validation")
+    if "老師您好" not in body or str(facts["student_name"]) not in body:
+        raise GeminiEmailError("Gemini draft is missing required grounded fields")
+    if "請教以下事項" in body:
+        raise GeminiEmailError("Gemini draft failed the writing quality gate")
+    raw_details = str(facts.get("request_details") or "").strip()
+    if "想加簽" in raw_details and raw_details in body:
+        raise GeminiEmailError("Gemini copied the raw course-add request")
+    return {"subject": subject, "body": body}
 
 
 class GeminiEmailError(RuntimeError):
@@ -92,7 +127,7 @@ class GeminiEmailGenerator:
             "systemInstruction": {
                 "parts": [{"text": EMAIL_SYSTEM_PROMPT}],
             },
-            "contents": [{"parts": [{"text": self._build_prompt(facts)}]}],
+            "contents": [{"parts": [{"text": build_email_prompt(facts)}]}],
             "generationConfig": self._draft_generation_config(),
         }
         response_payload = self._post(payload)
@@ -130,7 +165,7 @@ class GeminiEmailGenerator:
                 {
                     "text": (
                         "先呼叫 get_teacher_contact 驗證收件人，再根據工具結果產生草稿。\n\n"
-                        + self._build_prompt(facts)
+                        + build_email_prompt(facts)
                     )
                 }
             ],
@@ -272,16 +307,7 @@ class GeminiEmailGenerator:
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             raise GeminiEmailError("Gemini returned an invalid structured draft") from exc
 
-        if not subject or len(subject) > 80 or not body or len(body) > 4000:
-            raise GeminiEmailError("Gemini draft failed validation")
-        if "老師您好" not in body or str(facts["student_name"]) not in body:
-            raise GeminiEmailError("Gemini draft is missing required grounded fields")
-        if "請教以下事項" in body:
-            raise GeminiEmailError("Gemini draft failed the writing quality gate")
-        raw_details = str(facts.get("request_details") or "").strip()
-        if "想加簽" in raw_details and raw_details in body:
-            raise GeminiEmailError("Gemini copied the raw course-add request")
-        return {"subject": subject, "body": body}
+        return validate_email_draft({"subject": subject, "body": body}, facts)
 
     @staticmethod
     def _draft_generation_config() -> dict[str, Any]:
@@ -332,9 +358,6 @@ class GeminiEmailGenerator:
 
     @staticmethod
     def _build_prompt(facts: Mapping[str, Any]) -> str:
-        serialized_facts = json.dumps(facts, ensure_ascii=False, indent=2)
-        return f"""請根據已驗證資料產生郵件，只輸出符合 schema 的 subject 與 body。
+        """Backward-compatible wrapper for older callers and tests."""
 
-已驗證資料：
-{serialized_facts}
-"""
+        return build_email_prompt(facts)

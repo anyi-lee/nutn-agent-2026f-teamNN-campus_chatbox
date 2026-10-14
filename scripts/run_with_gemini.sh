@@ -16,5 +16,22 @@ if [[ ! "$GEMINI_API_KEY" =~ ^[A-Za-z0-9._-]+$ ]]; then
 fi
 
 export GEMINI_API_KEY
-export GEMINI_MODEL="${GEMINI_MODEL:-gemini-3.8-flash}"
-python3 app.py
+export GEMINI_MODEL="${GEMINI_MODEL:-gemini-3.5-flash}"
+export EMAIL_AGENT_BACKEND="${EMAIL_AGENT_BACKEND:-manual}"
+
+if [[ "$EMAIL_AGENT_BACKEND" != "manual" && "$EMAIL_AGENT_BACKEND" != "langchain" ]]; then
+  printf "EMAIL_AGENT_BACKEND 只能是 manual 或 langchain。\n"
+  exit 1
+fi
+
+PYTHON_BIN="python3"
+if [[ "$EMAIL_AGENT_BACKEND" == "langchain" ]]; then
+  if [[ ! -x ".venv/bin/python" ]]; then
+    printf "找不到 .venv；請先建立環境並安裝 requirements-week05.txt。\n"
+    exit 1
+  fi
+  PYTHON_BIN=".venv/bin/python"
+fi
+
+printf "Email Agent Backend: %s\n" "$EMAIL_AGENT_BACKEND"
+"$PYTHON_BIN" app.py
