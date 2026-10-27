@@ -43,4 +43,3 @@ Accepted for Week 06 candidate；可透過環境變數回退。
 ## 回退方式
 
 設定 `CHAT_WORKFLOW_BACKEND=baseline` 即回到原本條件式入口；預設值也是 `baseline`。回退不會改動資料、Sandbox outbox 或 Email 工具契約。
-

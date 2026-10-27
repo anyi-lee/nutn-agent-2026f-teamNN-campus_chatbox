@@ -39,4 +39,3 @@ Gemini Router 已完成兩筆 Live 驗證：
 - Workflow 邊界：同時查詢教師研究與系辦時間 → `clarify` → `LIVE_PASS`，沒有執行 BM25 下游。
 
 Provider failure、無效輸入與未知 route 由可重現離線測試驗證。Sandbox Write Tool 另有 `SANDBOX_PASS` 證據，且 `real_email_sent: false`。
-

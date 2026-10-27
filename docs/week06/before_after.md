@@ -3,7 +3,7 @@
 ## 比較基準
 
 - Before：`e83196d`，條件式 Baseline。
-- After：尚未 commit 的 Routing candidate，工作樹標記為 `e83196d-WORKTREE`。
+- After：`12ab574`，Routing candidate。離線 log 中的 `e83196d-WORKTREE` 是 commit 前的實測版本標記。
 - Offline fixture：不呼叫 Gemini，狀態為 `LIVE_NOT_RUN`。
 - Live evidence：Gemini `gemini-3.5-flash` 的 `faculty_query` 與 `clarify` 均為 `LIVE_PASS`。
 - 固定檢索器：BM25；資料來源與 Evidence Gate 兩版相同。
@@ -35,4 +35,3 @@
 離線切片 8/8 PASS；使用專案 `.venv` 執行完整回歸為 71/71 PASS、0 skipped。另以系統 Python 驗證時，同樣 71 項中有 7 項因未安裝 Week 05 LangChain 依賴而明確 skipped。
 
 Live 驗證結果：正常教師查詢被路由到 `faculty_query`，完成 BM25 與 Evidence Gate；教師查詢加系辦查詢的多意圖輸入被路由到 `clarify`，畫面沒有執行 BM25 下游。兩個案例均顯示 `LIVE_PASS`。
-

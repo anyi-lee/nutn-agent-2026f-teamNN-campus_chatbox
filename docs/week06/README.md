@@ -5,7 +5,7 @@
 在既有校園 Chatbot 上加入一個可回退的 **Routing workflow**，把使用者輸入明確分成單一路徑，再由 Host 驗證後執行。這次只改造聊天入口，不改動 Week 04 的 Sandbox Write Tool，也不會寄出真實 Email。
 
 - Baseline SHA：`e83196d`
-- Candidate revision：尚未 commit，目前為 `e83196d-WORKTREE`
+- Candidate SHA：`12ab574`（Routing 實作與執行證據）
 - Workflow：Routing
 - 離線證據：`WEEK06_OFFLINE_PASS`（8/8）
 - Gemini 路由實測：`LIVE_PASS`（`faculty_query`、`clarify`）
@@ -81,4 +81,3 @@ python3 -W error::ResourceWarning -m unittest discover -s tests -v
 - [clarify / LIVE_PASS](../../evidence/week06_routing_clarify_live_pass.png)
 - [Gemini Email 草稿](../../evidence/week06_email_live_draft.png)
 - [Sandbox Write Tool / SANDBOX_PASS](../../evidence/week06_sandbox_write_pass.png)
-
