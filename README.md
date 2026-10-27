@@ -142,6 +142,17 @@ Week 05 新增可回退的 LangChain 候選版，只替換 Email 草稿中的模
 
 本次有條件採用 LangChain 作為 Week 05 課堂展示實作，並保留 `manual` 作為立即回退路徑。替換理由、驗收限制與完整決策見 [`week05_refactor_decision.md`](week05_refactor_decision.md)，執行紀錄見 [`evidence/week05_offline_comparison_2026-10-14.log`](evidence/week05_offline_comparison_2026-10-14.log)。
 
+Week 06 新增可回退的 Routing workflow，只改造聊天入口：
+
+- 選擇 Routing 的原因：教師、系辦與 Email 是互斥的處理分支，原本依關鍵字順序判斷容易在多意圖輸入時先命中錯誤分支；Routing 可先分類，再由 Host 驗證並在不確定時走 `clarify` 停止。
+- Gemini Router 只提出 `faculty_query`、`office_query`、`email_request` 或 `clarify`。
+- Host Route Gate 會驗證 route 與 reason code；未知結果、provider 失敗與多意圖輸入都會停止，不執行下游工具。
+- 每次回應會留下 route、stage、停止原因與證據狀態，UI 可展開查看。
+- `CHAT_WORKFLOW_BACKEND=baseline` 保留原本流程；`routing` 啟用候選版。
+- 固定離線驗收 8/8 PASS；Gemini Router 的 `faculty_query` 與 `clarify` 實測皆為 `LIVE_PASS`。
+
+完整設計、前後比較與證據索引見 [`docs/week06/README.md`](docs/week06/README.md)。
+
 ## 本機 UI 原型
 
 目前提供本機 Web UI，可查詢資工系教師公開資訊、切換 BM25／Dense Stub 檢索方式、產生 Email 草稿，並在人工確認後執行 Sandbox Write Tool。Manual 後端不需第三方套件；LangChain 候選版需安裝 Week 05 依賴。兩種後端都不會實際寄送郵件。
@@ -219,6 +230,26 @@ EMAIL_AGENT_BACKEND=langchain bash scripts/run_with_gemini.sh
 - [LangChain Live 草稿](evidence/week05_langchain_live_draft.png)
 - [Sandbox Write Tool](evidence/week05_sandbox_write_pass.png)
 - [完整狀態與測試紀錄](evidence/week05_offline_comparison_2026-10-14.log)
+
+### Week 06 Routing 候選版
+
+執行離線驗收：
+
+```bash
+python3 scripts/run_week06_comparison.py
+```
+
+啟動 Routing candidate（Key 仍由終端機互動輸入）：
+
+```bash
+CHAT_WORKFLOW_BACKEND=routing bash scripts/run_with_gemini.sh
+```
+
+若需立即回退：
+
+```bash
+CHAT_WORKFLOW_BACKEND=baseline python3 app.py
+```
 
 ## 專案結構
 

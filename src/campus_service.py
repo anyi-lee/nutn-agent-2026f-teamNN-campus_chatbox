@@ -19,6 +19,13 @@ from dense_stub import DenseStubRetriever
 from email_tools import CampusToolServer, ToolCallError
 from email_draft_baseline import PURPOSE_LABELS
 from gemini_email import GeminiEmailError, GeminiEmailGenerator
+from gemini_router import (
+    ALLOWED_ROUTES,
+    EXPECTED_REASON_BY_ROUTE,
+    REASON_CODES,
+    GeminiIntentRouter,
+    GeminiRouterError,
+)
 from retrieval_baseline import BM25Retriever
 
 
@@ -123,6 +130,15 @@ def _build_email_generator() -> Any:
     raise ValueError("EMAIL_AGENT_BACKEND must be 'manual' or 'langchain'")
 
 
+def _chat_workflow_backend() -> str:
+    """Read and validate the Week 06 workflow switch."""
+
+    backend = os.getenv("CHAT_WORKFLOW_BACKEND", "baseline").strip().lower()
+    if backend not in {"baseline", "routing"}:
+        raise ValueError("CHAT_WORKFLOW_BACKEND must be 'baseline' or 'routing'")
+    return backend
+
+
 def _contains_any(text: str, terms: tuple[str, ...]) -> bool:
     normalized = text.lower()
     return any(term.lower() in normalized for term in terms)
@@ -174,6 +190,8 @@ class CampusService:
         office_data_path: Path = OFFICE_DATA_PATH,
         email_generator: Any | None = None,
         tool_server: CampusToolServer | None = None,
+        chat_router: Any | None = None,
+        workflow_backend: str | None = None,
     ) -> None:
         self.document = json.loads(data_path.read_text(encoding="utf-8"))
         self.office_document = json.loads(
@@ -190,6 +208,19 @@ class CampusService:
         self.email_generator = email_generator or _build_email_generator()
         self.email_backend = str(
             getattr(self.email_generator, "backend", "manual")
+        )
+        selected_workflow = (
+            workflow_backend.strip().lower()
+            if workflow_backend is not None
+            else ("routing" if chat_router is not None else _chat_workflow_backend())
+        )
+        if selected_workflow not in {"baseline", "routing"}:
+            raise ValueError("workflow_backend must be 'baseline' or 'routing'")
+        self.chat_workflow_backend = selected_workflow
+        self.chat_router = (
+            chat_router
+            if chat_router is not None
+            else (GeminiIntentRouter() if selected_workflow == "routing" else None)
         )
         self.tool_server = tool_server or CampusToolServer(
             self.document,
@@ -242,6 +273,32 @@ class CampusService:
                 "framework": (
                     "langchain" if self.email_backend == "langchain" else None
                 ),
+            },
+            "chat_workflow": {
+                "backend": self.chat_workflow_backend,
+                "workflow": (
+                    "routing" if self.chat_workflow_backend == "routing" else None
+                ),
+                "provider": (
+                    getattr(self.chat_router, "provider", None)
+                    if self.chat_router is not None
+                    else None
+                ),
+                "configured": bool(
+                    self.chat_router is not None
+                    and getattr(self.chat_router, "configured", False)
+                ),
+                "model": (
+                    getattr(self.chat_router, "model", None)
+                    if self.chat_router is not None
+                    else None
+                ),
+                "configuration_error": (
+                    getattr(self.chat_router, "configuration_error", None)
+                    if self.chat_router is not None
+                    else None
+                ),
+                "allowed_routes": list(ALLOWED_ROUTES),
             },
         }
 
@@ -460,6 +517,227 @@ class CampusService:
         }
 
     def chat(
+        self,
+        message: str,
+        retriever: str = "bm25",
+        context_teacher: str | None = None,
+    ) -> dict[str, Any]:
+        """Use the baseline condition chain or the Week 06 routing candidate."""
+
+        query = message.strip()
+        if not query:
+            response: dict[str, Any] = {
+                "status": "invalid_request",
+                "answer": "請先輸入想查詢的內容。",
+                "evidence": None,
+                "citations": [],
+                "retrieval": None,
+                "used_context": False,
+                "suggested_action": None,
+                "detected_teacher": None,
+                "error": {"code": "EMPTY_MESSAGE"},
+            }
+            if self.chat_workflow_backend == "routing":
+                response["workflow"] = {
+                    "name": "routing",
+                    "run_id": f"week06-{uuid.uuid4().hex}",
+                    "status": "stopped",
+                    "route": None,
+                    "stop_reason": "invalid_input",
+                    "live_status": "LIVE_NOT_RUN",
+                    "stages": [
+                        {
+                            "stage": "input_gate",
+                            "status": "rejected",
+                            "code": "EMPTY_MESSAGE",
+                        }
+                    ],
+                }
+            return response
+
+        if self.chat_workflow_backend == "routing":
+            return self._chat_routing(query, retriever, context_teacher)
+        return self._chat_baseline(query, retriever, context_teacher)
+
+    def _chat_routing(
+        self,
+        query: str,
+        retriever: str,
+        context_teacher: str | None,
+    ) -> dict[str, Any]:
+        """Route once, validate the route, then execute exactly one branch."""
+
+        run_id = f"week06-{uuid.uuid4().hex}"
+        router = self.chat_router
+        if router is None:
+            raise RuntimeError("routing workflow has no router")
+
+        provider = str(getattr(router, "provider", "unknown"))
+        model = str(getattr(router, "model", "unknown"))
+        evidence_mode = str(getattr(router, "evidence_mode", "offline_fixture"))
+        router_configured = bool(getattr(router, "configured", False))
+        stages: list[dict[str, Any]] = []
+        try:
+            decision = router.route(query, context_teacher=context_teacher)
+        except GeminiRouterError:
+            return {
+                "status": "provider_failed",
+                "answer": "意圖路由服務暫時無法使用，系統已停止，沒有執行下游查詢或工具。",
+                "evidence": None,
+                "citations": [],
+                "retrieval": None,
+                "used_context": False,
+                "suggested_action": None,
+                "detected_teacher": None,
+                "error": {"code": "ROUTER_PROVIDER_FAILED"},
+                "workflow": {
+                    "name": "routing",
+                    "run_id": run_id,
+                    "provider": provider,
+                    "model": model,
+                    "status": "stopped",
+                    "route": None,
+                    "stop_reason": "provider_failed",
+                    "live_status": (
+                        "LIVE_FAIL"
+                        if evidence_mode == "live" and router_configured
+                        else "LIVE_NOT_RUN"
+                    ),
+                    "stages": [
+                        {
+                            "stage": "route_proposal",
+                            "status": "failed",
+                            "provider": provider,
+                        }
+                    ],
+                },
+            }
+
+        route = str(decision.get("route") or "") if isinstance(decision, Mapping) else ""
+        reason_code = (
+            str(decision.get("reason_code") or "")
+            if isinstance(decision, Mapping)
+            else ""
+        )
+        stages.append(
+            {
+                "stage": "route_proposal",
+                "status": "completed",
+                "provider": provider,
+                "route": route,
+                "reason_code": reason_code,
+            }
+        )
+        if (
+            route not in ALLOWED_ROUTES
+            or reason_code not in REASON_CODES
+            or EXPECTED_REASON_BY_ROUTE.get(route) != reason_code
+        ):
+            stages.append(
+                {
+                    "stage": "route_gate",
+                    "status": "rejected",
+                    "code": "ROUTE_DECISION_INVALID",
+                }
+            )
+            return {
+                "status": "route_rejected",
+                "answer": "路由結果未通過主機驗證，系統已停止，沒有執行下游查詢或工具。",
+                "evidence": None,
+                "citations": [],
+                "retrieval": None,
+                "used_context": False,
+                "suggested_action": None,
+                "detected_teacher": None,
+                "error": {"code": "ROUTE_DECISION_INVALID"},
+                "workflow": {
+                    "name": "routing",
+                    "run_id": run_id,
+                    "provider": provider,
+                    "model": model,
+                    "status": "stopped",
+                    "route": route or None,
+                    "stop_reason": "route_rejected",
+                    "live_status": "LIVE_PASS" if evidence_mode == "live" else "LIVE_NOT_RUN",
+                    "stages": stages,
+                },
+            }
+
+        stages.append(
+            {
+                "stage": "route_gate",
+                "status": "passed",
+                "allowed_routes": list(ALLOWED_ROUTES),
+            }
+        )
+        if route == "clarify":
+            stages.append(
+                {
+                    "stage": "branch_dispatch",
+                    "status": "stopped",
+                    "branch": "clarify",
+                    "downstream_calls": 0,
+                }
+            )
+            return {
+                "status": "needs_clarification",
+                "answer": (
+                    "目前無法把這個問題可靠地分到單一處理流程。"
+                    "請一次選擇查詢教師資料、系辦資訊，或說明要聯絡哪位老師。"
+                ),
+                "evidence": None,
+                "citations": [],
+                "retrieval": None,
+                "used_context": False,
+                "suggested_action": None,
+                "detected_teacher": None,
+                "error": {"code": "ROUTE_REQUIRES_CLARIFICATION"},
+                "workflow": {
+                    "name": "routing",
+                    "run_id": run_id,
+                    "provider": provider,
+                    "model": model,
+                    "status": "stopped",
+                    "route": route,
+                    "reason_code": reason_code,
+                    "stop_reason": "clarification_required",
+                    "live_status": "LIVE_PASS" if evidence_mode == "live" else "LIVE_NOT_RUN",
+                    "stages": stages,
+                },
+            }
+
+        if route == "office_query":
+            response = self._answer_office_query(query)
+        else:
+            response = self._chat_baseline(query, retriever, context_teacher)
+            if route == "email_request" and response.get("detected_teacher"):
+                response["suggested_action"] = "email_draft"
+                response["detected_purpose"] = _detected_purpose(query)
+
+        stages.append(
+            {
+                "stage": "branch_dispatch",
+                "status": "completed",
+                "branch": route,
+                "downstream_calls": 1,
+                "result_status": response.get("status"),
+            }
+        )
+        response["workflow"] = {
+            "name": "routing",
+            "run_id": run_id,
+            "provider": provider,
+            "model": model,
+            "status": "completed",
+            "route": route,
+            "reason_code": reason_code,
+            "stop_reason": "answer_ready",
+            "live_status": "LIVE_PASS" if evidence_mode == "live" else "LIVE_NOT_RUN",
+            "stages": stages,
+        }
+        return response
+
+    def _chat_baseline(
         self,
         message: str,
         retriever: str = "bm25",

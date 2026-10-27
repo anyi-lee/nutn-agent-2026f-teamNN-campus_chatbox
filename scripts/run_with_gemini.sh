@@ -18,9 +18,15 @@ fi
 export GEMINI_API_KEY
 export GEMINI_MODEL="${GEMINI_MODEL:-gemini-3.5-flash}"
 export EMAIL_AGENT_BACKEND="${EMAIL_AGENT_BACKEND:-manual}"
+export CHAT_WORKFLOW_BACKEND="${CHAT_WORKFLOW_BACKEND:-baseline}"
 
 if [[ "$EMAIL_AGENT_BACKEND" != "manual" && "$EMAIL_AGENT_BACKEND" != "langchain" ]]; then
   printf "EMAIL_AGENT_BACKEND 只能是 manual 或 langchain。\n"
+  exit 1
+fi
+
+if [[ "$CHAT_WORKFLOW_BACKEND" != "baseline" && "$CHAT_WORKFLOW_BACKEND" != "routing" ]]; then
+  printf "CHAT_WORKFLOW_BACKEND 只能是 baseline 或 routing。\n"
   exit 1
 fi
 
@@ -34,4 +40,5 @@ if [[ "$EMAIL_AGENT_BACKEND" == "langchain" ]]; then
 fi
 
 printf "Email Agent Backend: %s\n" "$EMAIL_AGENT_BACKEND"
+printf "Chat Workflow Backend: %s\n" "$CHAT_WORKFLOW_BACKEND"
 "$PYTHON_BIN" app.py

@@ -118,6 +118,26 @@ function retrievalTrace(retrieval) {
     </details>`;
 }
 
+function workflowTrace(workflow) {
+  if (!workflow) return "";
+  const label = workflow.route || workflow.stop_reason || "未決定";
+  const stageRows = (workflow.stages || []).map((stage) => `
+    <div class="trace-item">
+      <span>${escapeHtml(stage.stage)}</span>
+      <b>${escapeHtml(stage.status)}</b>
+      <span>${escapeHtml(stage.branch || stage.route || stage.code || "—")}</span>
+    </div>`).join("");
+  return `
+    <div class="answer-meta">
+      <span class="meta-chip">Routing · ${escapeHtml(label)}</span>
+      <span class="meta-chip">${escapeHtml(workflow.live_status || "STATUS_UNSET")}</span>
+    </div>
+    <details class="trace">
+      <summary>查看路由決策與停止條件</summary>
+      <div class="trace-list">${stageRows}</div>
+    </details>`;
+}
+
 function addAssistantMessage(data) {
   $("#typing-row")?.remove();
   const isWarning = data.status !== "ok";
@@ -141,6 +161,7 @@ function addAssistantMessage(data) {
           <div class="answer-meta">${source}${contextBadge}${isWarning ? `<span class="meta-chip">${escapeHtml(data.error?.code || "NEEDS_REVIEW")}</span>` : ""}</div>
           ${action}
         </div>
+        ${workflowTrace(data.workflow)}
         ${retrievalTrace(data.retrieval)}
       </div>
     </article>`);

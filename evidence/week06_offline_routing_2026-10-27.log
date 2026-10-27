@@ -1,0 +1,30 @@
+Command: python3 scripts/run_week06_comparison.py
+Date: 2026-10-27
+Network / Gemini: not used
+
+test_normal_faculty_query_runs_one_allowed_branch ... ok
+test_invalid_input_stops_before_router_and_retrieval ... ok
+test_router_provider_failure_stops_before_retrieval ... ok
+test_boundary_multi_intent_uses_clarify_without_downstream_call ... ok
+test_unallowlisted_route_is_rejected_by_host_gate ... ok
+test_office_route_uses_official_record_not_faculty_retrieval ... ok
+test_email_route_exposes_draft_action_only_after_grounding ... ok
+test_sandbox_send_requires_confirmation_and_is_idempotent ... ok
+
+Ran 8 tests
+OK
+
+evidence_status: WEEK06_OFFLINE_PASS
+baseline_sha: e83196d
+candidate_revision: e83196d-WORKTREE
+live_router_called: false
+live_status: LIVE_NOT_RUN
+real_email_sent: false
+token_usage: unavailable_offline_fixture
+
+Full regression command:
+.venv/bin/python -W error::ResourceWarning -m unittest discover -s tests -v
+
+Ran 71 tests
+OK
+skipped: 0
