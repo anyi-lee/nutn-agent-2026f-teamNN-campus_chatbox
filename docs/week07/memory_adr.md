@@ -4,8 +4,8 @@
 
 - 本週路線：**A：確認後保存、新對話讀回、更正與撤回**。
 - Baseline SHA：`6bbd34f369a40b5a2a46534e881197bddfcfea01`。
-- Candidate：`WORKING_TREE`，未 commit／push；受測程式以 metadata 的 SHA-256 辨識。
-- 決策：**離線有條件採用；真實 Gemini／ADC、畫面及正式提交待完成**。
+- Candidate SHA：`967ee1ef8e484a41250688474dbcaba7c3139896`；功能與證據已本機 commit、尚未 push。測試執行時的 `WORKING_TREE` 原始紀錄保留，受測程式 SHA-256 與目前候選一致。
+- 決策：**離線有條件採用；真實 Gemini／ADC、畫面及遠端推送待完成**。
 
 ## 決策摘要（ADR）
 
@@ -114,7 +114,7 @@ A／B／C／D 是本週增量的驗收路線，不是限制整個系統只能有
 
 未登入、越權、舊版本、已撤回、未知官方教師、未確認或撞操作 ID 均停止。模型未配置／失敗時，記憶理解明示基本比對，AI 調整保留原稿、不以本機模板冒充改寫。可辨識的來源中文署名不能由 AI 丟失或換名；其他署名格式需人工檢查。
 
-採用狀態為離線有條件採用。本週真實 Gemini／ADC、UI／備用錄影、tokens／Live latency 及最終提交待補；W04–06 的 Live 不移作 W7 證據。回退需保留私人 DB 並使用已知 checkout；`CHAT_WORKFLOW_BACKEND=baseline` 只切換聊天，不會停用已接入的個人記憶規劃。
+採用狀態為離線有條件採用。本週真實 Gemini／ADC、UI／備用錄影、tokens／Live latency 及遠端推送待補；W04–06 的 Live 不移作 W7 證據。回退需保留私人 DB 並使用已知 checkout；`CHAT_WORKFLOW_BACKEND=baseline` 只切換聊天，不會停用已接入的個人記憶規劃。
 
 [歷史 session HTTP 比較](../../evidence/week07_before_after.json)只載入原 app.py 及當時相容 domain 模組，不是完整原版 checkout，也不代表目前語意記憶的品質比較。[A 流程示範](../../evidence/week07_memory_demo.json)為 2026-10-29 的 in-process 合成示範，非 UI 錄影或 Gemini Live。
 

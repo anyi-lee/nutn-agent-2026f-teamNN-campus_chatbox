@@ -1,6 +1,6 @@
 # Week 07 Acceptance Matrix
 
-更新：2026-10-29；A 路線；baseline `6bbd34f`／candidate `WORKING_TREE`。預期與實際分列，離線模型替身／故障注入不作 Live。
+更新：2026-10-29；A 路線；baseline `6bbd34f`／candidate `967ee1ef8e484a41250688474dbcaba7c3139896`。預期與實際分列，離線模型替身／故障注入不作 Live。
 
 ## 本次執行
 
@@ -10,7 +10,7 @@
 | 跨週非 HTTP | `python scripts/run_personal_memory_validation.py` | 137 項：130 PASS、7 LangChain 依賴 skipped；相同 22 組 JS VM PASS |
 | A 流程示範 | `python -W error::ResourceWarning scripts/run_week07_memory_demo.py` | in-process PASS；保存多筆、重啟登入讀回、跨帳號拒絕、撤回後舊草稿不能送出 |
 
-本週 run ID `week07-069fc5f5d0174cf1bfd884529f1641ad`；回歸 run ID `week07-review-e06bdb3b9dcd49e985b12c24bb7d6c1c`。程式／資料指紋及 raw logs 見 [證據索引](evidence_index.md)。
+本週 run ID `week07-069fc5f5d0174cf1bfd884529f1641ad`；回歸 run ID `week07-review-e06bdb3b9dcd49e985b12c24bb7d6c1c`。測試當時為 `WORKING_TREE`，原始 metadata 不改寫；提交前核對受測程式指紋一致。程式／資料指紋及 raw logs 見 [證據索引](evidence_index.md)。
 
 本週切片＝帳號 12＋session 16＋完整草稿 8＋AI 調整 6＋個人事實 12＋語意規劃 14。非 HTTP 回歸明確排除的兩項 HTTP 已在本週切片實跑；兩份結果有重疊，不相加宣稱測試數。
 

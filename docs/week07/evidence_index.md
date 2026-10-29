@@ -1,6 +1,6 @@
 # Week 07 Evidence Index
 
-更新：2026-10-29（Asia/Taipei）；A 路線；baseline `6bbd34f`，candidate `WORKING_TREE`。最新證據和歷史階段分開；metadata 的雜湊識別實際受測程式。
+更新：2026-10-29（Asia/Taipei）；A 路線；baseline `6bbd34f`，candidate `967ee1ef8e484a41250688474dbcaba7c3139896`。功能與證據已本機 commit、未 push。測試原始 metadata 的 WORKING_TREE 是執行當時狀態，不補造新執行；受測程式指紋已與提交候選核對一致。最新證據和歷史階段分開。
 
 ## 本次可用證據
 
@@ -24,7 +24,7 @@
 | Google Cloud／ADC | 未接入／LIVE_NOT_RUN | 建立課程允許的後端認證接頭，實跑 Gemini→Read Tool→結果回模型→草稿，不以 Developer API Key 冒充 |
 | UI 畫面／備用錄影 | NOT_VERIFIED | 同版登入、候選勾選、更正、新對話查用、草稿重用及失敗保留畫面；標示日期與版本 |
 | tokens／Live latency | NOT_MEASURED | 以同條件的真實執行量測，不從 fixture 或畫面推估 |
-| 最終 commit／教師可存取 | PENDING | 提交後記錄實際 SHA，確認遠端資料夾及存取；本輪沒有 commit／push |
+| Candidate commit／教師可存取 | 本機 COMMITTED／遠端 PENDING | 功能與證據 SHA `967ee1ef8e484a41250688474dbcaba7c3139896`；尚未 push，未確認教師權限 |
 
 使用者回報的 Gemini 503 沒有候選 SHA、完整 trace 與錄製日期，故不在此補造 LIVE_FAIL；W04–06 歷史 Live 也不移作 W7 Live。
 

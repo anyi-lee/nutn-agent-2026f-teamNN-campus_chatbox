@@ -169,7 +169,7 @@ Week 06 新增可回退的 Routing workflow，只改造聊天入口：
 
 A 路線新增本人確認的長期記憶：常用 Email 文字、完整草稿及校務問答個人事實。登入後由 Gemini 理解自然說法，提出新增／同義更正候選，使用者勾選確認才保存或覆蓋；後續「找微積分老師」可查用本人關係並核對官方資料。完整草稿在 Email 助手上方勾選直接重用，可手動或選擇性 AI 調整，寄送仍獨立確認且只寫 Sandbox。沒有公版或表單保存。
 
-本週 68 項 Python／localhost HTTP、22 組 JS VM 全通過；跨週非 HTTP 回歸 137 項，130 PASS、7 項選配 LangChain 依賴 skipped。兩份結果有重疊，不加總。語意與 AI 測試用明示替身，本週真實 Gemini／ADC 為 LIVE_NOT_RUN，畫面／備用錄影尚未驗證。候選仍是 WORKING_TREE，沒有 commit／push。
+本週 68 項 Python／localhost HTTP、22 組 JS VM 全通過；跨週非 HTTP 回歸 137 項，130 PASS、7 項選配 LangChain 依賴 skipped。兩份結果有重疊，不加總。語意與 AI 測試用明示替身，本週真實 Gemini／ADC 為 LIVE_NOT_RUN，畫面／備用錄影尚未驗證。W7 功能與證據已本機提交，candidate SHA 為 `967ee1ef8e484a41250688474dbcaba7c3139896`；尚未 push，遠端可見性待確認。
 
 ```powershell
 python -W error::ResourceWarning scripts/run_week07_validation.py

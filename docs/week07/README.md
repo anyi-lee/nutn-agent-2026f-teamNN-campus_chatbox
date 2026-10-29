@@ -4,7 +4,7 @@
 
 - Repository：[campus_chatbox](https://github.com/anyi-lee/nutn-agent-2026f-teamNN-campus_chatbox)
 - Baseline SHA：`6bbd34f369a40b5a2a46534e881197bddfcfea01`
-- Candidate：`WORKING_TREE`；尚未 commit／push，程式指紋見本次 metadata，不以 HEAD 冒充候選版本。
+- Candidate SHA：`967ee1ef8e484a41250688474dbcaba7c3139896`（W7 功能與證據）；已本機 commit，尚未 push。文件補記 commit 不改動受測程式。
 - 本週驗收：`WEEK07_OFFLINE_PASS`，68／68 Python（含 2 項真實 localhost HTTP）及 22 組 JS VM PASS。
 - 跨週非 HTTP 回歸：137 項，130 PASS、7 項缺少選配 LangChain 依賴 skipped；與本週驗收有重疊，不加總成測試數。
 - 真實模型：`LIVE_NOT_RUN`；課程 ADC、瀏覽器視覺／錄影尚未驗證；真實寄信 `false`。
@@ -105,6 +105,8 @@ python -W error::ResourceWarning scripts/run_week07_memory_demo.py
 
 前者執行本週 68 項 Python／HTTP 與 22 組 JS VM；第二個執行 137 項非 HTTP 跨週回歸及相同 JS VM；第三個是合成資料的 in-process 示範。都不呼叫真實 Gemini，不寄真實郵件。
 
+測試執行時為 `WORKING_TREE`；原始 metadata 保留當時狀態，本次確認其受測程式指紋與已提交候選一致。
+
 本週 run ID：`week07-069fc5f5d0174cf1bfd884529f1641ad`。最新結果：[驗收矩陣](acceptance.md)、[證據索引](evidence_index.md)、[提交檢核](submission_checklist.md)。
 
 ## 失敗、停止及限制
@@ -114,4 +116,4 @@ python -W error::ResourceWarning scripts/run_week07_memory_demo.py
 - AI 調整須保留來源稿可辨識的中文署名；更改姓名先手動編輯來源。不含可辨識署名的原稿仍需人工檢查，未宣稱有通用身分驗證。
 - 每帳號最多 100 筆；常用文字／手動個人記憶最多 2000 字，整封草稿正文 4000 字；語意候選值最多 200 字。Email 一次最多 8 筆／合計 4000 字。
 - 私人 SQLite 持久保存至刪除；session、未確認候選與草稿綁定不跨程序恢復。關閉助手可續編，重新整理不保證恢復；SQLite 刪除不代表備份或磁碟歷史安全抹除。
-- W7 真實 Gemini、ADC、視覺／備用錄影及 tokens／Live latency 未驗證。歷史 W04–06 Live 不移作本週證據。未 commit／push、教師遠端存取及組員貢獻待補，見提交檢核。
+- W7 真實 Gemini、ADC、視覺／備用錄影及 tokens／Live latency 未驗證。歷史 W04–06 Live 不移作本週證據。候選已本機 commit；push、教師遠端存取及組員貢獻待補，見提交檢核。
