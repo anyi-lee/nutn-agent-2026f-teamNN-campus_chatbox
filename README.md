@@ -2,6 +2,18 @@
 
 以 AI Agent 改善國立臺南大學學生取得校園資訊與辦理行政事務的體驗。
 
+## 目前版本與交付（2026-10-29 更新）
+
+目前可運作範圍為「資工系公開資訊查詢、教師聯絡與 Email 草稿／Sandbox 寫入」。以下以程式與證據為準，不將課程示範或規劃功能列為已完成：
+
+- [Week 07 A 路線：帳號與多筆常用 Email 內容](docs/week07/README.md)
+
+實作基準為 `6bbd34f`，Week 06 功能 commit 為 `12ab574`。預設配置仍為 `CHAT_WORKFLOW_BACKEND=baseline`、`EMAIL_AGENT_BACKEND=manual`；Routing 與 LangChain 是可切換候選，不應把不同配置的證據當成同一次執行。
+
+2026-10-29 重驗：W7 68 項 Python／HTTP 與 22 組 JS VM 通過；跨週非 HTTP 回歸 137 項，130 通過、7 項因缺 LangChain 依賴跳過。下文 Week 04–06 的 `LIVE_PASS` 與測試數是各週歷史證據，不移作 W7 Live。
+
+Week 07 依使用者確認改採 A 路線：本機帳密登入、每帳號多筆已確認的常用內容、新對話／重新登入讀回並選取套用、更正與撤回。原教師 context 清除保留為支援控制；離線與 HTTP 證據見 W07 文件，真實模型仍為 LIVE_NOT_RUN。Week 03 多證據／coverage failure、Week 06 嚴格分支分派及期中 Google Cloud／ADC 主流程仍為獨立待補項。
+
 ## 專題簡介
 
 學生查詢課程、教室、教師或升學資訊時，經常需要瀏覽系所網站的不同頁面，逐一尋找需要的內容。本專題預計開發「校園辦事導航 Agent」，讓使用者直接以自然語言提出需求，Agent 會搜尋並整合系所網站內容，同時提供原始網頁連結，確保資訊可以查證。
@@ -152,6 +164,20 @@ Week 06 新增可回退的 Routing workflow，只改造聊天入口：
 - 固定離線驗收 8/8 PASS；Gemini Router 的 `faculty_query` 與 `clarify` 實測皆為 `LIVE_PASS`。
 
 完整設計、前後比較與證據索引見 [`docs/week06/README.md`](docs/week06/README.md)。
+
+### Week 07 Account-scoped Memory（2026-10-29）
+
+A 路線新增本人確認的長期記憶：常用 Email 文字、完整草稿及校務問答個人事實。登入後由 Gemini 理解自然說法，提出新增／同義更正候選，使用者勾選確認才保存或覆蓋；後續「找微積分老師」可查用本人關係並核對官方資料。完整草稿在 Email 助手上方勾選直接重用，可手動或選擇性 AI 調整，寄送仍獨立確認且只寫 Sandbox。沒有公版或表單保存。
+
+本週 68 項 Python／localhost HTTP、22 組 JS VM 全通過；跨週非 HTTP 回歸 137 項，130 PASS、7 項選配 LangChain 依賴 skipped。兩份結果有重疊，不加總。語意與 AI 測試用明示替身，本週真實 Gemini／ADC 為 LIVE_NOT_RUN，畫面／備用錄影尚未驗證。候選仍是 WORKING_TREE，沒有 commit／push。
+
+```powershell
+python -W error::ResourceWarning scripts/run_week07_validation.py
+python scripts/run_personal_memory_validation.py
+python -W error::ResourceWarning scripts/run_week07_memory_demo.py
+```
+
+文件採歷週格式：[本週 README](docs/week07/README.md)／[記憶決策與版本紀錄（含 ADR／前後比較）](docs/week07/memory_adr.md)／[驗收](docs/week07/acceptance.md)／[Evidence Index](docs/week07/evidence_index.md)／[提交檢核](docs/week07/submission_checklist.md)。啟動、Key 設定、操作與補驗證計畫均由本週 README 索引。
 
 ## 本機 UI 原型
 

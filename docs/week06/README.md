@@ -1,5 +1,7 @@
 # Week 06 — Routing Workflow
 
+> 2026-10-28 架構核對補註：以下為 Week 06 原始設計與歷史證據。現況教師／Email 分支仍呼叫 `_chat_baseline`，可能再次依系辦關鍵字分流；固定案例不能證明所有分派皆一致。此為尚未修正的分派缺口。Week 07 依使用者確認採 A 路線的帳號與多筆常用文字記憶，原 session 清除保留為支援控制；見 [W07](../week07/README.md)，真實模型仍 LIVE_NOT_RUN。
+
 ## 本週目標
 
 在既有校園 Chatbot 上加入一個可回退的 **Routing workflow**，把使用者輸入明確分成單一路徑，再由 Host 驗證後執行。這次只改造聊天入口，不改動 Week 04 的 Sandbox Write Tool，也不會寄出真實 Email。

@@ -174,13 +174,13 @@ button { color: inherit; }
 .draft-form { padding-top: 21px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .form-grid label { display: grid; gap: 7px; }
-.form-grid label.full { grid-column: 1 / -1; }
+.form-grid > .full { grid-column: 1 / -1; }
 .form-grid label > span { color: #475d70; font-size: 11px; font-weight: 700; }
 .form-grid input, .form-grid select, .form-grid textarea { width: 100%; padding: 10px 11px; border: 1px solid #d4dfe7; border-radius: 8px; outline: 0; background: #fbfcfd; font-size: 13px; }
 .form-grid textarea { resize: vertical; line-height: 1.6; }
 .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus { border-color: #6eafd6; box-shadow: 0 0 0 3px rgba(42,130,201,.08); }
 .form-error { min-height: 18px; padding-top: 7px; color: #bd4242; font-size: 11px; }
-.dialog-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; }
+.dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 9px; margin-top: 8px; }
 .button { padding: 10px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .button.ghost { border: 1px solid var(--line); background: #fff; }
 .button.primary { border: 1px solid var(--blue-600); color: #fff; background: var(--blue-600); }
@@ -212,6 +212,42 @@ button { color: inherit; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 [hidden] { display: none !important; }
+
+.account-panel { margin: 12px 0; padding: 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #f7fafc; }
+.account-panel strong { font-size: 12px; overflow-wrap: anywhere; }
+.account-panel p { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.account-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+.account-actions .button { padding: 7px 9px; font-size: 11px; }
+.account-actions .button:focus-visible { outline: 3px solid var(--blue-600); outline-offset: 3px; }
+.account-dialog { max-width: 500px; }
+.account-dialog .draft-form > label { display: grid; gap: 7px; margin-bottom: 14px; }
+.account-dialog input { border: 1px solid var(--line); border-radius: 7px; padding: 10px; font: inherit; width: 100%; box-sizing: border-box; }
+.memory-list { display: grid; gap: 8px; margin: 16px 0; }
+.memory-item { padding: 11px; border: 1px solid var(--line); border-radius: 8px; }
+.memory-item p { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); font-size: 12px; line-height: 1.6; margin: 6px 0; }
+.memory-choice-box { border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin: 0; min-width: 0; }
+.memory-choice-box legend { color: var(--ink); font-size: 12px; font-weight: 700; }
+.memory-choice-box p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.memory-choice { display: flex !important; align-items: flex-start; gap: 9px; padding: 7px 0; font-size: 12px; }
+.memory-choice input { width: auto !important; flex-shrink: 0; }
+.memory-choice span { white-space: pre-wrap; overflow-wrap: anywhere; }
+.template-heading { margin: 15px 0 6px; font-size: 12px; }
+.template-preview { margin-top: 12px; padding: 12px; border: 1px solid #9fc7e4; border-radius: 8px; background: var(--soft-blue); }
+.template-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 12px; line-height: 1.7; }
+.email-paper { margin: 14px 0; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.email-paper pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.9; color: var(--ink); }
+.saved-draft-picker { padding: 14px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft-blue); }
+.saved-draft-picker h3 { margin: 0 0 8px; font-size: 14px; }
+.saved-draft-picker > p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+.memory-item .mail-fields { font-size: 12px; }
+.draft-editor { display: grid; gap: 12px; margin: 16px 0; }
+.draft-editor label { display: grid; gap: 6px; color: var(--ink); font-size: 12px; }
+.draft-editor input, .draft-editor select, .draft-editor textarea { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+.draft-editor textarea { resize: vertical; line-height: 1.7; }
+.ai-revision { display: grid; gap: 8px; padding: 14px; margin: 16px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--soft-blue); }
+.ai-revision label { font-size: 13px; font-weight: 700; }
+.ai-revision textarea { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; resize: vertical; }
+.ai-revision p { margin: 0; font-size: 12px; line-height: 1.6; color: var(--muted); }
 
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes pulse { 0%, 60%, 100% { opacity: .35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }

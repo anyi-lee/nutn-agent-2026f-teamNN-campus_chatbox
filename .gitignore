@@ -5,3 +5,8 @@ __pycache__/
 .env.*
 !.env.example
 runtime/
+
+# Local architecture investigation; excluded from coursework delivery.
+/docs/architecture/
+/evidence/architecture_review_*
+/evidence/week07_delivery_review.json

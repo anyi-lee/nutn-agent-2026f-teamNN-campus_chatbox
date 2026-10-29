@@ -1,0 +1,38 @@
+{
+  "executed_at": "2026-10-28T12:23:41.465902+08:00",
+  "baseline_sha": "6bbd34f369a40b5a2a46534e881197bddfcfea01",
+  "candidate_version": "WORKING_TREE",
+  "mode": "OFFLINE_HTTP_COMPARISON",
+  "live_status": "LIVE_NOT_RUN",
+  "real_email_sent": false,
+  "conditions": "Isolated identical source copies; baseline chat/manual template; original app.py handler vs W07 handler; current compatible domain modules; no saved-memory parameters; synthetic browser cookies. This comparison covers historical session boundaries, not the new A-route persistence.",
+  "results": [
+    {
+      "mode": "baseline",
+      "normal_http": 200,
+      "normal_teacher": "林朝興",
+      "normal_citation_present": true,
+      "followup_used_context": true,
+      "cross_browser_write_http": 200,
+      "cross_browser_write_status": "simulated_sent",
+      "reset_http": 404,
+      "old_draft_after_reset_http": 200,
+      "old_draft_after_reset_status": "already_processed",
+      "outbox_rows": 1
+    },
+    {
+      "mode": "candidate",
+      "normal_http": 200,
+      "normal_teacher": "林朝興",
+      "normal_citation_present": true,
+      "followup_used_context": true,
+      "cross_browser_write_http": 404,
+      "cross_browser_write_status": "session_rejected",
+      "reset_http": 200,
+      "old_draft_after_reset_http": 404,
+      "old_draft_after_reset_status": "session_rejected",
+      "outbox_rows": 0
+    }
+  ],
+  "comparison_status": "PASS"
+}

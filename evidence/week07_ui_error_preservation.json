@@ -1,0 +1,22 @@
+{
+  "executed_at": "2026-10-28T20:37:32.929451+08:00",
+  "scope": "Frontend error preservation and sanitized provider failure detail; backend unchanged",
+  "command": "node tests/test_week07_ui.cjs",
+  "mode": "OFFLINE_JS_VM",
+  "tests": 16,
+  "status": "PASS",
+  "browser_visual_verified": false,
+  "live_status": "LIVE_NOT_RUN",
+  "http_regression_status": "NOT_RERUN_PERMISSION_REJECTED",
+  "prior_backend_evidence": "week07_offline_sessions.json (prior full run; UI hashes superseded by this patch)",
+  "candidate_files_sha256": {
+    "ui/app.js": "ec573ba3e92acd9e567515104672ca2a81ac7d3bfb0271de258b4b3dcfd45d4b",
+    "tests/test_week07_ui.cjs": "dd34a272c908f0675b577c589c6549cbfe1831f98d4244b0b49e5cae6f961a08",
+    "scripts/run_week07_validation.py": "4642917ce55eee7598a48a3589c75ba3cb6d218fbd0b8de7ec7319cc976d5620"
+  },
+  "verified_cases": [
+    "503 provider detail visible (synthetic response)",
+    "API key and bearer token redacted (synthetic values)",
+    "Original draft, instructions and dialog preserved"
+  ]
+}

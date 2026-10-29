@@ -1,0 +1,23 @@
+{
+  "executed_at": "2026-10-28T20:40:53.136589+08:00",
+  "scope": "Resume unfinished email workspace across modal close/reopen in the same page and identity; no persistent storage or backend changes",
+  "command": "node tests/test_week07_ui.cjs",
+  "mode": "OFFLINE_JS_VM",
+  "tests": 18,
+  "status": "PASS",
+  "browser_visual_verified": false,
+  "live_status": "LIVE_NOT_RUN",
+  "http_regression_status": "NOT_RERUN",
+  "verified_cases": [
+    "Form text and selections survive reopen",
+    "Unconfirmed edits and AI instructions survive reopen",
+    "Pending generation resumes without duplicate submission",
+    "Reset and identity change clear workspace",
+    "Send requires fresh confirmation"
+  ],
+  "candidate_files_sha256": {
+    "ui/app.js": "a51ea8be419c73ad1b64facc9fe011c3f8131f5a2b77ef4f752f987e30e33aab",
+    "tests/test_week07_ui.cjs": "ca79aa5c801b7c684c5390da98fbb20db7014078f8248cec7407b9ba56dfaf27",
+    "scripts/run_week07_validation.py": "fc88a5988551bbc74ba8c7e54d3763a7a169ecc97cbc9a2b7c352f2a2b9f19d0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "executed_at": "2026-10-28T21:05:14.145666+08:00",
+  "candidate_version": "WORKING_TREE",
+  "mode": "OFFLINE_IN_PROCESS_AND_JS_VM",
+  "tests_run": 122,
+  "failures": 0,
+  "errors": 7,
+  "skipped": [
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_rejects_agent_that_skips_grounded_tool",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_rejects_changed_teacher_before_host_tool",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_rejects_ungrounded_tool_result",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_uses_create_agent_contract_and_read_tool",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_uses_same_host_quality_gate",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_real_create_agent_runtime_executes_tool_loop_offline",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_service_reports_langchain_backend_without_changing_write_gate",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    }
+  ],
+  "not_run_http": [
+    "test_week07_account_memory.AccountHTTPTests.test_http_account_memory_roundtrip_cookie_rotation_and_bad_json",
+    "test_week07_sessions.HTTPTests.test_http_cookie_csrf_and_browser_isolation"
+  ],
+  "ui_vm": {
+    "mode": "OFFLINE_JS_VM",
+    "tests": 20,
+    "status": "PASS",
+    "browser_visual_verified": false
+  },
+  "live_status": "LIVE_NOT_RUN",
+  "browser_visual_verified": false,
+  "candidate_files_sha256": {
+    "src/personal_memory.py": "b2d5ffc1c58f1d4d77023c243f5939e9fe2c2040f7c58bbd31842fb51410b6c4",
+    "src/account_memory.py": "668d17e8efb069bb66b80f67d23b14ea58e1ab252153d99597118cea709d6026",
+    "src/session_host.py": "0f5428799c2e878e582f204e450ee301003c2b2b062b1d1be8c6dfac6a6ca6ef",
+    "ui/app.js": "b332bff081b44aacb56054b6512081e27182b4c0f6638b04778cb0f4233241f4",
+    "ui/index.html": "375446b8b9708342b5fbc73ba6e3f7d7c53e740ea5c73db9728c83358562e7fc",
+    "tests/test_week07_personal_memory.py": "e32c013089219856b2a0b4733c45b7a677bf62df3a6264441f51425c325e7cbd",
+    "tests/test_week07_ui.cjs": "a0b8636b5c9d31fd0123e45698df2b6394cad698e207646e8feee730e00377c1",
+    "scripts/run_week07_validation.py": "f5a23c143bfa0984b779a537595c109800b9de5f843957a641447b763faed08c"
+  }
+}

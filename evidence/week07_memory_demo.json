@@ -1,0 +1,26 @@
+{
+  "mode": "OFFLINE_IN_PROCESS_DEMO",
+  "route": "A_saved_email_content",
+  "executed_at": "2026-10-29T03:27:15.729124+08:00",
+  "baseline_sha": "6bbd34f369a40b5a2a46534e881197bddfcfea01",
+  "candidate_version": "WORKING_TREE",
+  "identity": "synthetic local accounts; no credentials or cookies exported",
+  "observations": {
+    "registered": true,
+    "multiple_records_saved": true,
+    "new_conversation_reads_two": true,
+    "logged_out_read_denied": true,
+    "restart_then_login_reads_two": true,
+    "selected_text_applied_to_draft": true,
+    "recipient_still_official": true,
+    "other_account_list_empty": true,
+    "other_account_cannot_apply_known_ids": true,
+    "deleted_record_excluded": true,
+    "draft_using_deleted_record_rejected": true,
+    "outbox_rows": 0
+  },
+  "status": "PASS",
+  "live_status": "LIVE_NOT_RUN",
+  "real_email_sent": false,
+  "boundary": "This demo invokes SessionHost in process. Real localhost HTTP is covered separately by the W07 account test suite. No browser recording or actual Gemini request is represented here."
+}

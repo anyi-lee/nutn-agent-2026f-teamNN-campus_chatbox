@@ -26,7 +26,7 @@
 | 指標 | Before | After fixture | 備註 |
 | --- | --- | --- | --- |
 | 正常案例 Router model calls | 0 | 1 次 fixture | fixture 不算 Live model call |
-| 正常案例下游 branch | 1 | 1 | After 保證單一路徑 |
+| 正常案例下游 branch | 1 | 1 | 固定案例已驗證；任意輸入的分派一致性仍待修正，本表未涵蓋所有輸入 |
 | `clarify` 下游 calls | 不保證為 0 | 0 | 由測試計數確認 |
 | Live latency | 未量測 | 未提供 | Live 畫面未顯示 latency，不自行推測 |
 | Token usage | unavailable | unavailable | 離線 fixture 無 token 資料 |

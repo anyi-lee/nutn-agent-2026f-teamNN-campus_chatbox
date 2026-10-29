@@ -6,7 +6,7 @@
     <meta name="description" content="南大資工系校園辦事導航 Agent 原型">
     <title>南大校務通｜Campus Agent</title>
     <link rel="stylesheet" href="/styles.css">
-    <script src="/app.js?v=week06-routing-1" defer></script>
+    <script src="/app.js?v=week07-account-memory-1" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -38,6 +38,16 @@
 
         <div class="sidebar-spacer"></div>
 
+        <section class="account-panel" aria-label="帳號與常用內容">
+          <strong id="account-status">訪客模式</strong>
+          <p>登入後保存多筆常用段落，下次選取套用。</p>
+          <div class="account-actions">
+            <button class="button primary" id="account-login" type="button">登入／註冊</button>
+            <button class="button ghost" id="account-logout" type="button" hidden>登出</button>
+            <button class="button ghost" id="manage-memory" type="button" disabled>常用內容</button>
+          </div>
+        </section>
+
         <div class="source-status">
           <div class="status-heading"><span class="status-dot"></span> 官方資料已載入</div>
           <p>南大資工系師資陣容</p>
@@ -48,6 +58,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg>
           <div><strong>安全模式</strong><span>只寫入 Sandbox，不寄真實信箱</span></div>
         </div>
+        <p id="session-status" class="scope-note">正在建立本次對話…</p>
       </aside>
 
       <main class="main-panel">
@@ -135,6 +146,13 @@
           <button class="dialog-close" id="dialog-close" type="button" aria-label="關閉">×</button>
         </header>
 
+        <section id="saved-draft-picker" class="saved-draft-picker">
+          <h3>套用已存完整草稿</h3>
+          <p>勾選一份直接套用，顯示完整信件；可再編輯或請 AI 調整。取消勾選則返回新信表單。套用不會寄送。</p>
+          <div id="saved-draft-list">登入後可選用自己的草稿。</div>
+          <p id="draft-apply-error" class="form-error" role="alert"></p>
+        </section>
+
         <form id="draft-form" class="draft-form">
           <div class="form-grid">
             <label><span>教師姓名 *</span><select name="teacher_name" id="teacher-name" required></select></label>
@@ -144,6 +162,20 @@
             <label class="full"><span>系所</span><input name="student_department" value="資訊工程學系"></label>
             <label class="full"><span>想詢問的內容 *</span><textarea name="request_details" rows="4" minlength="5" placeholder="請具體描述希望詢問老師的事情……" required></textarea></label>
             <label class="full"><span>補充背景（選填）</span><textarea name="background" rows="2" placeholder="例如：已修過哪些相關課程"></textarea></label>
+            <fieldset class="full memory-choice-box">
+              <legend>加入自己的常用文字（選填）</legend>
+              <p>只加入勾選的文字段落。若要重用整封信，直接勾選上方已存完整草稿。</p>
+              <div id="draft-memory-list">登入後可讀取自己的常用內容。</div>
+              <button class="button ghost" id="preview-template" type="button">預覽套用效果</button>
+              <section class="template-preview" id="template-preview" hidden aria-live="polite">
+                <strong>套用預覽 · 尚未變更表單</strong>
+                <pre id="template-preview-text"></pre>
+                <label class="memory-choice"><input type="checkbox" id="confirm-apply"><span>我已確認將變更的欄位與加入的文字</span></label>
+                <button class="button primary" id="apply-template" type="button" disabled>確認套用</button>
+                <button class="button ghost" id="cancel-template" type="button">取消選取變更</button>
+              </section>
+              <p id="template-applied" role="status"></p>
+            </fieldset>
           </div>
           <div class="form-error" id="form-error" role="alert"></div>
           <div class="dialog-actions">
@@ -159,7 +191,22 @@
             <div><dt>收件人</dt><dd id="draft-to"></dd></div>
             <div><dt>主旨</dt><dd id="draft-subject"></dd></div>
           </dl>
-          <pre id="draft-body"></pre>
+          <article class="email-paper"><pre id="draft-letter-body"></pre></article>
+          <button class="button ghost" id="edit-email-content" type="button">編輯本次信件</button>
+          <div class="draft-editor" id="draft-editor" hidden>
+            <label>收件教師<select id="reuse-teacher"></select></label>
+            <label>主旨<input id="draft-subject-editor" maxlength="80" required></label>
+            <label>正文<textarea id="draft-body-editor" rows="12" maxlength="4000" required></textarea></label>
+            <p id="draft-edit-note" role="status"></p>
+          </div>
+          <button class="button primary" id="update-draft" type="button" hidden>確認修改並更新草稿</button>
+          <section class="ai-revision">
+            <label for="revision-instructions">讓 AI 完善這封信（選填）</label>
+            <textarea id="revision-instructions" rows="3" maxlength="1000" placeholder="例如：改成詢問 Practice 4 第 2 題的解題思路，語氣簡短禮貌，保留自介與署名。"></textarea>
+            <p>只調整本次草稿，不更換收件人、不覆寫已保存模板，也不會自動寄送。需要可用的 Gemini 設定。</p>
+            <button class="button primary" id="revise-email" type="button">請 AI 調整</button>
+            <p id="revision-status" role="status" aria-live="polite"></p>
+          </section>
           <label class="confirmation-panel" id="confirmation-panel">
             <input type="checkbox" id="confirm-send">
             <span><strong>我已確認收件人、主旨與正文</strong><small>執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。</small></span>
@@ -176,11 +223,47 @@
           </div>
           <div class="form-error" id="send-error" role="alert"></div>
           <div class="dialog-actions">
-            <button class="button ghost" id="edit-draft" type="button">返回修改</button>
+            <button class="button ghost" id="edit-draft" type="button">返回新信表單</button>
             <button class="button ghost" id="copy-draft" type="button">複製草稿</button>
+            <button class="button ghost" id="save-draft-template" type="button">草稿另存為模板</button>
             <button class="button primary" id="send-email" type="button" disabled>確認並模擬寄出</button>
           </div>
         </section>
+      </div>
+    </dialog>
+
+    <dialog class="draft-dialog account-dialog" id="auth-dialog">
+      <div class="dialog-layout">
+        <header class="dialog-header"><div><h2>本機帳號</h2><p>登入後讀回自己的常用內容。訪客仍可查詢與建立草稿。</p></div><button class="dialog-close" id="auth-close" type="button" aria-label="關閉登入">×</button></header>
+        <form id="auth-form" class="draft-form">
+          <label>帳號<input name="username" id="auth-username" autocomplete="username" pattern="[A-Za-z0-9_-]{3,32}" minlength="3" maxlength="32" placeholder="3–32 個英數字、底線或連字號" required></label>
+          <label>密碼<input name="password" id="auth-password" type="password" autocomplete="current-password" minlength="12" maxlength="128" placeholder="12–128 個字元" required></label>
+          <p class="form-error" id="auth-error" role="alert"></p>
+          <div class="dialog-actions"><button class="button ghost" name="action" value="register" type="submit">建立帳號</button><button class="button primary" name="action" value="login" type="submit">登入</button></div>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="draft-dialog" id="memory-dialog">
+      <div class="dialog-layout">
+        <header class="dialog-header"><div><h2>我的範本與常用內容</h2><p>文字範本可組合；整封模板從草稿預覽另存，保存教師、主旨及正文。</p></div><button class="dialog-close" id="memory-close" type="button" aria-label="關閉常用內容">×</button></header>
+        <div id="memory-list" class="memory-list"></div>
+        <form id="memory-form" class="draft-form">
+          <input id="memory-id" type="hidden"><input id="memory-version" type="hidden"><input id="memory-source-draft" type="hidden">
+          <div class="form-grid">
+            <label><span>名稱</span><input id="memory-title" maxlength="60" placeholder="例如：專題詢問常用段落" required></label>
+            <label><span>類型</span><select id="memory-kind"><option value="introduction">文字 · 自我介紹</option><option value="request">文字 · 詢問段落</option><option value="signature">文字 · 署名</option><option value="other">文字 · 其他固定內容</option><option value="personal_fact">個人記憶 · 問答使用</option><option value="draft_template" disabled>整封模板 · 從草稿另存</option></select></label>
+            <div class="full form-grid" id="memory-template-fields" hidden>
+              <label><span>固定教師 *</span><select id="template-teacher"></select></label>
+              <label><span>主旨 *</span><input id="template-subject" maxlength="80"></label>
+              <p class="full">保存的是已確認的草稿文字，不保存表單。套用後可編輯主旨與正文；收件 Email 重新查官方資料。</p>
+            </div>
+            <label class="full"><span>常用文字／整封模板正文 *</span><textarea id="memory-content" rows="8" maxlength="2000" placeholder="保存要重用的文字；整封模板請從草稿預覽另存。" required></textarea></label>
+          </div>
+          <label class="confirmation-panel"><input type="checkbox" id="confirm-memory"><span><strong>我確認保存／修改以上內容，或刪除目前選取的紀錄</strong><small>刪除後不再供新草稿讀取；引用舊版本的待確認草稿需重新產生。</small></span></label>
+          <p id="memory-error" class="form-error" role="alert"></p>
+          <div class="dialog-actions"><button class="button ghost" id="memory-new" type="button">新增另一筆</button><button class="button ghost" id="memory-delete" type="button" hidden>刪除此筆</button><button class="button primary" id="memory-save" type="submit">確認保存</button></div>
+        </form>
       </div>
     </dialog>
 

@@ -18,7 +18,7 @@ from typing import Any, Mapping
 from dense_stub import DenseStubRetriever
 from email_tools import CampusToolServer, ToolCallError
 from email_draft_baseline import PURPOSE_LABELS
-from gemini_email import GeminiEmailError, GeminiEmailGenerator
+from gemini_email import GeminiEmailError, GeminiEmailGenerator, validate_email_draft
 from gemini_router import (
     ALLOWED_ROUTES,
     EXPECTED_REASON_BY_ROUTE,
@@ -934,7 +934,8 @@ class CampusService:
             key: value.strip() if isinstance(value, str) else value
             for key, value in payload.items()
         }
-        required = ("teacher_name", "purpose", "student_name", "request_details")
+        revision = normalized.get("draft_revision")
+        required = ("teacher_name", "purpose", "request_details") if revision else ("teacher_name", "purpose", "student_name", "request_details")
         missing = [field for field in required if not normalized.get(field)]
         if missing:
             return 422, {
@@ -952,7 +953,8 @@ class CampusService:
             }
 
         details = str(normalized["request_details"])
-        if len(details) < 5:
+        approved_content = normalized.get("approved_draft_content")
+        if len(details) < 5 and approved_content is None and not revision:
             return 422, {
                 "status": "invalid_request",
                 "error": {"code": "INVALID_REQUEST_DETAILS"},
@@ -975,21 +977,27 @@ class CampusService:
         department = str(normalized.get("student_department") or "資訊工程學系")
         grade = str(normalized.get("student_grade") or "")
         identity = f"{department}{grade}"
-        student_name = str(normalized["student_name"])
+        student_name = str(normalized.get("student_name") or "")
         background = str(normalized.get("background") or "")
-        draft_content = self._local_email_content(
+        saved_content = normalized.get("saved_email_content") or []
+        if revision and not self.email_generator.configured:
+            return 503, {"status": "revision_unavailable", "error": {"code": "MODEL_NOT_CONFIGURED"},
+                         "reason": "尚未設定可用的 Gemini，無法執行 AI 調整；原草稿已保留，可手動編輯。",
+                         "generation": {"provider": "none", "evidence_status": "LIVE_NOT_RUN"}}
+        draft_content = approved_content or self._local_email_content(
             teacher=teacher,
             purpose=purpose,
             student_name=student_name,
             identity=identity,
             details=details,
             background=background,
+            saved_content=saved_content,
         )
-        generation_provider = "local_template"
+        generation_provider = "saved_draft" if approved_content else "local_template"
         generation_warning = None
         generation_failure = None
         gemini_tool_trace: list[dict[str, Any]] = []
-        if self.email_generator.configured:
+        if self.email_generator.configured and approved_content is None:
             try:
                 facts = {
                     "teacher_name": teacher["teacher_name"],
@@ -1000,7 +1008,11 @@ class CampusService:
                     "student_identity": identity,
                     "request_details": details,
                     "background": background or None,
+                    "saved_email_content": saved_content,
                 }
+                if revision:
+                    facts.update(revision)
+                    facts["student_identity"] = ""
                 if hasattr(self.email_generator, "generate_with_contact_tool"):
                     contact_tool = next(
                         tool
@@ -1016,12 +1028,27 @@ class CampusService:
                     )
                 else:
                     draft_content = self.email_generator.generate(facts)
+                if revision:
+                    draft_content = validate_email_draft(draft_content, facts)
+                    if any(char in draft_content["subject"] for char in "\r\n"):
+                        raise GeminiEmailError("AI revision subject must be a single line")
                 generation_provider = "gemini"
             except GeminiEmailError as error:
                 generation_failure = str(error)
+                if revision:
+                    return 502, {"status": "revision_failed", "error": {"code": "MODEL_REVISION_FAILED"},
+                                 "reason": "AI 調整失敗，原草稿已保留，請稍後再試或手動編輯。",
+                                 "generation": {"provider": "gemini", "evidence_status": "LIVE_FAIL",
+                                                "failure_reason": generation_failure}}
                 generation_warning = (
                     f"Gemini 暫時無法使用（{generation_failure}），已改用本機模板產生草稿。"
                 )
+
+        if len(draft_content["subject"]) > 80 or len(draft_content["body"]) > 4000:
+            return 422, {
+                "status": "invalid_request", "error": {"code": "CONTENT_TOO_LONG"},
+                "reason": "合併常用內容後超過郵件長度限制，請減少選取或縮短本次內容。",
+            }
 
         draft_id = f"draft-{uuid.uuid4().hex[:16]}"
         request_id = f"mail-{uuid.uuid4().hex}"
@@ -1081,7 +1108,7 @@ class CampusService:
                 "evidence_status": (
                     "LIVE_PASS"
                     if generation_provider == "gemini"
-                    else ("LIVE_FAIL" if self.email_generator.configured else "LIVE_NOT_RUN")
+                    else ("LIVE_FAIL" if self.email_generator.configured and approved_content is None else "LIVE_NOT_RUN")
                 ),
                 "failure_reason": generation_failure,
             },
@@ -1189,6 +1216,7 @@ class CampusService:
         identity: str,
         details: str,
         background: str,
+        saved_content: list[dict[str, Any]] | None = None,
     ) -> dict[str, str]:
         clean_details = details.rstrip("。！？!? ")
         if purpose == "course_add_request":
@@ -1216,16 +1244,19 @@ class CampusService:
 
         paragraphs = [
             f"{teacher['teacher_name'][0]}老師您好：",
-            f"我是{identity}學生{student_name}。{request_paragraph}",
         ]
+        saved_content = saved_content or []
+        paragraphs.extend(item["content"] for item in saved_content if item["kind"] == "introduction")
+        paragraphs.append(f"我是{identity}學生{student_name}。{request_paragraph}")
+        paragraphs.extend(item["content"] for item in saved_content if item["kind"] == "request")
         if background:
             paragraphs.append(f"補充說明：{background.rstrip('。')}。")
-        paragraphs.extend(
-            [
-                "感謝老師撥冗閱讀。",
-                f"學生 {student_name} 敬上",
-            ]
-        )
+        paragraphs.extend(item["content"] for item in saved_content if item["kind"] == "other")
+        paragraphs.append("感謝老師撥冗閱讀。")
+        signatures = [item["content"] for item in saved_content if item["kind"] == "signature"]
+        paragraphs.extend(signatures)
+        if not signatures or not any(student_name in signature for signature in signatures):
+            paragraphs.append(f"學生 {student_name} 敬上")
         return {"subject": subject, "body": "\n\n".join(paragraphs)}
 
     def _public_evidence(self, chunk: Mapping[str, Any]) -> dict[str, Any]:

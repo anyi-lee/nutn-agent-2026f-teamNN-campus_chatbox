@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Taipei",
+  "candidate_version": "WORKING_TREE",
+  "candidate_fingerprints": "week07_offline_sessions.json",
+  "command": "python -X utf8 -W error::ResourceWarning -m unittest discover -s tests -v",
+  "capture": "Summary transcribed from the actual exec command output; not a full raw log.",
+  "exit_code": 0,
+  "tests_run": 112,
+  "passed": 105,
+  "skipped": 7,
+  "failures": 0,
+  "errors": 0,
+  "duration_seconds": 9.370,
+  "skip_reason": "Optional LangChain dependencies unavailable",
+  "mode": "OFFLINE_REGRESSION_WITH_LOCAL_HTTP_AND_SQLITE",
+  "live_status": "LIVE_NOT_RUN",
+  "browser_visual_verified": false,
+  "real_email_sent": false
+}

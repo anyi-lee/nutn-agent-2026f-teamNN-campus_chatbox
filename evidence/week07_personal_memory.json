@@ -1,0 +1,87 @@
+{
+  "executed_at": "2026-10-29T03:26:01.620682+08:00",
+  "candidate_version": "WORKING_TREE",
+  "mode": "OFFLINE_IN_PROCESS_AND_JS_VM",
+  "command": "python scripts/run_personal_memory_validation.py",
+  "tests_run": 137,
+  "failures": 0,
+  "errors": 0,
+  "skipped": [
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_rejects_agent_that_skips_grounded_tool",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_rejects_changed_teacher_before_host_tool",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_rejects_ungrounded_tool_result",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_uses_create_agent_contract_and_read_tool",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_candidate_uses_same_host_quality_gate",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_real_create_agent_runtime_executes_tool_loop_offline",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    },
+    {
+      "test": "test_langchain_email.LangChainEmailGeneratorTests.test_service_reports_langchain_backend_without_changing_write_gate",
+      "reason": "Week 5 LangChain dependencies are not installed"
+    }
+  ],
+  "not_run_http": [
+    "test_week07_account_memory.AccountHTTPTests.test_http_account_memory_roundtrip_cookie_rotation_and_bad_json",
+    "test_week07_sessions.HTTPTests.test_http_cookie_csrf_and_browser_isolation"
+  ],
+  "ui_vm": {
+    "mode": "OFFLINE_JS_VM",
+    "tests": 22,
+    "status": "PASS",
+    "browser_visual_verified": false
+  },
+  "live_status": "LIVE_NOT_RUN",
+  "browser_visual_verified": false,
+  "candidate_files_sha256": {
+    "app.py": "845b1e10994502cddde83c686c2301b426e67fe3f785fa1bd3c4b154be4b1b46",
+    "src/personal_memory.py": "22bae77ebcadb96bdf3758d35ddd76fa240feb2d42bf81d47b729389756858f8",
+    "src/account_memory.py": "668d17e8efb069bb66b80f67d23b14ea58e1ab252153d99597118cea709d6026",
+    "src/session_host.py": "4afa90028a5b98c25910ab5e2ee977ae70e568dd7808ed99943f74a6a4918224",
+    "src/campus_service.py": "756ff3c2dd9664778005d78f96bcb38349ccee4c9d6a0465cdfce1e2acc98b1b",
+    "src/gemini_email.py": "64a722e35ae57266d934daaed57bb0773707fad892209549df4dc6e3f090cdec",
+    "ui/app.js": "5ddb4615416621098c815496ce6b1d23bf668e77dba988b01c063b5966e1986f",
+    "ui/index.html": "375446b8b9708342b5fbc73ba6e3f7d7c53e740ea5c73db9728c83358562e7fc",
+    "ui/styles.css": "6f07863d9c2b25a0c25f59faa20d4845ca8ec8ee79cefacf4c533fffd324d990",
+    "tests/test_week07_personal_memory.py": "e32c013089219856b2a0b4733c45b7a677bf62df3a6264441f51425c325e7cbd",
+    "tests/test_week07_ui.cjs": "036c7f17f49d10a77547d92dcecbe20256ff03b57bdcef1988f6f1b20df3c396",
+    "scripts/run_week07_validation.py": "407e8af7a15675ceb1dac8cd0463f73363cf6e570e327d201cba8bea0b028c21",
+    "scripts/run_personal_memory_validation.py": "6967ef6f5115ef6b69ae2128fb9944dd8f1d7818219bc45e07506a084d259406",
+    "tests/test_week07_semantic_memory.py": "8e580ba7c99f846af7cbbbe2190ad1b902b427344946c7e8b65cb1ddc3ed6fc1",
+    "tests/test_week07_revisions.py": "cce7b1e342f5e4ff5a067924a51fa2b6608b3fd363597f9264ec92df6d328c7b",
+    "tests/test_week07_account_memory.py": "c27981bbe8efd7cd099bdadeae264cdc28d340764dc6c967d9fde778a0decf53",
+    "tests/test_week07_sessions.py": "ef7aa36388e9f6111231af57bbffcc059eb61a95279dce918991382175d0bee9",
+    "tests/test_week07_templates.py": "a4f9a30b07ed48cf6cd6106a8278f5f3c3cd35997c0f6177b79515b14d8862c6"
+  },
+  "schema_version": "2.0",
+  "run_id": "week07-review-e06bdb3b9dcd49e985b12c24bb7d6c1c",
+  "timezone": "Asia/Taipei",
+  "baseline_sha": "6bbd34f369a40b5a2a46534e881197bddfcfea01",
+  "checkout_head": "6bbd34f369a40b5a2a46534e881197bddfcfea01",
+  "python": "3.13.9",
+  "tests_passed": 130,
+  "offline_status": "OFFLINE_PASS_WITH_SKIPS",
+  "data_files_sha256": {
+    "data/faculty_chunks.json": "ed03556e1618527e3a147e78428a389fdb16c9a95c3c5e984cc4e6f603df3174",
+    "data/office_chunks.json": "2f9ce447e225f989a142102a77511835e00c9e16f0817fad41e0e2d2bf99c4b9"
+  },
+  "data_mode": "isolated official snapshot copies, synthetic accounts and memory, explicit model doubles / fault injections",
+  "real_email_sent": false,
+  "tokens": "NOT_MEASURED",
+  "live_latency": "NOT_MEASURED"
+}
