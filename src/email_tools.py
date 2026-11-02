@@ -32,7 +32,7 @@ class ToolCallError(RuntimeError):
 TOOL_DEFINITIONS: list[dict[str, Any]] = [
     {
         "name": "get_teacher_contact",
-        "description": "從版本化的南大資工系官方資料查詢教師公開聯絡資訊。",
+        "description": "從版本化南大官方資料查詢已收錄教師或單位的公開聯絡資訊。",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -127,7 +127,19 @@ class CampusToolServer:
             raise ToolCallError("MISSING_TEACHER_QUERY", "請提供教師姓名。")
 
         exact = [teacher for teacher in self.teachers if teacher["teacher_name"] == query]
-        matches = exact or [
+        # Older saved drafts contain the bare name. The school-wide directory
+        # now qualifies shared affiliations (e.g. 許世昌（電機工程學系）).
+        # Resolve an exact original name only when all current official records
+        # agree on its public address; never collapse different people's emails.
+        original_name = [teacher for teacher in self.teachers
+                         if teacher.get('person_name', teacher['teacher_name']) == query]
+        if not exact and original_name and all(
+                row.get('authority') == 'official' and row.get('validity') == 'active'
+                for row in original_name):
+            addresses = {row['public_email'].lower() for row in original_name}
+            if len(addresses) == 1:
+                original_name = original_name[:1]
+        matches = exact or original_name or [
             teacher
             for teacher in self.teachers
             if query in teacher["teacher_name"] or teacher["teacher_name"] in query
@@ -158,7 +170,7 @@ class CampusToolServer:
                 "authority": teacher["authority"],
                 "validity": teacher["validity"],
             },
-            "source": self._source_summary(),
+            "source": self._source_summary(teacher),
         }
 
     def _send_email(self, arguments: Mapping[str, Any]) -> dict[str, Any]:
@@ -280,12 +292,13 @@ class CampusToolServer:
             "idempotent_replay": False,
         }
 
-    def _source_summary(self) -> dict[str, Any]:
+    def _source_summary(self, teacher=None) -> dict[str, Any]:
+        source = teacher or self.source
         return {
-            "source_id": self.source["source_id"],
-            "source_url": self.source["source_url"],
-            "retrieved_at": self.source["retrieved_at"],
-            "index_version": self.source["index_version"],
+            "source_id": source["source_id"],
+            "source_url": source["source_url"],
+            "retrieved_at": source["retrieved_at"],
+            "index_version": source["index_version"],
         }
 
     @staticmethod

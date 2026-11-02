@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="南大資工系校園辦事導航 Agent 原型">
+    <meta name="description" content="南大全校公開資訊查詢與處室／學系 Email 草稿助手">
     <title>南大校務通｜Campus Agent</title>
     <link rel="stylesheet" href="/styles.css">
-    <script src="/app.js?v=week07-account-memory-1" defer></script>
+    <script src="/app.js?v=email-form-2" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -50,8 +50,8 @@
 
         <div class="source-status">
           <div class="status-heading"><span class="status-dot"></span> 官方資料已載入</div>
-          <p>南大資工系師資陣容</p>
-          <a id="official-source" href="https://csie.nutn.edu.tw/faculty" target="_blank" rel="noreferrer">查看資料來源 <span>↗</span></a>
+          <p id="source-coverage">全校教學、行政單位與已收錄教師</p>
+          <a id="official-source" href="https://web.nutn.edu.tw/teaching.html" target="_blank" rel="noreferrer">查看資料來源 <span>↗</span></a>
         </div>
 
         <div class="scope-note">
@@ -65,7 +65,7 @@
         <header class="topbar">
           <button class="mobile-menu" id="mobile-menu" type="button" aria-label="開啟選單">☰</button>
           <div>
-            <p class="eyebrow">NUTN · CSIE</p>
+            <p class="eyebrow">NUTN · CAMPUS</p>
             <h1>校園辦事導航</h1>
           </div>
           <label class="retriever-control">
@@ -82,37 +82,37 @@
             <div class="welcome-symbol" aria-hidden="true">
               <svg viewBox="0 0 64 64"><path d="M12 21 32 11l20 10-20 10-20-10Z"/><path d="M18 29v11c0 6 7 11 14 11s14-5 14-11V29"/><path d="M52 23v17"/><circle cx="52" cy="44" r="2"/></svg>
             </div>
-            <div class="welcome-badge"><span></span> 資工系官方資料</div>
+            <div class="welcome-badge"><span></span> 全校官方公開資料</div>
             <h2>今天想處理什麼校園事務？</h2>
-            <p>查詢教師聯絡資訊、研究方向，或讓我協助產生一封有來源依據的 Email 草稿。</p>
+            <p>查詢各系所與行政單位、已收錄教師的公開資訊。想寫信時，先選處室或學系老師，填寫資料後即可檢查草稿。</p>
 
             <div class="quick-grid">
-              <button class="quick-card" type="button" data-query="林朝興教授的 Email 是什麼？">
+              <button class="quick-card" type="button" data-query="國文系的聯絡方式？">
                 <span class="quick-icon blue">
                   <svg viewBox="0 0 24 24"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>
                 </span>
-                <span><strong>查教師聯絡方式</strong><small>取得官方公開 Email</small></span>
+                <span><strong>查系所聯絡方式</strong><small>例如國文系、英語系、電機系</small></span>
                 <b>→</b>
               </button>
-              <button class="quick-card" type="button" data-query="林朝興教授的研究領域有哪些？">
+              <button class="quick-card" type="button" data-query="教務處學籍成績組電話？">
                 <span class="quick-icon teal">
                   <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H7a2 2 0 0 1-2-2V4Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>
                 </span>
-                <span><strong>查詢研究方向</strong><small>依教師頁面整理資訊</small></span>
+                <span><strong>找行政窗口</strong><small>查詢官方單位與公開分機</small></span>
                 <b>→</b>
               </button>
               <button class="quick-card" id="quick-email" type="button">
                 <span class="quick-icon amber">
                   <svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10L4 20Z"/><path d="m13.5 7 3.5 3.5"/></svg>
                 </span>
-                <span><strong>Email Agent</strong><small>查資料、預覽並確認 Sandbox 執行</small></span>
+                <span><strong>填寫寄信資料</strong><small>選處室或學系老師，檢查草稿後再確認</small></span>
                 <b>→</b>
               </button>
-              <button class="quick-card" type="button" data-query="林朝興教授今天幾點會在研究室？">
+              <button class="quick-card" type="button" data-query="圖書館的開放時間？">
                 <span class="quick-icon rose">
                   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
                 </span>
-                <span><strong>測試證據不足</strong><small>即時資訊不會自行推測</small></span>
+                <span><strong>查服務資訊</strong><small>尚未收錄時，提供官方確認管道</small></span>
                 <b>→</b>
               </button>
             </div>
@@ -123,7 +123,7 @@
 
         <footer class="composer-wrap">
           <form class="composer" id="chat-form">
-            <textarea id="message-input" rows="1" maxlength="500" placeholder="輸入問題，例如：我要怎麼聯絡林朝興老師？" aria-label="輸入校園問題"></textarea>
+            <textarea id="message-input" rows="1" maxlength="500" placeholder="想找哪個單位或哪位老師？例如：國文系電話" aria-label="輸入校園問題"></textarea>
             <button class="send-button" id="send-button" type="submit" aria-label="送出訊息">
               <svg viewBox="0 0 24 24"><path d="m5 12 14-8-4 16-3-6-7-2Z"/><path d="m12 14 7-10"/></svg>
             </button>
@@ -139,28 +139,65 @@
           <div>
             <p class="eyebrow">GROUNDED EMAIL DRAFT</p>
             <h2>Email 草稿助手</h2>
-            <p>Read Tool 驗證收件人；Write Tool 只會寫入本機 Sandbox。</p>
+            <p>先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。</p>
             <span class="provider-pill" id="generator-status">本機模板</span>
             <span class="provider-pill sandbox">Sandbox · 不寄真實信箱</span>
           </div>
           <button class="dialog-close" id="dialog-close" type="button" aria-label="關閉">×</button>
         </header>
 
-        <section id="saved-draft-picker" class="saved-draft-picker">
-          <h3>套用已存完整草稿</h3>
-          <p>勾選一份直接套用，顯示完整信件；可再編輯或請 AI 調整。取消勾選則返回新信表單。套用不會寄送。</p>
+        <section id="email-switch-prompt" class="confirmation-panel" hidden aria-live="polite">
+          <p id="email-switch-note"></p>
+          <button id="email-switch-confirm" class="button primary" type="button">重新開始並切換對象</button>
+          <button id="email-switch-cancel" class="button ghost" type="button">保留目前這封信</button>
+        </section>
+
+        <details id="saved-draft-picker" class="saved-draft-picker">
+          <summary>套用已存完整草稿（選用）</summary>
+          <p>勾選一份直接套用自己的完整草稿，再編輯或請 AI 調整。套用不會寄送。</p>
           <div id="saved-draft-list">登入後可選用自己的草稿。</div>
           <p id="draft-apply-error" class="form-error" role="alert"></p>
+        </details>
+
+        <!-- The previous conversation API remains compatible, but is not the current UI. -->
+        <section id="email-conversation" class="email-conversation" hidden inert>
+          <div id="email-dialogue" class="email-dialogue" role="log" aria-live="polite">
+            <p class="email-turn assistant">這封信想寫給誰、想說什麼？例如：「幫我寫信給林朝興老師，詢問多媒體系統能不能加簽。」</p>
+          </div>
+          <p id="email-understanding-status" class="email-status" role="status"></p>
+          <form id="email-conversation-form" class="email-chat-composer">
+            <label class="sr-only" for="email-message">說明寫信需求</label>
+            <textarea id="email-message" rows="3" maxlength="2000" placeholder="直接說明你的需求，也可以分幾次補充……" required></textarea>
+            <button id="email-conversation-send" class="button primary" type="submit">送出訊息</button>
+          </form>
+          <div class="email-dialogue-actions"><button id="email-start-over" class="button ghost" type="button">重新開始這封信</button></div>
         </section>
 
         <form id="draft-form" class="draft-form">
+          <fieldset class="recipient-type">
+            <legend>收件對象 *</legend>
+            <label><input type="radio" name="recipient_mode" id="recipient-office" value="office" checked>處室</label>
+            <label><input type="radio" name="recipient_mode" id="recipient-academic" value="academic">學系</label>
+          </fieldset>
+          <div class="form-grid recipient-grid">
+            <div class="full form-grid" id="office-picker">
+              <label><span>選擇處室 *</span><select id="office-select" required><option value="">請先選擇處室</option></select></label>
+              <label><span>選擇組別／聯絡窗口 *</span><select id="office-section-select" disabled required><option value="">請先選擇處室</option></select></label>
+            </div>
+            <div class="full form-grid" id="academic-picker" hidden>
+              <label><span>選擇學系 *</span><select id="department-select" disabled><option value="">請先選擇學系</option></select></label>
+              <label><span>選擇老師／系辦窗口 *</span><select id="academic-teacher-select" disabled><option value="">請先選擇學系</option></select></label>
+            </div>
+            <p class="full recipient-note" id="recipient-note" role="status">請先選擇收件處室。僅能使用已驗證的官方公開信箱。</p>
+            <a class="full recipient-source" id="recipient-source" target="_blank" rel="noreferrer" hidden>查看該單位官網 ↗</a>
+          </div>
+          <select name="teacher_name" id="teacher-name" hidden aria-hidden="true"></select>
           <div class="form-grid">
-            <label><span>教師姓名 *</span><select name="teacher_name" id="teacher-name" required></select></label>
+            <label><span>你的姓名 *</span><input name="student_name" autocomplete="name" placeholder="例如：王小明" maxlength="40" required></label>
             <label><span>寄信目的 *</span><select name="purpose" id="purpose" required></select></label>
-            <label><span>你的姓名 *</span><input name="student_name" autocomplete="name" placeholder="例如：李安以" required></label>
             <label><span>年級</span><input name="student_grade" placeholder="例如：大四"></label>
-            <label class="full"><span>系所</span><input name="student_department" value="資訊工程學系"></label>
-            <label class="full"><span>想詢問的內容 *</span><textarea name="request_details" rows="4" minlength="5" placeholder="請具體描述希望詢問老師的事情……" required></textarea></label>
+            <label><span>你自己的系所</span><input name="student_department" maxlength="80" placeholder="例如：資訊工程學系"></label>
+            <label class="full"><span>想詢問的內容 *</span><textarea name="request_details" rows="4" minlength="5" maxlength="2000" placeholder="請具體描述希望詢問的事情……" required></textarea></label>
             <label class="full"><span>補充背景（選填）</span><textarea name="background" rows="2" placeholder="例如：已修過哪些相關課程"></textarea></label>
             <fieldset class="full memory-choice-box">
               <legend>加入自己的常用文字（選填）</legend>
@@ -194,7 +231,7 @@
           <article class="email-paper"><pre id="draft-letter-body"></pre></article>
           <button class="button ghost" id="edit-email-content" type="button">編輯本次信件</button>
           <div class="draft-editor" id="draft-editor" hidden>
-            <label>收件教師<select id="reuse-teacher"></select></label>
+            <label>收件對象<select id="reuse-teacher"></select></label>
             <label>主旨<input id="draft-subject-editor" maxlength="80" required></label>
             <label>正文<textarea id="draft-body-editor" rows="12" maxlength="4000" required></textarea></label>
             <p id="draft-edit-note" role="status"></p>
@@ -223,7 +260,7 @@
           </div>
           <div class="form-error" id="send-error" role="alert"></div>
           <div class="dialog-actions">
-            <button class="button ghost" id="edit-draft" type="button">返回新信表單</button>
+            <button class="button ghost" id="edit-draft" type="button">返回修改資料</button>
             <button class="button ghost" id="copy-draft" type="button">複製草稿</button>
             <button class="button ghost" id="save-draft-template" type="button">草稿另存為模板</button>
             <button class="button primary" id="send-email" type="button" disabled>確認並模擬寄出</button>

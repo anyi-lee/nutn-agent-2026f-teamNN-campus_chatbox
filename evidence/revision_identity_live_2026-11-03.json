@@ -1,0 +1,135 @@
+{
+  "executed_at": "2026-11-03T00:57:36+08:00",
+  "mode": "LIVE_GEMINI_SYNTHETIC_GUEST",
+  "real_email_sent": false,
+  "post_endpoints": [
+    "/api/email-draft",
+    "/api/email-draft-revise"
+  ],
+  "cases": [
+    {
+      "label": "create_synthetic_source",
+      "http_status": 200,
+      "status": "draft_created",
+      "teacher": {
+        "chunk_id": "campus-person-070044bf391ecd",
+        "teacher_name": "許世昌（電機工程學系）",
+        "title": "教授",
+        "research_areas": [
+          "光電元件/半導體製程/固態照明設計"
+        ],
+        "public_email": "scshei@mail.nutn.edu.tw",
+        "authority": "official",
+        "validity": "active"
+      },
+      "email_draft": {
+        "to": "scshei@mail.nutn.edu.tw",
+        "subject": "作業二補交方式詢問",
+        "body": "許老師您好：\n\n我是合成測試學系大四的學生合成測試學生。\n\n關於本學期的作業二，想向老師詢問相關的補交規定，不知目前是否仍有補交的機會。\n\n若尚可補交，懇請老師告知需完成的程序或繳交方式。\n\n感謝老師撥冗閱讀與協助。\n\n學生 合成測試學生 敬上"
+      },
+      "draft_id": "draft-f21f61a3c19a4725",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash",
+      "evidence_status": "LIVE_PASS",
+      "fallback_used": false,
+      "failure_reason": "",
+      "error_code": null,
+      "send_status": "not_sent",
+      "requires_confirmation": true,
+      "tool_trace": [
+        {
+          "tool": "get_teacher_contact",
+          "kind": "read",
+          "status": "found",
+          "source_id": "nutn-campus-9296f520c96c",
+          "stage": "host_prevalidation"
+        },
+        {
+          "stage": "functionCall",
+          "tool": "get_teacher_contact",
+          "arguments": {
+            "teacher_query": "許世昌（電機工程學系）"
+          },
+          "model_arguments": {
+            "teacher_query": "許世昌（電機工程學系）"
+          },
+          "query_normalized": false,
+          "host_validation": "passed",
+          "call_id_present": true
+        },
+        {
+          "stage": "functionResponse",
+          "tool": "get_teacher_contact",
+          "status": "found"
+        }
+      ]
+    },
+    {
+      "label": "revise_to_assignment_three",
+      "http_status": 200,
+      "status": "draft_created",
+      "teacher": {
+        "chunk_id": "campus-person-070044bf391ecd",
+        "teacher_name": "許世昌（電機工程學系）",
+        "title": "教授",
+        "research_areas": [
+          "光電元件/半導體製程/固態照明設計"
+        ],
+        "public_email": "scshei@mail.nutn.edu.tw",
+        "authority": "official",
+        "validity": "active"
+      },
+      "email_draft": {
+        "to": "scshei@mail.nutn.edu.tw",
+        "subject": "作業三補交方式詢問",
+        "body": "許老師您好：\n\n我是合成測試學系大四的學生合成測試學生。\n\n關於本學期的作業三，想向老師詢問相關的補交規定，不知目前是否仍有補交的機會。\n\n若尚可補交，懇請老師告知需完成的程序或繳交方式。\n\n感謝老師撥冗閱讀與協助。\n\n學生 合成測試學生 敬上"
+      },
+      "draft_id": "draft-7ac9fa6ead3f4b8e",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash",
+      "evidence_status": "LIVE_PASS",
+      "fallback_used": false,
+      "failure_reason": "",
+      "error_code": null,
+      "send_status": "not_sent",
+      "requires_confirmation": true,
+      "tool_trace": [
+        {
+          "tool": "get_teacher_contact",
+          "kind": "read",
+          "status": "found",
+          "source_id": "nutn-campus-9296f520c96c",
+          "stage": "host_prevalidation"
+        },
+        {
+          "stage": "functionCall",
+          "tool": "get_teacher_contact",
+          "arguments": {
+            "teacher_query": "許世昌（電機工程學系）"
+          },
+          "model_arguments": {
+            "teacher_query": "許世昌（電機工程學系）"
+          },
+          "query_normalized": false,
+          "host_validation": "passed",
+          "call_id_present": true
+        },
+        {
+          "stage": "functionResponse",
+          "tool": "get_teacher_contact",
+          "status": "found"
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "revision_live_pass": true,
+    "same_recipient_id": true,
+    "same_recipient_email": true,
+    "assignment_three": true,
+    "no_old_assignment": true,
+    "requires_new_confirmation": true,
+    "no_send_endpoint": true
+  },
+  "result": "LIVE_PASS"
+}

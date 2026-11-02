@@ -2,7 +2,8 @@
 
 The opaque cookie represents a local demo browser, not a university login.
 Only this web boundary resolves context; CampusService remains reusable by the
-offline baseline and trusted stdio adapter. No private prompt history is stored.
+offline baseline and trusted stdio adapter. Raw conversational prompt history is
+short-lived server memory only; it is not automatically persisted as memory.
 """
 from __future__ import annotations
 
@@ -12,11 +13,13 @@ import secrets
 import re
 import threading
 import time
+from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
-from campus_service import CampusService, FACULTY_DATA_PATH, OFFICE_DATA_PATH
+from campus_service import CampusService, FACULTY_DATA_PATH, OFFICE_DATA_PATH, _detected_purpose
+from email_conversation import EmailConversationPlanner, rule_extract, next_step, validate_fields
 from account_memory import AccountMemoryStore, MemoryError as AccountMemoryError
 from personal_memory import candidates_from_message, relevant_facts, GeminiPersonalMemoryPlanner, validate_plan
 from gemini_email import GeminiEmailGenerator, GeminiEmailError
@@ -39,12 +42,16 @@ class Conversation:
     account_id: str | None = None
     username: str | None = None
     personal_candidates: dict = field(default_factory=dict)
+    email_history: list = field(default_factory=list)
+    email_fields: dict = field(default_factory=dict)
+    email_turns: dict = field(default_factory=dict)
 
 
 class SessionHost:
     def __init__(self, service_factory: Callable[[], CampusService] = CampusService,
                  source_paths: tuple[Path, ...] = (FACULTY_DATA_PATH, OFFICE_DATA_PATH),
-                 account_store: AccountMemoryStore | None = None, memory_planner: Any | None = None):
+                 account_store: AccountMemoryStore | None = None, memory_planner: Any | None = None,
+                 email_planner: Any | None = None):
         self._lock = threading.RLock()
         self._factory = service_factory
         self._source_paths = source_paths
@@ -52,6 +59,9 @@ class SessionHost:
         self.memory_planner = memory_planner or GeminiPersonalMemoryPlanner(GeminiEmailGenerator(
             api_key=getattr(self.service.email_generator, "api_key", ""),
             model=getattr(self.service.email_generator, "model", None)))
+        self.email_planner = email_planner or EmailConversationPlanner(GeminiEmailGenerator(
+            api_key=getattr(self.service.email_generator, 'api_key', ''),
+            model=getattr(self.service.email_generator, 'model', None)))
         self.source_version = self._fingerprint()
         self._source_failed = False
         self._users: dict[str, Conversation] = {}
@@ -74,6 +84,9 @@ class SessionHost:
         conversation.teacher = None
         conversation.active = None
         conversation.personal_candidates.clear()
+        conversation.email_history.clear()
+        conversation.email_fields.clear()
+        conversation.email_turns.clear()
         conversation.cleared_reason = reason
         for draft_id, binding in list(self._drafts.items()):
             if binding[0] == owner:
@@ -159,6 +172,8 @@ class SessionHost:
     def handle(self, owner: str | None, csrf: str, path: str,
                payload: dict[str, Any]) -> tuple[int, dict[str, Any]]:
         try:
+            if path == '/api/email-conversation':
+                return self._email_conversation(owner, csrf, payload)
             return self._handle(owner, csrf, path, payload)
         except (SessionError, AccountMemoryError) as exc:
             with self._lock:
@@ -169,6 +184,107 @@ class SessionHost:
                 if owner in self._users and exc.code in ("STALE_SESSION", "SOURCE_UNAVAILABLE"):
                     response["session"] = self._public(owner)
                 return exc.status, response
+
+    def _email_conversation(self, owner, csrf, payload):
+        """Session-scoped collection with bounded context and turn replay protection."""
+        with self._lock:
+            conversation = self._validate(owner, csrf, payload)
+            if set(payload) - {'session_id', 'generation', 'message', 'turn_id'}:
+                raise SessionError('INVALID_EMAIL_TURN', '請只傳送本次訊息，不可指定收件 Email 或草稿欄位。', 422)
+            message, turn_id = payload.get('message'), payload.get('turn_id')
+            if (not isinstance(message, str) or not 1 <= len(message.strip()) <= 2000
+                    or not isinstance(turn_id, str) or not re.fullmatch(r'[A-Za-z0-9_-]{8,100}', turn_id)):
+                raise SessionError('INVALID_EMAIL_TURN', '請提供 1–2000 字訊息與有效的 turn_id。', 422)
+            message = message.strip()
+            digest = hashlib.sha256(message.encode()).hexdigest()
+            replay = conversation.email_turns.get(turn_id)
+            if replay:
+                if replay[0] != digest:
+                    raise SessionError('EMAIL_TURN_CONFLICT', '相同回合 ID 不可套用不同訊息。', 409)
+                return replay[1], {**deepcopy(replay[2]), 'session': self._public(owner)}
+            if conversation.active:
+                raise SessionError('SESSION_BUSY', '此對話仍在處理，請稍後再試。')
+            old_id = conversation.email_fields.get('draft_id')
+            if old_id:
+                self._drafts.pop(old_id, None)
+                self._draft_memories.pop(old_id, None)
+                self.service.pending_drafts.pop(old_id, None)
+            if re.fullmatch(r'(?:取消|重新開始|重來|不要寫了|取消寫信)[。！!\s]*', message):
+                conversation.email_history.clear()
+                conversation.email_fields.clear()
+                # Keep only replay metadata, not the old private conversation or drafts.
+                conversation.email_turns.clear()
+                result = {'status': 'collecting', 'answer': '已清除這封信的對話。這次想寫給誰、想說什麼？',
+                          'conversation': {'awaiting': 'recipient_query', 'reset': True}, 'citations': [],
+                          'analysis': {'backend': 'host', 'live_status': 'LIVE_NOT_RUN'}}
+                conversation.email_turns[turn_id] = (digest, 200, deepcopy(result))
+                return 200, {**result, 'session': self._public(owner)}
+            if len(conversation.email_history) >= 12:
+                raise SessionError('EMAIL_CONTEXT_LIMIT', '這封信已達 12 回合，請先輸入「重新開始」再整理需求。', 422)
+            history = [*conversation.email_history, message]
+            current = dict(conversation.email_fields)
+            service, version, generation = self.service, self.source_version, conversation.generation
+            token = secrets.token_urlsafe(16)
+            conversation.active = token
+        status, result = 200, None
+        try:
+            analysis = {'backend': 'rules', 'live_status': 'LIVE_NOT_RUN', 'status': 'not_configured'}
+            if self.email_planner.configured:
+                try:
+                    fields = validate_fields(self.email_planner.extract(history, current), history)
+                    live = getattr(self.email_planner, 'evidence_mode', 'offline') == 'live'
+                    analysis = {'backend': 'gemini', 'live_status': 'LIVE_PASS' if live else 'LIVE_NOT_RUN',
+                                'status': 'extracted' if live else 'offline_model_double'}
+                except GeminiEmailError:
+                    fields = rule_extract(message, current, service)
+                    live = getattr(self.email_planner, 'evidence_mode', 'offline') == 'live'
+                    analysis = {'backend': 'rules', 'live_status': 'LIVE_FAIL' if live else 'LIVE_NOT_RUN',
+                                'status': 'model_failed_fallback', 'warning': 'AI 理解暫時不可用，先依你明確提供的文字補齊，不會猜收件人。'}
+            else:
+                fields = rule_extract(message, current, service)
+            awaiting, answer, recipient, citations = next_step(service, fields)
+            fields['awaiting'] = awaiting
+            result = {'status': 'collecting', 'answer': answer, 'conversation': {'awaiting': awaiting},
+                      'analysis': analysis, 'citations': citations}
+            if recipient:
+                status, draft = service.create_email_draft({**fields, 'teacher_name': recipient['teacher_name'],
+                    'purpose': _detected_purpose(fields['request_details'])})
+                if status == 200:
+                    result.update(draft)
+                    result['answer'] = '草稿已建立。請檢查收件人、主旨與全文，再另外勾選確認 Sandbox 寄送。'
+                    fields['draft_id'] = draft['draft_id']
+                else:
+                    result = {**draft, 'answer': draft.get('reason', '草稿未建立，請補充需求。'),
+                              'analysis': analysis, 'conversation': {'awaiting': 'request_details'}}
+            with self._lock:
+                self._refresh()
+                if (self._users.get(owner) is not conversation or conversation.generation != generation
+                        or conversation.active != token or self.source_version != version):
+                    if result.get('draft_id'):
+                        service.pending_drafts.pop(result['draft_id'], None)
+                    raise SessionError('STALE_SESSION', '對話或資料已更新，已排除舊回覆。')
+                conversation.email_history = history
+                conversation.email_fields = fields
+                if result.get('draft_id'):
+                    self._drafts[result['draft_id']] = (owner, generation, version)
+                    self._receipts[result['request_id']] = owner
+                conversation.email_turns[turn_id] = (digest, status, deepcopy(result))
+                while len(conversation.email_turns) > 16:
+                    del conversation.email_turns[next(iter(conversation.email_turns))]
+                return status, {**result, 'session': self._public(owner)}
+        except Exception:
+            # A source refresh or account rotation may fail after draft creation.
+            # Never leave that orphan available outside its validated session.
+            if result and result.get('draft_id'):
+                with self._lock:
+                    service.pending_drafts.pop(result['draft_id'], None)
+                    self._drafts.pop(result['draft_id'], None)
+                    self._draft_memories.pop(result['draft_id'], None)
+            raise
+        finally:
+            with self._lock:
+                if conversation.active == token:
+                    conversation.active = None
 
     def _handle(self, owner: str | None, csrf: str, path: str,
                 payload: dict[str, Any]) -> tuple[int, dict[str, Any]]:

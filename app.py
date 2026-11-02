@@ -16,9 +16,12 @@ UI_ROOT = REPOSITORY_ROOT / "ui"
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from session_host import SessionHost, SessionError  # noqa: E402
+from campus_service import CampusService, FACULTY_DATA_PATH, OFFICE_DATA_PATH  # noqa: E402
+from campus_catalog import CATALOG_PATH  # noqa: E402
 
 
-SESSION_HOST = SessionHost()
+SESSION_HOST = SessionHost(service_factory=lambda: CampusService(campus_enabled=True),
+                           source_paths=(FACULTY_DATA_PATH, OFFICE_DATA_PATH, CATALOG_PATH))
 
 
 class CampusRequestHandler(SimpleHTTPRequestHandler):

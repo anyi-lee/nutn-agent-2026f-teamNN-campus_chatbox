@@ -16,6 +16,7 @@ from gemini_email import (
     EMAIL_SYSTEM_PROMPT,
     GeminiEmailError,
     build_email_prompt,
+    confirmed_contact_query,
     validate_email_draft,
 )
 
@@ -134,9 +135,11 @@ class LangChainEmailGenerator:
         def get_teacher_contact(teacher_query: str) -> dict[str, Any]:
             """從版本化南大資工系官方資料查詢指定教師的公開聯絡資訊。"""
 
-            normalized_query = str(teacher_query or "").strip()
-            if normalized_query != expected_teacher:
-                raise ValueError("LangChain agent changed the user-confirmed teacher")
+            model_query = str(teacher_query or '').strip()
+            try:
+                normalized_query = confirmed_contact_query(facts,model_query)
+            except GeminiEmailError as exc:
+                raise ValueError('LangChain agent changed the user-confirmed teacher') from exc
             result = dict(
                 call_tool(
                     "get_teacher_contact",
@@ -151,6 +154,8 @@ class LangChainEmailGenerator:
                     "framework": "langchain",
                     "tool": "get_teacher_contact",
                     "arguments": {"teacher_query": normalized_query},
+                    "model_arguments": {"teacher_query": model_query},
+                    "query_normalized": model_query != normalized_query,
                     "host_validation": "passed",
                     "status": "found",
                 }

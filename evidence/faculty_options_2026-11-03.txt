@@ -1,0 +1,178 @@
+實際瀏覽器 UI 選取證據
+日期：2026-11-03 Asia/Taipei
+URL：http://127.0.0.1:8000/
+訪客模式；無模型呼叫、無草稿生成、無寄送。
+AX 的原生 select 隱藏 menu 可能顯示 disabled；選取後 value 與收件對象文字已確認成功。
+
+## 教育學系
+Browser tab: 7, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+1 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+	2 container draft-dialog
+		3 container
+			4 text GROUNDED EMAIL DRAFT
+			5 heading Email 草稿助手, Value: 2
+				6 text Email 草稿助手
+			7 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			8 text Manual · Gemini · gemini-3.5-flash
+			9 text Sandbox · 不寄真實信箱
+			10 button Description: 關閉, ID: dialog-close
+		11 button (collapsed) 套用已存完整草稿（選用）, Secondary Actions: Expand
+			12 text 套用已存完整草稿（選用）
+		13 container draft-form
+			14 container 收件對象 *
+				15 text 收件對象 *
+				16 radio button (settable, integer) Description: 處室, Value: 0, ID: recipient-office
+				17 radio button (settable, integer) Description: 學系, Value: 1, ID: recipient-academic
+			84 container academic-picker
+				85 container
+					86 text 選擇學系 *
+					87 pop up button (collapsed, settable) 選擇學系 *, Value: 教育學系, ID: department-select, Secondary Actions: Expand
+						88 menu
+							89 請先選擇學系
+							90 (selected) 教育學系
+							91 特殊教育學系
+							92 幼兒教育學系
+							93 體育學系
+							94 諮商與輔導學系
+							95 文化與自然資源學系
+							96 國語文學系
+							97 英語學系
+							98 電機工程學系
+							99 應用數學系
+							100 數位學習科技學系
+							101 材料科學系
+							102 資訊工程學系
+							103 智慧製造在職學位學程
+							104 生態暨環境資源學系
+							105 生物科技學系
+							106 綠色能源科技學系
+							107 音樂學系
+							108 視覺藝術與設計學系
+							109 戲劇創作與應用學系
+							110 經營與管理學系
+							111 行政管理學系
+				112 container
+					113 text 選擇老師／系辦窗口 *
+					114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 陳惠萍 · 教授, ID: academic-teacher-select, Secondary Actions: Expand
+						115 menu
+							116 (disabled) 請選擇收件老師／系辦窗口
+							117 (disabled) 陳惠萍 · 教授
+							118 (disabled) 林進材 · 教授
+							119 (disabled) 許誌庭 · 教授
+							120 (disabled) 吳俊憲 · 教授
+							121 (disabled) 黃柏叡 · 教授
+							122 (disabled) 黃彥文 · 副教授
+							123 (disabled) 姜麗娟 · 教授
+							124 (disabled) 張正平 · 教授
+							125 (disabled) 林斌 · 副教授
+							126 (disabled) 李郁緻 · 副教授
+							127 (disabled) 歐陽誾 · 教授
+							128 (disabled) 吳純萍 · 副教授
+							129 (disabled) 林素微 · 教授
+							130 (disabled) 鄒慧英 · 教授
+							131 (disabled) 凃柏原 · 教授
+							132 (disabled) 林娟如 · 副教授
+							133 (disabled) 徐立真 · 助理教授
+							134 (disabled) 呂明蓁 · 副教授
+							135 (disabled) 蘇建元 · 教授
+							136 (disabled) 張主揚 · 助理教授
+			139 text 收件對象：陳惠萍。信箱會在建立草稿時重新驗證。
+			138 link Description: 查看該單位官網 ↗, Value: edu.nutn.edu.tw/, ID: recipient-source
+			46 container
+				47 text 你的姓名 *
+				48 text field (settable) 你的姓名 *
+			49 container
+				50 text 寄信目的 *
+				51 pop up button (collapsed, settable) 寄信目的 *, Value: 其他事項詢問, ID: purpose, Secondary Actions: Expand
+					52 menu
+						53 請選擇寄信目的
+						54 詢問專題名額
+						55 詢問研究方向
+						56 詢問課程問題
+						57 預約討論時間
+						58 申請課程加簽
+						59 申請補交作業
+						60 詢問題目答案或解題說明
+						61 詢問成績
+						62 (selected) 其他事項詢問
+			63 container
+				64 text 年級
+				65 text field (settable) 年級
+			66 container
+				67 text 你自己的系所
+				68 text field (settable) 你自己的系所
+			69 container
+				70 text 想詢問的內容 *
+				71 text entry area (settable) 想詢問的內容 *
+			72 container
+				73 text 補充背景（選填）
+				74 text entry area (settable) 補充背景（選填）
+			75 container 加入自己的常用文字（選填）
+				76 text 加入自己的常用文字（選填）
+				77 text 只加入勾選的文字段落。若要重用整封信，直接勾選上方已存完整草稿。
+				78 text 登入後可保存與使用自己的常用文字、草稿。
+				79 button 預覽套用效果, ID: preview-template
+			80 button 取消, ID: cancel-draft
+			81 button 產生草稿 →
+				82 text 產生草稿
+				83 text →
+
+The focused UI element is 114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 陳惠萍 · 教授, ID: academic-teacher-select, Secondary Actions: Expand
+
+## 戲劇創作與應用學系
+Browser tab: 7, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 116-136, 139
+~					87 pop up button (collapsed, settable) 選擇學系 *, Value: 戲劇創作與應用學系, ID: department-select, Secondary Actions: Expand
+~							90 教育學系
+~							109 (selected) 戲劇創作與應用學系
+~					114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 請選擇收件老師／系辦窗口, ID: academic-teacher-select, Secondary Actions: Expand
++							139 (disabled) 請選擇收件老師／系辦窗口
++							140 (disabled) 陳晞如 · 專任副教授
++							141 (disabled) 林玫君 · 專任教授
++							142 (disabled) 王婉容 · 專任教授
++							143 (disabled) 林偉瑜 · 專任教授
++							144 (disabled) 厲復平 · 專任副教授
++							145 (disabled) 張麗玉 · 專任副教授
++							146 (disabled) 蔡依仁 · 專任副教授
++							147 (disabled) 戲劇創作與應用學系 · 系辦公開窗口
++			148 text 請選老師；只顯示本系所已收錄的官方教師與公開窗口。
+~			138 link Description: 查看該單位官網 ↗, Value: drama.nutn.edu.tw/, ID: recipient-source
+The focused UI element is 87 pop up button (collapsed, settable) 選擇學系 *, Value: 戲劇創作與應用學系, ID: department-select, Secondary Actions: Expand
+
+## 戲劇系已選取分頁教師
+Browser tab: 7, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~					114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 張麗玉 · 專任副教授, ID: academic-teacher-select, Secondary Actions: Expand
+~			148 text 收件對象：張麗玉。信箱會在建立草稿時重新驗證。
+The focused UI element is 114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 張麗玉 · 專任副教授, ID: academic-teacher-select, Secondary Actions: Expand
+
+## 智慧製造在職學位學程
+Browser tab: 7, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 148
+~					87 pop up button (collapsed, settable) 選擇學系 *, Value: 智慧製造在職學位學程, ID: department-select, Secondary Actions: Expand
+~							103 (selected) 智慧製造在職學位學程
+~							109 戲劇創作與應用學系
+~					114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 請選擇收件老師／系辦窗口, ID: academic-teacher-select, Secondary Actions: Expand
+~							140 (disabled) 白富升 · 教授
+~							141 (disabled) 張仲卿 · 教授
+~							142 (disabled) 孫光天（智慧製造在職學位學程） · 教授
+~							143 (disabled) 呂英治（智慧製造在職學位學程） · 教授
+~							144 (disabled) 林大偉（智慧製造在職學位學程） · 教授
+~							145 (disabled) 李昆達（智慧製造在職學位學程） · 教授
+~							146 (disabled) 朱明毅（智慧製造在職學位學程） · 副教授
+~							147 (disabled) 高啟洲（智慧製造在職學位學程） · 教授
++							148 (disabled) 李健興（智慧製造在職學位學程） · 教授
++							149 (disabled) 許世昌（智慧製造在職學位學程） · 教授
++							150 (disabled) 劉哲宏（智慧製造在職學位學程） · 教授
++			151 text 請選老師；只顯示本系所已收錄的官方教師與公開窗口。
+~			138 link Description: 查看該單位官網 ↗, Value: scieng.nutn.edu.tw/smfg/, ID: recipient-source
+The focused UI element is 87 pop up button (collapsed, settable) 選擇學系 *, Value: 智慧製造在職學位學程, ID: department-select, Secondary Actions: Expand
+
+## 學程已選取跨系教師
+Browser tab: 7, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~					114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 孫光天（智慧製造在職學位學程） · 教授, ID: academic-teacher-select, Secondary Actions: Expand
+~			151 text 收件對象：孫光天（智慧製造在職學位學程）。信箱會在建立草稿時重新驗證。
+The focused UI element is 114 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 孫光天（智慧製造在職學位學程） · 教授, ID: academic-teacher-select, Secondary Actions: Expand

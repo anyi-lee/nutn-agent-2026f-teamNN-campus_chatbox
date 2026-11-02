@@ -1,0 +1,167 @@
+日期：2026-11-03 Asia/Taipei
+隔離 localhost 暫存 Sandbox；合成資料，本機模板，Gemini LIVE_NOT_RUN。
+流程：產生草稿 → 勾選確認 → simulated_sent → 關閉 → 再開 Email Agent。
+
+生成：
+Browser tab: 8, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:63125/".
+0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:63125/
+	1 container draft-dialog
+		2 container
+			3 text GROUNDED EMAIL DRAFT
+			4 heading Email 草稿助手, Value: 2
+				5 text Email 草稿助手
+			6 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			7 text 本機模板 · 尚未設定 Gemini Key
+			8 text Sandbox · 不寄真實信箱
+			9 button Description: 關閉, ID: dialog-close
+		10 button (collapsed) 套用已存完整草稿（選用）, Secondary Actions: Expand
+			11 text 套用已存完整草稿（選用）
+		12 container draft-result
+			13 text ✓
+			14 text 草稿已建立
+			15 text 由本機模板產生；收件人已驗證，目前尚未寄出。
+			16 text HOST · get_teacher_contact · found
+			17 definition list
+				18 container 收件人
+					19 text 收件人
+				20 text lib-1@pubmail.nutn.edu.tw
+				21 container 主旨
+					22 text 主旨
+				23 text 其他事項詢問
+			24 text 圖資處承辦人您好：
+
+我是合成測試學系大四學生合成測試學生。想向貴單位詢問：這是介面測試，想詢問公開借閱資訊，不需實際寄信。煩請告知相關處理方式，謝謝。
+
+感謝您撥冗閱讀。
+
+學生 合成測試學生 敬上
+			25 button 編輯本次信件, ID: edit-email-content
+			26 container
+				27 text 讓 AI 完善這封信（選填）
+				28 text entry area (settable) 讓 AI 完善這封信（選填）, ID: revision-instructions
+				29 text 只調整本次草稿，不更換收件人、不覆寫已保存模板，也不會自動寄送。需要可用的 Gemini 設定。
+				30 button 請 AI 調整, ID: revise-email
+			31 container confirmation-panel
+				32 checkbox (settable, integer) Description: 我已確認收件人、主旨與正文 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。, Value: 0, ID: confirm-send
+				33 text 我已確認收件人、主旨與正文
+				34 text 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。
+			35 button 返回修改資料, ID: edit-draft
+			36 button 複製草稿, ID: copy-draft
+			37 button 草稿另存為模板, ID: save-draft-template
+			38 button (disabled) 確認並模擬寄出, ID: send-email
+
+The focused UI element is 0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:63125/
+
+寄出結果：
+Browser tab: 8, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:63125/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 14-16, 31-34
++			39 text Sandbox 執行完成
++			40 text Write Tool 已回傳執行結果；未寄到真實信箱。
++			41 text WRITE · send_email · simulated_sent
++			42 container send-receipt
++				43 text Sandbox 執行證據
++				44 definition list
++					45 container 狀態
++						46 text 狀態
++					47 text simulated_sent
++					48 container Request ID
++						49 text Request ID
++					50 text mail-30463ad172f04c8c819950786908ac93
++					51 container Message ID
++						52 text Message ID
++					53 text sandbox-a8638764772a4f85
++					54 container 時間
++						55 text 時間
++					56 text 2026-11-02T16:34:04.952996+00:00
++				57 text 這是本機模擬結果，沒有郵件寄到外部信箱。
+~			38 button (disabled) 已寫入 Sandbox, ID: send-email
+The focused UI element is 0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:63125/
+
+重開結果：
+Browser tab: 8, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:63125/".
+0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:63125/
+	1 container draft-dialog
+		2 container
+			3 text GROUNDED EMAIL DRAFT
+			4 heading Email 草稿助手, Value: 2
+				5 text Email 草稿助手
+			6 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			7 text 本機模板 · 尚未設定 Gemini Key
+			8 text Sandbox · 不寄真實信箱
+			9 button Description: 關閉, ID: dialog-close
+		10 button (collapsed) 套用已存完整草稿（選用）, Secondary Actions: Expand
+			11 text 套用已存完整草稿（選用）
+		12 container draft-form
+			13 container 收件對象 *
+				14 text 收件對象 *
+				15 radio button (settable, integer) Description: 處室, Value: 1, ID: recipient-office
+				16 radio button (settable, integer) Description: 學系, Value: 0, ID: recipient-academic
+			17 container office-picker
+				18 container
+					19 text 選擇處室 *
+					20 pop up button (collapsed, settable) 選擇處室 *, Value: 請先選擇處室, ID: office-select, Secondary Actions: Expand
+						21 menu
+							22 (selected) 請先選擇處室
+							23 校長室
+							24 教務處
+							25 學務處
+							26 總務處
+							27 研究發展處
+							28 國際事務處
+							29 圖資處
+							30 體育室
+							31 秘書室
+							32 人事室
+							33 主計室
+							34 校友服務中心
+							35 通識教育中心
+							36 師資培育中心
+							37 特殊教育中心
+							38 視障教育與重建中心
+				39 container
+					40 text 選擇組別／聯絡窗口 *
+					41 pop up button (disabled, collapsed, settable) 選擇組別／聯絡窗口 *, Value: 請先選擇處室, ID: office-section-select, Secondary Actions: Expand
+						42 menu
+							43 (disabled) 請先選擇處室
+			44 text 先選處室，再選所屬組別或處室公開窗口；收件信箱由官方資料取得。
+			45 container
+				46 text 你的姓名 *
+				47 text field (settable) 你的姓名 *
+			48 container
+				49 text 寄信目的 *
+				50 pop up button (collapsed, settable) 寄信目的 *, Value: 請選擇寄信目的, ID: purpose, Secondary Actions: Expand
+					51 menu
+						52 (selected) 請選擇寄信目的
+						53 詢問專題名額
+						54 詢問研究方向
+						55 詢問課程問題
+						56 預約討論時間
+						57 申請課程加簽
+						58 申請補交作業
+						59 詢問題目答案或解題說明
+						60 詢問成績
+						61 其他事項詢問
+			62 container
+				63 text 年級
+				64 text field (settable) 年級
+			65 container
+				66 text 你自己的系所
+				67 text field (settable) 你自己的系所
+			68 container
+				69 text 想詢問的內容 *
+				70 text entry area (settable) 想詢問的內容 *
+			71 container
+				72 text 補充背景（選填）
+				73 text entry area (settable) 補充背景（選填）
+			74 container 加入自己的常用文字（選填）
+				75 text 加入自己的常用文字（選填）
+				76 text 只加入勾選的文字段落。若要重用整封信，直接勾選上方已存完整草稿。
+				77 text 登入後可保存與使用自己的常用文字、草稿。
+				78 button 預覽套用效果, ID: preview-template
+			79 button 取消, ID: cancel-draft
+			80 button 產生草稿 →
+				81 text 產生草稿
+				82 text →
+
+The focused UI element is 9 button Description: 關閉, ID: dialog-close

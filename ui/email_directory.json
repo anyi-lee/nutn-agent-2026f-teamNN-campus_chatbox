@@ -1,0 +1,1709 @@
+{
+  "schema_version": "email-directory-v2",
+  "source_sha256": "3a3a06b2702c3513397d376cf45aff18a10f06954722d7ff18d412ce5f34fbc5",
+  "retrieved_at": "2026-11-03T00:17:44+08:00",
+  "units": [
+    {
+      "name": "教育學系",
+      "category": "academic",
+      "url": "https://edu.nutn.edu.tw/"
+    },
+    {
+      "name": "特殊教育學系",
+      "category": "academic",
+      "url": "https://sped.nutn.edu.tw/"
+    },
+    {
+      "name": "幼兒教育學系",
+      "category": "academic",
+      "url": "https://ece.nutn.edu.tw/"
+    },
+    {
+      "name": "體育學系",
+      "category": "academic",
+      "url": "https://phyedu.nutn.edu.tw/"
+    },
+    {
+      "name": "諮商與輔導學系",
+      "category": "academic",
+      "url": "https://cg.nutn.edu.tw/"
+    },
+    {
+      "name": "文化與自然資源學系",
+      "category": "academic",
+      "url": "https://cnr.nutn.edu.tw/"
+    },
+    {
+      "name": "國語文學系",
+      "category": "academic",
+      "url": "https://chinese.nutn.edu.tw/"
+    },
+    {
+      "name": "英語學系",
+      "category": "academic",
+      "url": "https://english.nutn.edu.tw/"
+    },
+    {
+      "name": "電機工程學系",
+      "category": "academic",
+      "url": "https://ee.nutn.edu.tw/"
+    },
+    {
+      "name": "應用數學系",
+      "category": "academic",
+      "url": "https://math.nutn.edu.tw/"
+    },
+    {
+      "name": "數位學習科技學系",
+      "category": "academic",
+      "url": "https://ilt.nutn.edu.tw/"
+    },
+    {
+      "name": "材料科學系",
+      "category": "academic",
+      "url": "https://material.nutn.edu.tw/"
+    },
+    {
+      "name": "資訊工程學系",
+      "category": "academic",
+      "url": "https://csie.nutn.edu.tw/"
+    },
+    {
+      "name": "智慧製造在職學位學程",
+      "category": "academic",
+      "url": "https://scieng.nutn.edu.tw/smfg/"
+    },
+    {
+      "name": "生態暨環境資源學系",
+      "category": "academic",
+      "url": "https://ecosci.nutn.edu.tw/"
+    },
+    {
+      "name": "生物科技學系",
+      "category": "academic",
+      "url": "https://bst.nutn.edu.tw/"
+    },
+    {
+      "name": "綠色能源科技學系",
+      "category": "academic",
+      "url": "https://greenergy.nutn.edu.tw/"
+    },
+    {
+      "name": "音樂學系",
+      "category": "academic",
+      "url": "https://music.nutn.edu.tw/"
+    },
+    {
+      "name": "視覺藝術與設計學系",
+      "category": "academic",
+      "url": "https://fineart.nutn.edu.tw/"
+    },
+    {
+      "name": "戲劇創作與應用學系",
+      "category": "academic",
+      "url": "https://drama.nutn.edu.tw/"
+    },
+    {
+      "name": "經營與管理學系",
+      "category": "academic",
+      "url": "https://bm.nutn.edu.tw/"
+    },
+    {
+      "name": "行政管理學系",
+      "category": "academic",
+      "url": "https://pam.nutn.edu.tw/"
+    },
+    {
+      "name": "校長室",
+      "category": "administrative",
+      "url": "https://secretariat.nutn.edu.tw/mode02.aspx?boss=20240621163719917&mk=A",
+      "parent_office": "校長室"
+    },
+    {
+      "name": "教務處",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "學務處",
+      "category": "administrative",
+      "url": "https://osa.nutn.edu.tw/",
+      "parent_office": "學務處"
+    },
+    {
+      "name": "總務處",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "研究發展處",
+      "category": "administrative",
+      "url": "https://randd.nutn.edu.tw/",
+      "parent_office": "研究發展處"
+    },
+    {
+      "name": "國際事務處",
+      "category": "administrative",
+      "url": "https://oia.nutn.edu.tw/",
+      "parent_office": "國際事務處"
+    },
+    {
+      "name": "圖資處",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "體育室",
+      "category": "administrative",
+      "url": "https://sports.nutn.edu.tw/",
+      "parent_office": "體育室"
+    },
+    {
+      "name": "秘書室",
+      "category": "administrative",
+      "url": "https://secretariat.nutn.edu.tw/",
+      "parent_office": "秘書室"
+    },
+    {
+      "name": "人事室",
+      "category": "administrative",
+      "url": "https://personnel.nutn.edu.tw",
+      "parent_office": "人事室"
+    },
+    {
+      "name": "主計室",
+      "category": "administrative",
+      "url": "https://account.nutn.edu.tw",
+      "parent_office": "主計室"
+    },
+    {
+      "name": "校友服務中心",
+      "category": "administrative",
+      "url": "https://alumni.nutn.edu.tw/",
+      "parent_office": "校友服務中心"
+    },
+    {
+      "name": "通識教育中心",
+      "category": "administrative",
+      "url": "https://genedu.nutn.edu.tw/",
+      "parent_office": "通識教育中心"
+    },
+    {
+      "name": "師資培育中心",
+      "category": "administrative",
+      "url": "https://phpweb4.nutn.edu.tw/cte/",
+      "parent_office": "師資培育中心"
+    },
+    {
+      "name": "特殊教育中心",
+      "category": "administrative",
+      "url": "https://spedcenter.nutn.edu.tw/",
+      "parent_office": "特殊教育中心"
+    },
+    {
+      "name": "視障教育與重建中心",
+      "category": "administrative",
+      "url": "https://www.nutn.edu.tw/vhc/",
+      "parent_office": "視障教育與重建中心"
+    },
+    {
+      "name": "國際事務處語文中心",
+      "category": "administrative",
+      "url": "https://oia.nutn.edu.tw/",
+      "parent_office": "國際事務處"
+    },
+    {
+      "name": "校友服務中心主任",
+      "category": "administrative",
+      "url": "https://alumni.nutn.edu.tw/",
+      "parent_office": "校友服務中心"
+    },
+    {
+      "name": "校友服務中心校友服務組",
+      "category": "administrative",
+      "url": "https://alumni.nutn.edu.tw/",
+      "parent_office": "校友服務中心"
+    },
+    {
+      "name": "校友服務中心就業輔導組",
+      "category": "administrative",
+      "url": "https://alumni.nutn.edu.tw/",
+      "parent_office": "校友服務中心"
+    },
+    {
+      "name": "圖資處讀者服務組",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處企劃組",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處館藏發展組",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處教學業務組",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處資訊系統組",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處學籍成績組",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處網路服務組",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處研究生教務組",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處一樓服務台",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處進修推廣組",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處格致樓辦公室",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處數位影音學習組",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處文薈樓管理室",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "教務處教學與學習發展中心",
+      "category": "administrative",
+      "url": "https://academic.nutn.edu.tw/",
+      "parent_office": "教務處"
+    },
+    {
+      "name": "圖資處榮譽分館",
+      "category": "administrative",
+      "url": "https://lis.nutn.edu.tw/",
+      "parent_office": "圖資處"
+    },
+    {
+      "name": "體育室主任",
+      "category": "administrative",
+      "url": "https://sports.nutn.edu.tw/",
+      "parent_office": "體育室"
+    },
+    {
+      "name": "學務處課外活動指導組",
+      "category": "administrative",
+      "url": "https://osa.nutn.edu.tw/",
+      "parent_office": "學務處"
+    },
+    {
+      "name": "學務處生活輔導組",
+      "category": "administrative",
+      "url": "https://osa.nutn.edu.tw/",
+      "parent_office": "學務處"
+    },
+    {
+      "name": "學務處衛生保健組",
+      "category": "administrative",
+      "url": "https://osa.nutn.edu.tw/",
+      "parent_office": "學務處"
+    },
+    {
+      "name": "總務處事務組",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "總務處營繕組",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "總務處文書組",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "總務處出納組",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "總務處保管組",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "總務處環安組",
+      "category": "administrative",
+      "url": "https://oga.nutn.edu.tw",
+      "parent_office": "總務處"
+    },
+    {
+      "name": "研究發展處研發長",
+      "category": "administrative",
+      "url": "https://randd.nutn.edu.tw/",
+      "parent_office": "研究發展處"
+    },
+    {
+      "name": "研究發展處學術發展組",
+      "category": "administrative",
+      "url": "https://randd.nutn.edu.tw/",
+      "parent_office": "研究發展處"
+    },
+    {
+      "name": "研究發展處計畫服務組",
+      "category": "administrative",
+      "url": "https://randd.nutn.edu.tw/",
+      "parent_office": "研究發展處"
+    },
+    {
+      "name": "研究發展處創新育成中心",
+      "category": "administrative",
+      "url": "https://randd.nutn.edu.tw/",
+      "parent_office": "研究發展處"
+    },
+    {
+      "name": "國際事務處國際長",
+      "category": "administrative",
+      "url": "https://oia.nutn.edu.tw/",
+      "parent_office": "國際事務處"
+    },
+    {
+      "name": "國際事務處國際事務組",
+      "category": "administrative",
+      "url": "https://oia.nutn.edu.tw/",
+      "parent_office": "國際事務處"
+    }
+  ],
+  "recipients": [
+    {
+      "name": "林朝興",
+      "title": "教授兼系主任",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李健興",
+      "title": "教授",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李建樹",
+      "title": "教授",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳宗禧",
+      "title": "教授兼圖資處圖資長",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳榮銘",
+      "title": "教授",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "高啟洲",
+      "title": "教授",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "朱明毅",
+      "title": "副教授",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蘇溢芳",
+      "title": "副教授",
+      "department": "資訊工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "盧陽明",
+      "title": "教授",
+      "department": "電機工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王健仁",
+      "title": "教授",
+      "department": "電機工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃俊岳",
+      "title": "教授",
+      "department": "電機工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "許世昌（電機工程學系）",
+      "title": "教授",
+      "department": "電機工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃崇能",
+      "title": "教授",
+      "department": "電機工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "梁家銘",
+      "title": "教授",
+      "department": "電機工程學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李昆達（材料科學系）",
+      "title": "教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "呂英治（材料科學系）",
+      "title": "教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林大偉（材料科學系）",
+      "title": "教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄭永楨",
+      "title": "教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄭建星",
+      "title": "教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蒲盈志",
+      "title": "教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "邱聖貴",
+      "title": "副教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "尤孝雯",
+      "title": "助理教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳名一",
+      "title": "助理教授",
+      "department": "材料科學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "謝宗欣",
+      "title": "教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張原謀",
+      "title": "教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "范玉玲",
+      "title": "副教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "薛怡珍",
+      "title": "副教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳瀅世",
+      "title": "副教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳韋妤",
+      "title": "副教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡嘉陽",
+      "title": "講師",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王穎",
+      "title": "教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "許毅璿",
+      "title": "教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "梁明煌",
+      "title": "副教授",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "吳幸蓉",
+      "title": "講師",
+      "department": "生態暨環境資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄭憲仁",
+      "title": "副教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡玲婉",
+      "title": "教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林登順",
+      "title": "教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張惠貞",
+      "title": "教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王建國",
+      "title": "教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王琅",
+      "title": "副教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳光明",
+      "title": "副教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "楊素姿",
+      "title": "副教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "莊千慧",
+      "title": "副教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳昭吟",
+      "title": "副教授",
+      "department": "國語文學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳惠萍",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林進材",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "許誌庭",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "吳俊憲",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃柏叡",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃彥文",
+      "title": "副教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "姜麗娟",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張正平",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林斌",
+      "title": "副教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李郁緻",
+      "title": "副教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "歐陽誾",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "吳純萍",
+      "title": "副教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林素微",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄒慧英",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "凃柏原",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林娟如",
+      "title": "副教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "徐立真",
+      "title": "助理教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "呂明蓁",
+      "title": "副教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蘇建元",
+      "title": "教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張主揚",
+      "title": "助理教授",
+      "department": "教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李芃娟",
+      "title": "教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "高振耀",
+      "title": "教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林千玉",
+      "title": "教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "朱慧娟",
+      "title": "副教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "曾明基",
+      "title": "副教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "劉俊榮",
+      "title": "副教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡淑妃",
+      "title": "副教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳英豪",
+      "title": "助理教授",
+      "department": "特殊教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄭雅丰",
+      "title": "副教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李萍娜",
+      "title": "教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳怡靖",
+      "title": "教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張麗芬",
+      "title": "副教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "翟敏如",
+      "title": "副教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳姿蘭",
+      "title": "副教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳妍妤",
+      "title": "助理教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "許孟勤",
+      "title": "助理教授",
+      "department": "幼兒教育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "卓國雄",
+      "title": "教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳耀宏",
+      "title": "教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡宗信",
+      "title": "教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "劉仙湧",
+      "title": "教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "彭小惠",
+      "title": "教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "龔憶琳",
+      "title": "副教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄭安城",
+      "title": "副教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張碩文",
+      "title": "副教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡佳蓉",
+      "title": "助理教授",
+      "department": "體育學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "連廷嘉",
+      "title": "教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳宇平",
+      "title": "教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡美香",
+      "title": "教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李岳庭",
+      "title": "副教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "翟宗悌",
+      "title": "副教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳志賢",
+      "title": "副教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "吳麗雲",
+      "title": "副教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳思帆",
+      "title": "副教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李明峰",
+      "title": "助理教授",
+      "department": "諮商與輔導學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張靜宜",
+      "title": "副教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "邱麗娟",
+      "title": "教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳緯華",
+      "title": "教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王志明",
+      "title": "副教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張伯宇",
+      "title": "副教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡米虹",
+      "title": "副教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林春吟",
+      "title": "助理教授",
+      "department": "文化與自然資源學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "楊逸君",
+      "title": "副教授",
+      "department": "英語學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "嚴子陵",
+      "title": "教授",
+      "department": "英語學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "鄒月如",
+      "title": "副教授",
+      "department": "英語學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "熊慧如",
+      "title": "副教授",
+      "department": "英語學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "柯昭蓉",
+      "title": "副教授",
+      "department": "英語學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "羅芊蒨",
+      "title": "助理教授",
+      "department": "英語學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃印良",
+      "title": "副教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "葉啟村",
+      "title": "教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "孫新民",
+      "title": "教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "葉宗鑫",
+      "title": "教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林琲琪",
+      "title": "教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃建中",
+      "title": "副教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳憲揚",
+      "title": "副教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃垣熊",
+      "title": "助理教授",
+      "department": "應用數學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蘇俊銘",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "孫光天（數位學習科技學系）",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李建億",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林豪鏘",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡昆宏",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張智凱",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "莊宗嚴",
+      "title": "教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃意雯",
+      "title": "副教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "伍柏翰",
+      "title": "副教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳玉鈴",
+      "title": "副教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳思齊",
+      "title": "助理教授",
+      "department": "數位學習科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "白富升",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "張仲卿",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "孫光天（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "呂英治（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "林大偉（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "李昆達（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "朱明毅（智慧製造在職學位學程）",
+      "title": "副教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "高啟洲（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "李健興（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "許世昌（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "劉哲宏（智慧製造在職學位學程）",
+      "title": "教授",
+      "department": "智慧製造在職學位學程",
+      "kind": "faculty"
+    },
+    {
+      "name": "卜一宇",
+      "title": "教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "湯譯增",
+      "title": "教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "傅耀賢",
+      "title": "特聘教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "胡家勝",
+      "title": "教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡孟哲",
+      "title": "副教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳澤瑋",
+      "title": "助理教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳玉清水",
+      "title": "助理教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張家欽",
+      "title": "合聘教授",
+      "department": "綠色能源科技學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡耿銘",
+      "title": "副教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "侯志正",
+      "title": "教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃琡珺",
+      "title": "教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "楊美娜",
+      "title": "副教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "朱芸宜",
+      "title": "副教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃靜芳",
+      "title": "副教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "黃乾育",
+      "title": "副教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李慧怡",
+      "title": "助理教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "謝惠如",
+      "title": "助理教授",
+      "department": "音樂學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李香蓮",
+      "title": "副教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "高實珩",
+      "title": "教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林美吟",
+      "title": "教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳建發",
+      "title": "教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "潘青林",
+      "title": "教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "董維琇",
+      "title": "教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "洪明爵",
+      "title": "副教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "范如菀",
+      "title": "副教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "范光義",
+      "title": "副教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林煊哲",
+      "title": "助理教授",
+      "department": "視覺藝術與設計學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "陳晞如",
+      "title": "專任副教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林玫君",
+      "title": "專任教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王婉容",
+      "title": "專任教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林偉瑜",
+      "title": "專任教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "厲復平",
+      "title": "專任副教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "張麗玉",
+      "title": "專任副教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蔡依仁",
+      "title": "專任副教授",
+      "department": "戲劇創作與應用學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蕭詠璋",
+      "title": "教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "劉子歆",
+      "title": "教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林懿貞",
+      "title": "教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "曹瓊文",
+      "title": "教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "賴賢哲",
+      "title": "教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "劉哲宏（經營與管理學系）",
+      "title": "教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "曾繁絹",
+      "title": "副教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "葉耕榕",
+      "title": "副教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "溫丹瑋",
+      "title": "助理教授",
+      "department": "經營與管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "吳宗憲",
+      "title": "教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "馬群傑",
+      "title": "教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "林佳燕",
+      "title": "副教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "王光旭",
+      "title": "教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "李芸蘋",
+      "title": "教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "蕭妙香",
+      "title": "副教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "曾憲立",
+      "title": "副教授",
+      "department": "行政管理學系",
+      "kind": "faculty"
+    },
+    {
+      "name": "體育學系",
+      "title": "官方單位聯絡窗口",
+      "department": "體育學系",
+      "kind": "unit"
+    },
+    {
+      "name": "諮商與輔導學系",
+      "title": "官方單位聯絡窗口",
+      "department": "諮商與輔導學系",
+      "kind": "unit"
+    },
+    {
+      "name": "國語文學系",
+      "title": "官方單位聯絡窗口",
+      "department": "國語文學系",
+      "kind": "unit"
+    },
+    {
+      "name": "英語學系",
+      "title": "官方單位聯絡窗口",
+      "department": "英語學系",
+      "kind": "unit"
+    },
+    {
+      "name": "材料科學系",
+      "title": "官方單位聯絡窗口",
+      "department": "材料科學系",
+      "kind": "unit"
+    },
+    {
+      "name": "生態暨環境資源學系",
+      "title": "官方單位聯絡窗口",
+      "department": "生態暨環境資源學系",
+      "kind": "unit"
+    },
+    {
+      "name": "綠色能源科技學系",
+      "title": "官方單位聯絡窗口",
+      "department": "綠色能源科技學系",
+      "kind": "unit"
+    },
+    {
+      "name": "音樂學系",
+      "title": "官方單位聯絡窗口",
+      "department": "音樂學系",
+      "kind": "unit"
+    },
+    {
+      "name": "視覺藝術與設計學系",
+      "title": "官方單位聯絡窗口",
+      "department": "視覺藝術與設計學系",
+      "kind": "unit"
+    },
+    {
+      "name": "戲劇創作與應用學系",
+      "title": "官方單位聯絡窗口",
+      "department": "戲劇創作與應用學系",
+      "kind": "unit"
+    },
+    {
+      "name": "經營與管理學系",
+      "title": "官方單位聯絡窗口",
+      "department": "經營與管理學系",
+      "kind": "unit"
+    },
+    {
+      "name": "行政管理學系",
+      "title": "官方單位聯絡窗口",
+      "department": "行政管理學系",
+      "kind": "unit"
+    },
+    {
+      "name": "校長室",
+      "title": "官方單位聯絡窗口",
+      "department": "校長室",
+      "kind": "unit"
+    },
+    {
+      "name": "研究發展處",
+      "title": "官方單位聯絡窗口",
+      "department": "研究發展處",
+      "kind": "unit"
+    },
+    {
+      "name": "圖資處",
+      "title": "官方單位聯絡窗口",
+      "department": "圖資處",
+      "kind": "unit"
+    },
+    {
+      "name": "人事室",
+      "title": "官方單位聯絡窗口",
+      "department": "人事室",
+      "kind": "unit"
+    },
+    {
+      "name": "主計室",
+      "title": "官方單位聯絡窗口",
+      "department": "主計室",
+      "kind": "unit"
+    },
+    {
+      "name": "校友服務中心",
+      "title": "官方單位聯絡窗口",
+      "department": "校友服務中心",
+      "kind": "unit"
+    },
+    {
+      "name": "通識教育中心",
+      "title": "官方單位聯絡窗口",
+      "department": "通識教育中心",
+      "kind": "unit"
+    },
+    {
+      "name": "師資培育中心",
+      "title": "官方單位聯絡窗口",
+      "department": "師資培育中心",
+      "kind": "unit"
+    },
+    {
+      "name": "特殊教育中心",
+      "title": "官方單位聯絡窗口",
+      "department": "特殊教育中心",
+      "kind": "unit"
+    },
+    {
+      "name": "視障教育與重建中心",
+      "title": "官方單位聯絡窗口",
+      "department": "視障教育與重建中心",
+      "kind": "unit"
+    },
+    {
+      "name": "資訊工程學系辦公室",
+      "title": "系辦公開聯絡窗口",
+      "department": "資訊工程學系",
+      "kind": "unit"
+    }
+  ]
+}

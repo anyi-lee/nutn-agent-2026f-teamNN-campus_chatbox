@@ -33,7 +33,8 @@ async function harness() {
     FormData: class { entries() { return Object.entries({teacher_name: '林朝興', purpose: 'other', student_name: '合成學生', request_details: '合成詢問測試資料'}); } },
     fetch: async url => {
       if (url === '/api/session') return response({session: session(0)});
-      if (url === '/api/config') return response({memory_contract:'private-draft-revision-v3', teachers: [], purposes: [], source: {source_url: 'https://example.invalid'}, email_generation: {configured: false}});
+      if (url === '/api/config') return response({memory_contract:'private-draft-revision-v3', teachers: [{name:'林朝興',title:'教授'}], purposes: [], source: {source_url: 'https://example.invalid'}, email_generation: {configured: false}});
+      if (url.startsWith('/email_directory.json')) return response(JSON.parse(fs.readFileSync(path.join(__dirname,'../ui/email_directory.json'),'utf8')));
       if (url === '/api/session/reset') return response({session: session(1)});
       return new Promise((resolve, reject) => {
         const complete = data => resolve(response(data));
@@ -45,6 +46,7 @@ async function harness() {
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync(path.join(__dirname, '../ui/app.js'), 'utf8'), sandbox);
   await new Promise(resolve => setImmediate(resolve));
+  vm.runInContext('selectRecipientByName("林朝興")', sandbox);
   return {dom, pending, run: code => vm.runInContext(code, sandbox), session};
 }
 
@@ -414,6 +416,7 @@ async function harness() {
   assert(!quotedCard.includes('<script>'));
   const switched = await harness();
   switched.run(`updateSession({...state.session,account:{username:'synthetic'}});
+    selectRecipientByName('林朝興');
     state.memories=[{memory_id:'new-template',version:1,kind:'draft_template',title:'新的信件',content:'新的正文',template_fields:{teacher_name:'林朝興',subject:'新的主旨'}}];`);
   const initialGeneration = switched.run('submitDraft({preventDefault(){}})');
   const switchOperation = switched.run('applySavedDraft("new-template")');

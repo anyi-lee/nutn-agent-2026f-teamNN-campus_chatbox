@@ -1,0 +1,71 @@
+日期：2026-11-03 Asia/Taipei
+隔離 localhost:63303，合成帳號／舊格式模板、暫存資料庫。未呼叫 Gemini，未寄送。
+舊模板僅存「許世昌」，目前官方收錄同人兩系且同信箱。
+
+勾選前：
+Browser tab: 9, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:63303/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 10-11
++		83 container saved-draft-picker
++			84 button (expanded) 套用已存完整草稿（選用）, Secondary Actions: Collapse
++				85 text 套用已存完整草稿（選用）
++			86 text 勾選一份直接套用自己的完整草稿，再編輯或請 AI 調整。套用不會寄送。
++			87 container
++				88 checkbox (settable, integer) Description: 合成舊草稿－補交作業 收件教師：許世昌 主旨：合成作業補交詢問, Value: 0
++				89 text 合成舊草稿－補交作業
++				90 text 收件教師：許世昌
++				91 text 主旨：合成作業補交詢問
+The focused UI element is 84 button (expanded) 套用已存完整草稿（選用）, Secondary Actions: Collapse
+
+勾選後：
+Browser tab: 9, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:63303/".
+0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:63303/
+	1 container draft-dialog
+		2 container
+			3 text GROUNDED EMAIL DRAFT
+			4 heading Email 草稿助手, Value: 2
+				5 text Email 草稿助手
+			6 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			7 text 本機模板 · 尚未設定 Gemini Key
+			8 text Sandbox · 不寄真實信箱
+			9 button Description: 關閉, ID: dialog-close
+		83 container saved-draft-picker
+			84 button (expanded) 套用已存完整草稿（選用）, Secondary Actions: Collapse
+				85 text 套用已存完整草稿（選用）
+			86 text 勾選一份直接套用自己的完整草稿，再編輯或請 AI 調整。套用不會寄送。
+			87 container
+				88 checkbox (settable, integer) Description: 合成舊草稿－補交作業 收件教師：許世昌 主旨：合成作業補交詢問, Value: 1
+				89 text 合成舊草稿－補交作業
+				90 text 收件教師：許世昌
+				91 text 主旨：合成作業補交詢問
+		92 container draft-result
+			93 text ✓
+			94 text 草稿已建立
+			95 text 保留你確認的主旨與正文，未交由模型重寫；已重新驗證官方收件人，目前尚未寄送。
+			96 text HOST · get_teacher_contact · found
+			97 definition list
+				98 container 收件人
+					99 text 收件人
+				100 text scshei@mail.nutn.edu.tw
+				101 container 主旨
+					102 text 主旨
+				103 text 合成作業補交詢問
+			104 text 許老師您好：
+這是合成舊草稿的原文，想詢問作業補交方式。
+合成學生 敬上
+			105 button 編輯本次信件, ID: edit-email-content
+			106 container
+				107 text 讓 AI 完善這封信（選填）
+				108 text entry area (settable) 讓 AI 完善這封信（選填）, ID: revision-instructions
+				109 text 只調整本次草稿，不更換收件人、不覆寫已保存模板，也不會自動寄送。需要可用的 Gemini 設定。
+				110 button 請 AI 調整, ID: revise-email
+			111 container confirmation-panel
+				112 checkbox (settable, integer) Description: 我已確認收件人、主旨與正文 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。, Value: 0, ID: confirm-send
+				113 text 我已確認收件人、主旨與正文
+				114 text 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。
+			115 button 返回修改資料, ID: edit-draft
+			116 button 複製草稿, ID: copy-draft
+			117 button 草稿另存為模板, ID: save-draft-template
+			118 button (disabled) 確認並模擬寄出, ID: send-email
+
+The focused UI element is 0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:63303/

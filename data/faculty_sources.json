@@ -1,0 +1,27 @@
+{
+  "schema_version": "faculty-sources-v1",
+  "sources": [
+    {"department": "教育學系", "url": "https://edu.nutn.edu.tw/gac610/mode02.asp?m=20170215093229514&t=list", "verification_profiles": [
+      {"name": "呂明蓁", "url": "https://gaweb.nutn.edu.tw/tpdp/teaCV.aspx?t=mlu"},
+      {"name": "蘇建元", "url": "https://gaweb.nutn.edu.tw/tpdp/teaCV.aspx?t=cysu"},
+      {"name": "張主揚", "url": "https://academic.nutn.edu.tw/index.php?lang=cht&temp=office7"},
+      {"name": "張主揚", "url": "https://ecourse.nutn.edu.tw/public/tea_preview_detail.aspx?cour_no=112006&syear=115&term=1"}
+    ]},
+    {"department": "特殊教育學系", "url": "https://sped.nutn.edu.tw/sped/about/detail.php?apx=12&ap=9"},
+    {"department": "幼兒教育學系", "url": "https://ece.nutn.edu.tw/teacherfulltime.aspx"},
+    {"department": "體育學系", "url": "https://phyedu.nutn.edu.tw/faculty_category/full-time-teacher-zh"},
+    {"department": "諮商與輔導學系", "url": "https://cg.nutn.edu.tw/teacherfulltime.aspx"},
+    {"department": "文化與自然資源學系", "url": "https://cnr.nutn.edu.tw/?faculty=chingi"},
+    {"department": "英語學系", "url": "https://english.nutn.edu.tw/?faculty=%E6%A5%8A%E9%80%B8%E5%90%9B"},
+    {"department": "應用數學系", "url": "https://math.nutn.edu.tw/faculty_category/full-time-zh/"},
+    {"department": "數位學習科技學系", "url": "https://phpweb4.nutn.edu.tw/ilt/wordpress/?page_id=18"},
+    {"department": "智慧製造在職學位學程", "url": "https://scieng.nutn.edu.tw/smfg/"},
+    {"department": "綠色能源科技學系", "url": "https://greenergy.nutn.edu.tw/teachers.html"},
+    {"department": "音樂學系", "url": "https://music.nutn.edu.tw/member.html"},
+    {"department": "視覺藝術與設計學系", "url": "https://fineart.nutn.edu.tw/facultyview_1.html"},
+    {"department": "戲劇創作與應用學系", "url": "https://drama.nutn.edu.tw/ch/teachers.asp"},
+    {"department": "經營與管理學系", "url": "https://bm.nutn.edu.tw/teacher.html"},
+    {"department": "行政管理學系", "url": "https://pam.nutn.edu.tw/?taxonomy=faculty_category&term=full-time-teacher-zh"},
+    {"department": "生物科技學系", "url": "https://bst.nutn.edu.tw/", "origin": "official_central_directory_followup"}
+  ]
+}

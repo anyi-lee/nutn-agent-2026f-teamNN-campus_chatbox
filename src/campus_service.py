@@ -27,6 +27,7 @@ from gemini_router import (
     GeminiRouterError,
 )
 from retrieval_baseline import BM25Retriever
+from campus_catalog import CampusCatalog, resolve_recipient
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -192,6 +193,8 @@ class CampusService:
         tool_server: CampusToolServer | None = None,
         chat_router: Any | None = None,
         workflow_backend: str | None = None,
+        campus_enabled: bool = False,
+        outbox_path: Path = SANDBOX_OUTBOX_PATH,
     ) -> None:
         self.document = json.loads(data_path.read_text(encoding="utf-8"))
         self.office_document = json.loads(
@@ -201,6 +204,15 @@ class CampusService:
         self.office_chunk = dict(self.office_document["chunks"][0])
         self.chunks = list(self.document["chunks"])
         self.source = dict(self.document["source"])
+        self.catalog = CampusCatalog() if campus_enabled else None
+        if self.catalog:
+            self.chunks.extend(self.catalog.recipient_chunks(self.chunks))
+            office = self.office_chunk
+            self.chunks.append({**office, 'teacher_name': '資訊工程學系辦公室', 'title': '官方系辦聯絡窗口',
+                'research_areas': [], 'department': '資訊工程學系', 'recipient_kind': 'unit',
+                'aliases': ['資訊工程學系辦公室', '資工系辦', '資工系辦公室']})
+            self.document = {**self.document, 'chunks': self.chunks}
+        self.valid_source_ids = {row['source_id'] for row in self.chunks}
         self.chunk_by_id = {chunk["chunk_id"]: chunk for chunk in self.chunks}
         self.teacher_by_name = {chunk["teacher_name"]: chunk for chunk in self.chunks}
         self.bm25 = BM25Retriever(self.chunks)
@@ -224,7 +236,7 @@ class CampusService:
         )
         self.tool_server = tool_server or CampusToolServer(
             self.document,
-            SANDBOX_OUTBOX_PATH,
+            outbox_path,
         )
         self.pending_drafts: dict[str, dict[str, Any]] = {}
         self._draft_lock = threading.Lock()
@@ -232,7 +244,9 @@ class CampusService:
     def config(self) -> dict[str, Any]:
         return {
             "app_name": "南大校務通",
-            "scope": "資工系教師資訊、系辦公開聯絡資訊與 Email 草稿",
+            "scope": "全校官方單位、已收錄教師與對話式 Email" if self.catalog else "資工系教師資訊、系辦公開聯絡資訊與 Email 草稿",
+            "campus_coverage": self.catalog.coverage() if self.catalog else None,
+            "email_input_mode": "form",
             "retrievers": [
                 {"value": "bm25", "label": "BM25 關鍵字檢索"},
                 {"value": "dense_stub", "label": "Dense Stub 概念檢索"},
@@ -461,7 +475,7 @@ class CampusService:
             not anchored_identity or top_chunk["teacher_name"] == active_teacher
         )
         source_supported = (
-            top_chunk.get("source_id") == self.source.get("source_id")
+            top_chunk.get("source_id") in self.valid_source_ids
             and top_chunk.get("authority") == "official"
             and top_chunk.get("validity") == "active"
         )
@@ -555,6 +569,35 @@ class CampusService:
                 }
             return response
 
+        if self.catalog:
+            explicit_people = [r for r in self.chunks if r.get('recipient_kind') == 'faculty'
+                               and (r.get('person_name') or r['teacher_name']) in query]
+            if (not self.catalog.units_for(query) and not explicit_people
+                    and not any(name in query for name in self.teacher_by_name)
+                    and re.search('系辦|系主任|院長', query)):
+                return {'status': 'needs_clarification', 'answer': '請先說明是哪個系所或學院，避免查到另一個單位。',
+                        'citations': [], 'retrieval': None, 'detected_teacher': None,
+                        'suggested_action': None, 'error': {'code': 'MISSING_DEPARTMENT'}}
+            if not explicit_people and not any(name in query for name in self.teacher_by_name if self.teacher_by_name[name].get('recipient_kind') != 'unit'):
+                directory_answer = self.catalog.answer(query)
+                if directory_answer:
+                    return directory_answer
+            # The old CSIE-only scope rules must not reject a school-wide match.
+            if explicit_people:
+                candidates = resolve_recipient(self, query)
+                if len(candidates) != 1:
+                    return {'status': 'needs_clarification', 'answer': '有多筆相符聯絡資料，請補充系所與完整姓名。',
+                            'citations': [], 'retrieval': None, 'suggested_action': None, 'detected_teacher': None,
+                            'error': {'code': 'AMBIGUOUS_RECIPIENT'}}
+                row = candidates[0]
+                if _contains_any(query, RESEARCH_TERMS) and not row.get('research_areas'):
+                    return {'status': 'insufficient_evidence', 'answer': f"已找到{row['teacher_name']}的官方聯絡頁，但目前快照沒有完整研究領域，請由來源頁確認。",
+                            'citations': [self._chunk_citation(row)], 'retrieval': None,
+                            'detected_teacher': row['teacher_name'], 'suggested_action': 'email_draft',
+                            'error': {'code': 'RESEARCH_NOT_IN_SOURCE'}}
+                # The teaching Dense Stub has only the historical CSIE aliases.
+                # School-wide faculty use BM25 and report the actual retriever.
+                return self._chat_baseline(query, 'bm25', row['teacher_name'])
         if self.chat_workflow_backend == "routing":
             return self._chat_routing(query, retriever, context_teacher)
         return self._chat_baseline(query, retriever, context_teacher)
@@ -758,7 +801,7 @@ class CampusService:
             return {
                 "status": "insufficient_evidence",
                 "answer": (
-                    "目前載入的資料只有資工系教師姓名、職稱、研究領域與公開 Email，"
+                    ("目前載入的是全校公開單位與部分教師聯絡資料，" if self.catalog else "目前載入的資料只有資工系教師姓名、職稱、研究領域與公開 Email，") +
                     "沒有當學期開課資訊，因此無法回答有哪些課。後續需要另外加入官方課程資料來源。"
                 ),
                 "evidence": None,
@@ -769,7 +812,7 @@ class CampusService:
                 "error": {"code": "OUT_OF_SCOPE_SOURCE"},
             }
 
-        if _contains_any(query, UNSUPPORTED_ADMIN_ROLE_TERMS):
+        if not self.catalog and _contains_any(query, UNSUPPORTED_ADMIN_ROLE_TERMS):
             return {
                 "status": "insufficient_evidence",
                 "answer": (
@@ -786,7 +829,7 @@ class CampusService:
                 "error": {"code": "OUT_OF_SCOPE_ADMIN_ROLE"},
             }
 
-        if _mentions_out_of_scope_department_chair(query):
+        if not self.catalog and _mentions_out_of_scope_department_chair(query):
             return {
                 "status": "insufficient_evidence",
                 "answer": (
@@ -826,7 +869,7 @@ class CampusService:
         if not retrieval["has_match"]:
             return {
                 "status": "insufficient_evidence",
-                "answer": "目前的資工系教師資料中找不到足以回答這個問題的證據。你可以改用教師全名，或查看官方系網。",
+                "answer": ("目前已收錄資料不足以回答這個問題，請補充完整對象或由官方網站確認。" if self.catalog else "目前的資工系教師資料中找不到足以回答這個問題的證據。你可以改用教師全名，或查看官方系網。"),
                 "evidence": None,
                 "citations": [self._source_citation()],
                 "retrieval": retrieval,
@@ -906,7 +949,7 @@ class CampusService:
         elif _contains_any(query, CONTACT_TERMS):
             answer = (
                 f"{top_chunk['teacher_name']}老師的公開 Email 是 "
-                f"{top_chunk['public_email']}。這筆資料來自資工系官方教師頁面。"
+                f"{top_chunk['public_email']}。這筆資料來自{top_chunk.get('department', '資工系')}官方教師頁面。"
             )
         else:
             areas = "、".join(top_chunk["research_areas"][:3])
@@ -965,6 +1008,12 @@ class CampusService:
             "get_teacher_contact",
             {"teacher_query": str(normalized["teacher_name"])},
         )
+        if contact_result['status'] == 'ambiguous':
+            return 409, {
+                'status': 'requires_clarification',
+                'error': {'code': 'AMBIGUOUS_TEACHER', 'candidates': contact_result['candidates']},
+                'reason': '找到同名但不同收件資料，請明確選擇系所與老師：' + '、'.join(contact_result['candidates']),
+            }
         if contact_result["status"] != "found":
             return 404, {
                 "status": "not_found",
@@ -974,7 +1023,7 @@ class CampusService:
         contact = contact_result["teacher"]
         teacher = self.chunk_by_id[contact["teacher_id"]]
 
-        department = str(normalized.get("student_department") or "資訊工程學系")
+        department = str(normalized.get("student_department") or ("國立臺南大學" if self.catalog else "資訊工程學系"))
         grade = str(normalized.get("student_grade") or "")
         identity = f"{department}{grade}"
         student_name = str(normalized.get("student_name") or "")
@@ -1001,7 +1050,9 @@ class CampusService:
             try:
                 facts = {
                     "teacher_name": teacher["teacher_name"],
+                    "teacher_person_name": teacher.get('person_name',teacher['teacher_name']),
                     "teacher_title": teacher["title"],
+                    "recipient_kind": teacher.get('recipient_kind', 'faculty'),
                     "purpose": purpose,
                     "purpose_label": PURPOSE_LABELS[purpose],
                     "student_name": student_name,
@@ -1242,8 +1293,12 @@ class CampusService:
             request_paragraph = f"想向老師請教以下事項：{clean_details}。再請老師於方便時回覆。"
             subject = PURPOSE_LABELS[purpose]
 
+        unit_recipient = teacher.get('recipient_kind') == 'unit'
+        if unit_recipient:
+            request_paragraph = f"想向貴單位詢問：{clean_details}。煩請告知相關處理方式，謝謝。"
+
         paragraphs = [
-            f"{teacher['teacher_name'][0]}老師您好：",
+            f"{teacher['teacher_name']}承辦人您好：" if unit_recipient else f"{teacher['teacher_name'][0]}老師您好：",
         ]
         saved_content = saved_content or []
         paragraphs.extend(item["content"] for item in saved_content if item["kind"] == "introduction")
@@ -1252,7 +1307,7 @@ class CampusService:
         if background:
             paragraphs.append(f"補充說明：{background.rstrip('。')}。")
         paragraphs.extend(item["content"] for item in saved_content if item["kind"] == "other")
-        paragraphs.append("感謝老師撥冗閱讀。")
+        paragraphs.append("感謝您撥冗閱讀。" if unit_recipient else "感謝老師撥冗閱讀。")
         signatures = [item["content"] for item in saved_content if item["kind"] == "signature"]
         paragraphs.extend(signatures)
         if not signatures or not any(student_name in signature for signature in signatures):
@@ -1299,7 +1354,7 @@ class CampusService:
         return {
             "source_id": chunk["source_id"],
             "chunk_id": chunk["chunk_id"],
-            "label": "南大資工系－師資陣容",
+            "label": f"南大官方－{chunk.get('department', chunk['teacher_name'])}" if chunk.get('recipient_kind') else "南大資工系－師資陣容",
             "url": chunk["source_url"],
         }
 

@@ -2,13 +2,32 @@
 
 以 AI Agent 改善國立臺南大學學生取得校園資訊與辦理行政事務的體驗。
 
-## 目前版本與交付（2026-10-29 更新）
+## 目前版本與交付（2026-11-03 更新）
 
-目前可運作範圍為「資工系公開資訊查詢、教師聯絡與 Email 草稿／Sandbox 寫入」。以下以程式與證據為準，不將課程示範或規劃功能列為已完成：
+目前 Web 系統已從資工系擴充為「全校公開單位名錄＋已收錄教師聯絡資料」。依最新需求，寫信改為「處室／學系」單選的分層表單，恢復姓名、目的、自己的系所、年級與詢問內容欄位。全校名錄不等於全校知識完整收錄：目前有 73 筆單位／組別、191 筆教師所屬／信箱關聯（182 組不同姓名／信箱，跨系支援分列）及 23 個單位公開收件窗口。已沿使用者提供的 16 個入口深入名錄、個人頁與分頁，新增 147 筆關聯；生科與部分學程教師仍待補。沒有驗證的信箱、固定服務時間、現任主管或辦理規章不自行推測。
+
+- [最新：分層寫信表單、欄位與驗證](docs/email_form.md)
+- [16 系所／學程師資深入追查、逐系數量與未完成項目](docs/faculty_source_audit.md)
+- [提交前完整測試 Log](evidence/prepush_validation_2026-11-03.log)
+- [Gemini 草稿與修改 Live 證據（合成學生）](evidence/revision_identity_live_2026-11-03.json)
+- [國文系個人頁漏抓修正與來源](docs/chinese_faculty_refresh.md)
+- [全校來源與先前對話式原型紀錄](docs/campus_conversation.md)
+
+流程：選處室再選組別，或選學系再選老師 → 填寫寄件人與詢問資料 → Host／Read Tool 查核官方收件人 → Gemini 潤稿（無 Key 時明示本機模板）→ 草稿預覽／修改 → 獨立人工確認 → 僅寫入本機 Sandbox。點擊查詢回答的寫信按鈕會直接帶入分類、處室／組別或系所與對象。既有帳號隔離、常用內容與完整草稿重用保留。
+
+提交前重驗：207 項 Python／localhost HTTP、原有 22 組與新版 25 組 JS VM 測試通過；資料維護解析器另 10 項通過（需 lxml，不併入 207 項）。初跑的 3 項 HTTP 測試受沙盒禁止綁定本機埠影響，允許本機測試伺服器後完整重跑通過；維護解析器改用已安裝 lxml 的 Python 通過，錯誤與重跑均保留於 log。
+
+2026-11-03 已用合成訪客實際呼叫 Gemini，建立作業二草稿再修改為作業三，均為 `LIVE_PASS`、沒有 fallback、收件人／信箱／署名不變；此案例未寄送且仍要求獨立確認。修正包含寄出後重開還原預設表單、舊草稿姓名相容及 AI 修改收件人鎖定。Google Cloud／ADC 主流程、語意個人記憶與可選框架／Routing 的同版本 Live 仍待補，不以 Email 成功代替其他功能驗證。
+
+本次程式提交包含程式、公開資料、測試與對應技術文件／證據。期中簡報另行整理，不包含於這筆程式提交；私人資料庫、Key、ADC 憑證與本機快取不提交。
+
+查詢回答現在附上可用的「寫信給對方」入口，含個人記憶解析出的已驗證教師與有公開信箱的單位。點擊直接帶入對象，既有草稿更換收件人須先確認；查詢與寫信送出即清空輸入框，失敗可還原且不覆蓋新輸入，另有中文輸入法 Enter 保護。[前端修正證據](evidence/chat_email_ui_fix_2026-11-02.log)
+
+以下為歷週交付索引與歷史證據，配置／測試數請依各週文件辨識：
 
 - [Week 07 A 路線：帳號與多筆常用 Email 內容](docs/week07/README.md)
 
-實作基準為 `6bbd34f`，Week 06 功能 commit 為 `12ab574`。預設配置仍為 `CHAT_WORKFLOW_BACKEND=baseline`、`EMAIL_AGENT_BACKEND=manual`；Routing 與 LangChain 是可切換候選，不應把不同配置的證據當成同一次執行。
+本次修改前同步基準為 `65a8517`；W7 程式基準為 `967ee1e`，Week 06 功能 commit 為 `12ab574`。預設配置仍為 `CHAT_WORKFLOW_BACKEND=baseline`、`EMAIL_AGENT_BACKEND=manual`；Routing 與 LangChain 是可切換候選，不應把不同配置的證據當成同一次執行。
 
 2026-10-29 重驗：W7 68 項 Python／HTTP 與 22 組 JS VM 通過；跨週非 HTTP 回歸 137 項，130 通過、7 項因缺 LangChain 依賴跳過。下文 Week 04–06 的 `LIVE_PASS` 與測試數是各週歷史證據，不移作 W7 Live。
 
@@ -22,17 +41,18 @@ Week 07 依使用者確認改採 A 路線：本機帳密登入、每帳號多筆
 
 ## 目前原型範圍
 
-本階段使用南大資工系官方「師資陣容」頁面的版本化資料，支援：
+本階段使用南大官方教學／行政單位、人事室電話分機表、各單位公開網站及原有資工系版本化師資資料，支援：
 
-- 查詢教師姓名、職稱、研究領域與公開 Email。
-- 查詢資工系辦地址、電話分機與 Email；若詢問官網未公布的辦公時間，會明確標示證據不足並提供確認管道。
-- BM25 與透明 Dense Stub 檢索比較。
+- 查詢全校已收錄單位的官方入口、公開電話／分機及信箱。
+- 查詢已收錄教師的姓名、公開 Email 與來源；研究領域依來源有無收錄，不假設每位都有。
+- 未收錄的辦公時間、主管姓名或辦事流程，標示證據不足並提供確認管道。
+- 教師使用 BM25；透明 Dense Stub 是原資工系人工 alias 教學比較，不代表全校 embedding。新增跨系教師自動使用 BM25 並在軌跡標示實際檢索方式。
 - 顯示官方 Citation、Top-3 排名與檢索分數。
 - 追問時沿用上一輪教師脈絡。
-- 使用 Gemini 或本機模板產生 Email 草稿。
+- 分層選擇處室／學系老師，填寫姓名、目的、自己的系所與年級後，使用 Gemini 或明示的本機模板產生草稿，保留預覽、編輯及獨立確認。
 - 資料不足或超出來源範圍時拒答。
 
-目前**不包含**課程開設資料、教師即時位置、私人聯絡方式、其他系所、校長等校級行政主管資料與真實寄信功能。資工系官網也未公布固定系辦辦公時間，因此系統不會自行推測。Email 的 Write Tool 只會寫入本機 Sandbox outbox，畫面與 receipt 均會清楚標示沒有寄到外部信箱。
+目前**不包含**完整全校師資、當學期課程開設資料、教師即時位置、私人聯絡方式、未驗證的現任主管姓名、完整業務規章與真實寄信功能。校長室等單位入口可查，但不等於已確認現任主管私人或個人信箱。Email 的 Write Tool 只會寫入本機 Sandbox outbox，畫面與 receipt 均會清楚標示沒有寄到外部信箱。
 
 ## 組員
 
@@ -181,7 +201,7 @@ python -W error::ResourceWarning scripts/run_week07_memory_demo.py
 
 ## 本機 UI 原型
 
-目前提供本機 Web UI，可查詢資工系教師公開資訊、切換 BM25／Dense Stub 檢索方式、產生 Email 草稿，並在人工確認後執行 Sandbox Write Tool。Manual 後端不需第三方套件；LangChain 候選版需安裝 Week 05 依賴。兩種後端都不會實際寄送郵件。
+目前提供本機 Web UI，可查詢全校官方名錄與已收錄教師，透過分層表單產生 Email 草稿，並在人工確認後執行 Sandbox Write Tool。選擇 Email Agent →「學系」→「電機工程學系」→「盧陽明」，再填自己的姓名、目的、系所、年級與詢問內容。收件系所不會自動當成寄件人的系所。Manual 執行不需第三方套件；LangChain 候選版需安裝 Week 05 依賴。兩種後端都不會實際寄送郵件。
 
 ```bash
 python3 app.py
@@ -193,10 +213,12 @@ python3 app.py
 python3 -m unittest discover -s tests -v
 ```
 
-安裝 Week 05 依賴後，完整 63 項測試可執行：
+安裝 Week 05 依賴後，可執行完整跨週測試（本次 184 項），以及前端狀態測試：
 
 ```bash
 .venv/bin/python -W error::ResourceWarning -m unittest discover -s tests -v
+node tests/test_week07_ui.cjs
+node tests/test_campus_conversation_ui.cjs
 ```
 
 MCP stdio 的完整讀取、拒絕、確認、重複請求與狀態查詢可執行：

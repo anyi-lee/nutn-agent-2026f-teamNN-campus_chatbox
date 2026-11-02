@@ -54,7 +54,30 @@ function updateSession(session) {
   $("#manage-memory").disabled = !session.account || !!state.revising || !!state.applyingDraft;
 }
 
+function clearEmailConversationUI() {
+  state.draftSubmitting = false;
+  state.emailFormDirty = false;
+  lockRecipientForm(false);
+  state.emailBusy = false;
+  state.emailPendingTurn = null;
+  state.emailRecipientHint = '';
+  state.emailTargetName = '';
+  state.emailHasTurns = false;
+  state.emailSwitchTarget = null;
+  $("#email-switch-prompt").hidden = true;
+  $("#email-dialogue").innerHTML = '';
+  $("#email-message").value = '';
+  $("#email-understanding-status").textContent = '';
+  $("#email-conversation").hidden = true;
+  $("#email-conversation-send").disabled = false;
+  $("#email-start-over").disabled = false;
+}
+
 function clearPrivateUI() {
+  state.completedDraftId = null;
+  state.emailSendPending = null;
+  state.chatComposing = false;
+  clearEmailConversationUI();
   state.draftWorkspaceOpen = false;
   state.revising = false;
   state.applyingDraft = false;
@@ -66,6 +89,7 @@ function clearPrivateUI() {
   state.draft = null;
   elements.dialog.close();
   elements.draftForm.reset();
+  if (state.emailDirectory) setRecipientMode('office');
   elements.input.value = "";
   elements.messages.innerHTML = "";
   ["#draft-to", "#draft-subject"].forEach(selector => { $(selector).textContent = ""; });
@@ -201,7 +225,7 @@ function applyTemplateApplication() {
 
 function renderSavedDraftChoices() {
   const target = $("#saved-draft-list");
-  if (!state.session?.account) { target.textContent = "登入後可選用自己的草稿；訪客仍可填寫下方表單建立新信。"; return; }
+  if (!state.session?.account) { target.textContent = "登入後可選用自己的草稿；訪客也能填寫下方表單建立新信。"; return; }
   const drafts = state.memories.filter(item => item.kind === "draft_template");
   const selected = state.applyingDraft ? state.pendingDraftId : state.draftTemplateId;
   target.innerHTML = drafts.length ? drafts.map(item => `<label class="memory-choice"><input type="checkbox" data-saved-draft="${escapeHtml(item.memory_id)}" ${selected === item.memory_id ? "checked" : ""} ${state.applyingDraft || state.revising ? "disabled" : ""}><span><b>${escapeHtml(item.title)}</b><br>收件教師：${escapeHtml(item.template_fields.teacher_name)}<br>主旨：${escapeHtml(item.template_fields.subject)}</span></label>`).join("") : "尚未保存完整草稿。產生信件後可按「草稿另存為模板」。";
@@ -214,12 +238,14 @@ function renderSavedDraftChoices() {
 function clearAppliedDraft() {
   if (state.applyingDraft || state.revising) return;
   supersedeDraftGeneration();
+  state.completedDraftId = null;
   state.draft = null; state.selectedMemories = [];
   clearTemplateApplication();
   $("#confirm-send").checked = false;
   $("#confirm-send").disabled = true;
   $("#send-email").disabled = true;
   elements.draftResult.hidden = true; elements.draftForm.hidden = false;
+  $("#email-conversation").hidden = true;
   renderMemoryChoices();
 }
 
@@ -411,13 +437,29 @@ async function loadConfig() {
   elements.teacher.innerHTML = state.config.teachers
     .map((teacher) => `<option value="${escapeHtml(teacher.name)}">${escapeHtml(teacher.name)} · ${escapeHtml(teacher.title)}</option>`)
     .join("");
-  elements.purpose.innerHTML = state.config.purposes
+  const allRecipientOptions = elements.teacher.innerHTML;
+  elements.teacher.innerHTML = '<option value="">尚未選擇收件對象</option>' + allRecipientOptions;
+  elements.teacher.value = '';
+  elements.purpose.innerHTML = '<option value="">請選擇寄信目的</option>' + state.config.purposes
     .map((purpose) => `<option value="${escapeHtml(purpose.value)}">${escapeHtml(purpose.label)}</option>`)
     .join("");
-  $("#template-teacher").innerHTML = '<option value="">請選擇教師</option>' + elements.teacher.innerHTML;
-  $("#reuse-teacher").innerHTML = elements.teacher.innerHTML;
+  $("#template-teacher").innerHTML = '<option value="">請選擇收件對象</option>' + allRecipientOptions;
+  $("#reuse-teacher").innerHTML = allRecipientOptions;
+  try {
+    const directory = await request('/email_directory.json?v=email-form-2');
+    if (directory.schema_version !== 'email-directory-v2' || !Array.isArray(directory.units) || !Array.isArray(directory.recipients)) throw new Error('收件人分類資料版本不符');
+    state.emailDirectory = directory;
+    populateRecipientLists();
+  } catch (error) {
+    state.emailDirectory = null;
+    $("#recipient-note").textContent = '收件人分類資料無法載入，請重新整理網頁；目前不會猜測收件信箱。';
+  }
   renderMemoryChoices();
   $("#official-source").href = state.config.source.source_url;
+  if (state.config.campus_coverage) {
+    $("#official-source").href = 'https://web.nutn.edu.tw/teaching.html';
+    $("#source-coverage").textContent = `${state.config.campus_coverage.units} 筆單位／組別，教師資料逐步收錄`;
+  }
   const generation = state.config.email_generation;
   const generatorStatus = $("#generator-status");
   if (generation.configuration_error === "INVALID_API_KEY_FORMAT") {
@@ -431,6 +473,130 @@ async function loadConfig() {
   } else {
     generatorStatus.textContent = "本機模板 · 尚未設定 Gemini Key";
     generatorStatus.classList.remove("gemini");
+  }
+}
+
+function directoryRecipients() {
+  const known = new Set((state.config?.teachers || []).map(row => row.name));
+  return (state.emailDirectory?.recipients || []).filter(row => known.has(row.name));
+}
+
+function populateRecipientLists() {
+  const units = state.emailDirectory.units;
+  const option = row => `<option value="${escapeHtml(row.name)}">${escapeHtml(row.name)}</option>`;
+  $("#office-select").innerHTML = '<option value="">請先選擇處室</option>' + units.filter(row => row.category === 'administrative' && row.parent_office === row.name).map(option).join('');
+  $("#department-select").innerHTML = '<option value="">請先選擇學系</option>' + units.filter(row => row.category === 'academic').map(option).join('');
+  setRecipientMode('office');
+}
+
+function setRecipientMode(mode) {
+  const office = mode === 'office';
+  $("#recipient-office").checked = office;
+  $("#recipient-academic").checked = !office;
+  $("#office-picker").hidden = !office;
+  $("#academic-picker").hidden = office;
+  $("#office-select").disabled = !office;
+  $("#office-select").required = office;
+  $("#office-section-select").required = office;
+  $("#office-section-select").innerHTML = '<option value="">請先選擇處室</option>';
+  $("#office-section-select").value = '';
+  $("#office-section-select").disabled = true;
+  $("#department-select").disabled = office;
+  $("#department-select").required = !office;
+  $("#office-select").value = '';
+  $("#department-select").value = '';
+  $("#academic-teacher-select").innerHTML = '<option value="">請先選擇學系</option>';
+  $("#academic-teacher-select").value = '';
+  $("#academic-teacher-select").disabled = true;
+  $("#academic-teacher-select").required = !office;
+  elements.teacher.value = '';
+  $("#recipient-source").hidden = true;
+  $("#recipient-note").textContent = office ? '先選處室，再選所屬組別或處室公開窗口；收件信箱由官方資料取得。' : '先選學系，再選對應老師或系辦公開窗口；教師名錄目前為部分收錄。';
+}
+
+function showRecipientSource(unit) {
+  const link = $("#recipient-source");
+  link.hidden = !unit || !/^https:\/\/(?:[\w-]+\.)*nutn\.edu\.tw(?:\/|$)/i.test(unit.url);
+  if (!link.hidden) link.href = unit.url;
+}
+
+function updateOfficeSections() {
+  const name = $("#office-select").value;
+  const unit = state.emailDirectory?.units.find(row => row.category === 'administrative' && row.name === name && row.parent_office === name);
+  const select = $("#office-section-select");
+  const sections = state.emailDirectory?.units.filter(row => row.category === 'administrative' && row.parent_office === name && row.name !== name) || [];
+  select.innerHTML = '<option value="">' + (unit ? '請選擇組別／聯絡窗口' : '請先選擇處室') + '</option>' + (unit ? `<option value="${escapeHtml(name)}">處室公開窗口（不指定組別）</option>` : '') + sections.map(row => `<option value="${escapeHtml(row.name)}">${escapeHtml(row.name.slice(name.length))}</option>`).join('');
+  select.value = '';
+  select.disabled = !unit;
+  elements.teacher.value = '';
+  $("#recipient-note").textContent = !unit ? '請先選擇處室。' : sections.length ? '請選擇此處室的組別，或選「處室公開窗口」。不會自動使用其他組別或處室的信箱。' : '目前名錄未列出此處室的組別，可選「處室公開窗口」。';
+  showRecipientSource(unit);
+}
+
+function updateOfficeRecipient() {
+  const office = $("#office-select").value;
+  const name = $("#office-section-select").value;
+  const unit = state.emailDirectory?.units.find(row => row.category === 'administrative' && row.name === name && row.parent_office === office);
+  const record = unit && directoryRecipients().find(row => row.kind === 'unit' && row.name === name && row.department === name);
+  elements.teacher.value = unit && record ? record.name : '';
+  $("#recipient-note").textContent = !unit ? '請先選擇此處室的組別／聯絡窗口。' : record
+    ? `收件對象：${name}。將由官方資料查核公開聯絡信箱。`
+    : '此組別／窗口目前尚未收錄可驗證的公開信箱，無法產生草稿；請由官網確認。不會改寄處室或別組信箱。';
+  showRecipientSource(unit);
+}
+
+function updateDepartmentTeachers() {
+  const department = $("#department-select").value;
+  const rows = directoryRecipients().filter(row => row.department === department);
+  const select = $("#academic-teacher-select");
+  select.innerHTML = '<option value="">' + (rows.length ? '請選擇收件老師／系辦窗口' : '此系所尚未收錄可驗證收件人') + '</option>' + rows.map(row => `<option value="${escapeHtml(row.name)}">${escapeHtml(row.name)} · ${escapeHtml(row.kind === 'unit' ? '系辦公開窗口' : row.title)}</option>`).join('');
+  select.value = '';
+  select.disabled = !rows.length;
+  elements.teacher.value = '';
+  $("#recipient-note").textContent = rows.length ? '請選老師；只顯示本系所已收錄的官方教師與公開窗口。' : '此系所師資／信箱尚未收錄，請由官方網站確認；不會套用其他系所的老師。';
+  showRecipientSource(state.emailDirectory?.units.find(row => row.name === department && row.category === 'academic'));
+}
+
+function updateAcademicRecipient() {
+  const name = $("#academic-teacher-select").value;
+  const row = directoryRecipients().find(row => row.name === name && row.department === $("#department-select").value);
+  elements.teacher.value = row?.name || '';
+  $("#recipient-note").textContent = row ? `收件對象：${row.name}。信箱會在建立草稿時重新驗證。` : '請選擇本系所已收錄的收件人。';
+}
+
+function selectRecipientByName(name) {
+  const row = directoryRecipients().find(item => item.name === name);
+  if (!row) { elements.teacher.value = ''; return false; }
+  const office = row.kind === 'unit' && state.emailDirectory.units.some(unit => unit.category === 'administrative' && unit.name === row.name);
+  setRecipientMode(office ? 'office' : 'academic');
+  if (office) {
+    const unit = state.emailDirectory.units.find(unit => unit.name === row.name && unit.category === 'administrative');
+    $("#office-select").value = unit.parent_office; updateOfficeSections();
+    $("#office-section-select").value = row.name; updateOfficeRecipient();
+  } else {
+    $("#department-select").value = row.department; updateDepartmentTeachers();
+    $("#academic-teacher-select").value = row.name; updateAcademicRecipient();
+  }
+  return elements.teacher.value === name;
+}
+
+function validRecipientSelection() {
+  const row = directoryRecipients().find(item => item.name === elements.teacher.value);
+  if (!row) return false;
+  if ($("#recipient-office").checked) return row.kind === 'unit' && row.name === $("#office-section-select").value && state.emailDirectory.units.some(unit => unit.category === 'administrative' && unit.name === row.name && unit.parent_office === $("#office-select").value);
+  return row.department === $("#department-select").value && row.name === $("#academic-teacher-select").value;
+}
+
+function lockRecipientForm(locked) {
+  ['#recipient-office', '#recipient-academic', '#office-select', '#office-section-select', '#department-select', '#academic-teacher-select', '#teacher-name', '#purpose',
+    '#draft-form [name="student_name"]', '#draft-form [name="student_department"]', '#draft-form [name="student_grade"]', '#draft-form [name="request_details"]', '#draft-form [name="background"]']
+    .forEach(selector => { $(selector).disabled = locked; });
+  if (!locked) {
+    const office = $("#recipient-office").checked;
+    $("#office-select").disabled = !office;
+    $("#office-section-select").disabled = !office || !state.emailDirectory?.units.some(unit => unit.category === 'administrative' && unit.name === $("#office-select").value && unit.parent_office === unit.name);
+    $("#department-select").disabled = office;
+    $("#academic-teacher-select").disabled = office || !directoryRecipients().some(row => row.department === $("#department-select").value);
   }
 }
 
@@ -463,7 +629,7 @@ function retrievalTrace(retrieval) {
   if (!retrieval) return "";
   const modelLabel = retrieval.model === "bm25"
     ? "BM25"
-    : (retrieval.model === "official_record" ? "Official Record" : "Dense Stub");
+    : (retrieval.model === "official_record" ? "Official Record" : retrieval.model === "campus_directory" ? "全校官方名錄" : "Dense Stub");
   const gate = retrieval.evidence_gate;
   const gateBadge = gate
     ? `<span class="meta-chip ${gate.passed ? "official" : "gate-failed"}">Evidence Gate · ${escapeHtml(gate.passed ? "PASS" : gate.failure_code)}</span>`
@@ -547,19 +713,27 @@ function personalMemoryTrace(analysis) {
   return `<span class="meta-chip">記憶理解：${analysis.backend === "gemini" ? "Gemini 語意判斷" : "基本比對（未設定 Gemini）"} · ${escapeHtml(analysis.live_status)}</span>`;
 }
 
+function emailRecipientsForAnswer(data) {
+  if (data.status !== 'ok' && data.suggested_action !== 'email_draft') return [];
+  const known = new Set((state.config?.teachers || []).map(row => row.name));
+  const names = [];
+  if (known.has(data.detected_teacher)) names.push(data.detected_teacher);
+  for (const unit of data.evidence?.units || []) {
+    if (unit.public_email && known.has(unit.name)) names.push(unit.name);
+  }
+  return [...new Set(names)];
+}
+
 function addAssistantMessage(data) {
   $("#typing-row")?.remove();
   const isWarning = data.status !== "ok";
-  const citation = data.citations?.[0];
-  const source = citation
-    ? `<a class="meta-chip official source-link" href="${escapeHtml(citation.url)}" target="_blank" rel="noreferrer">✓ 官方來源 · ${escapeHtml(citation.label)} ↗</a>`
-    : "";
+  const source = [...new Map((data.citations || []).map(citation => [citation.url, citation])).values()]
+    .map(citation => `<a class="meta-chip official source-link" href="${escapeHtml(citation.url)}" target="_blank" rel="noreferrer">✓ 官方來源 · ${escapeHtml(citation.label)} ↗</a>`).join('');
   const contextBadge = data.used_context && data.detected_teacher
     ? `<span class="meta-chip">沿用脈絡：${escapeHtml(data.detected_teacher)}老師</span>`
     : "";
-  const action = data.suggested_action === "email_draft"
-    ? `<button class="action-button" type="button" data-email-action data-teacher="${escapeHtml(data.detected_teacher || "")}" data-purpose="${escapeHtml(data.detected_purpose || "other")}">用這筆資料產生 Email 草稿 →</button>`
-    : "";
+  const recipients = emailRecipientsForAnswer(data);
+  const action = recipients.map((name, index) => `<button class="action-button" type="button" data-email-action="${index}" data-teacher="${escapeHtml(name)}" data-purpose="${escapeHtml(data.detected_purpose || 'other')}">寫信給${escapeHtml(name)} →</button>`).join('');
   const id = `answer-${Date.now()}`;
   elements.messages.insertAdjacentHTML("beforeend", `
     <article class="message-row assistant" id="${id}">
@@ -577,8 +751,10 @@ function addAssistantMessage(data) {
         ${retrievalTrace(data.retrieval)}
       </div>
     </article>`);
-  $(`#${id} [data-email-action]`)?.addEventListener("click", (event) => {
-    openDraft(event.currentTarget.dataset.teacher, event.currentTarget.dataset.purpose);
+  recipients.forEach((name, index) => {
+    $(`#${id} [data-email-action="${index}"]`)?.addEventListener("click", () => {
+      openDraftForRecipient(name, data.detected_purpose || 'other');
+    });
   });
   if (data.personal_memory_candidates?.length && state.session?.account) {
     $(`#personal-save-${id}`).addEventListener("click", () => saveChatMemories(data.personal_memory_candidates, id));
@@ -604,6 +780,10 @@ async function sendMessage(message) {
     addAssistantMessage(data);
   } catch (error) {
     if (error.stale) return;
+    if (epoch === state.epoch && !elements.input.value) {
+      elements.input.value = cleanMessage;
+      resizeInput();
+    }
     addAssistantMessage({ status: "error", answer: `目前無法完成查詢：${error.message}`, error: { code: "REQUEST_FAILED" } });
   } finally {
     if (epoch === state.epoch) {
@@ -619,7 +799,154 @@ function resizeInput() {
   elements.input.style.height = `${Math.min(elements.input.scrollHeight, 130)}px`;
 }
 
-async function openDraft(teacher = "", purpose = "other") {
+function appendEmailTurn(role, message) {
+  const log = $("#email-dialogue");
+  log.insertAdjacentHTML('beforeend', `<p class="email-turn ${role === 'user' ? 'user' : 'assistant'}">${escapeHtml(message)}</p>`);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function sendEmailConversation(event, overrideMessage = null) {
+  event?.preventDefault();
+  if (state.emailBusy || state.revising || state.applyingDraft) return;
+  const input = $("#email-message");
+  const raw = (overrideMessage ?? input.value).trim();
+  if (!raw) return;
+  if (raw.length > 2000) { $("#email-understanding-status").textContent = '每次最多 2000 字，請分幾次說明。'; return; }
+  const message = state.emailRecipientHint && !overrideMessage ? `我要寫信給${state.emailRecipientHint}。${raw}` : raw;
+  const epoch = state.epoch;
+  const generation = supersedeDraftGeneration();
+  let pending = state.emailPendingTurn;
+  if (!pending || pending.message !== message) {
+    pending = {message, turn_id: `email-${crypto.randomUUID()}`};
+    state.emailPendingTurn = pending;
+    appendEmailTurn('user', message);
+  }
+  if (!overrideMessage) input.value = '';
+  state.emailHasTurns = !overrideMessage || state.emailHasTurns;
+  state.emailBusy = true;
+  $("#email-conversation-send").disabled = true;
+  $("#email-start-over").disabled = true;
+  $("#confirm-send").checked = false;
+  $("#send-email").disabled = true;
+  $("#email-understanding-status").textContent = '正在整理你的需求與查核官方對象……';
+  try {
+    const result = await sessionRequest('/api/email-conversation', pending);
+    if (generation !== state.draftGeneration) return;
+    state.emailPendingTurn = null;
+    state.emailRecipientHint = '';
+    appendEmailTurn('assistant', result.answer);
+    if (result.citations?.length) appendEmailTurn('assistant', '官方確認管道：\n' + result.citations.map(c => `${c.label}：${c.url}`).join('\n'));
+    const analysis = result.analysis || {};
+    $("#email-understanding-status").textContent = analysis.backend === 'gemini'
+      ? '已由 AI 理解本次需求，收件資料仍由官方來源查核。'
+      : (analysis.warning || '目前以基本文字理解逐步補齊需求；若需要，請提供完整對象與明確事項。');
+    if (result.email_draft) renderDraft(result);
+  } catch (error) {
+    if (!error.stale && generation === state.draftGeneration) {
+      if (!overrideMessage && !input.value) input.value = raw;
+      $("#email-understanding-status").textContent = `${error.message}。訊息未完成；輸入已保留，可重試。`;
+    }
+  } finally {
+    if (epoch === state.epoch) {
+      state.emailBusy = false;
+      $("#email-conversation-send").disabled = false;
+      $("#email-start-over").disabled = false;
+    }
+  }
+}
+
+async function restartEmailConversation() {
+  if (state.emailBusy || state.revising || state.applyingDraft) return;
+  state.emailRecipientHint = '';
+  state.emailPendingTurn = null;
+  const epoch = state.epoch;
+  await sendEmailConversation(null, '重新開始');
+  if (epoch !== state.epoch) return;
+  if (!state.emailPendingTurn) {
+    clearAppliedDraft();
+    $("#email-dialogue").innerHTML = '';
+    appendEmailTurn('assistant', '已重新開始。這封信想寫給誰、想說什麼？');
+    $("#email-message").value = '';
+    $("#email-message").focus();
+    state.emailHasTurns = false;
+    state.emailTargetName = '';
+  }
+}
+
+async function openDraftForRecipient(name, purpose = 'other') {
+  if (state.emailBusy || state.emailSendPending || state.revising || state.applyingDraft) {
+    showToast('目前信件仍在處理，請稍後再切換收件對象。'); return;
+  }
+  resetCompletedEmailWorkspace();
+  const current = state.draft?.teacher?.teacher_name || elements.teacher.value;
+  if (state.draftWorkspaceOpen && (state.draft || state.emailFormDirty || state.emailHasTurns) && current !== name) {
+    state.emailSwitchTarget = {name, purpose};
+    $("#email-switch-note").textContent = `要改寫給${name}嗎？切換會清除目前詢問內容與待確認草稿，保留你自己的姓名、系所與年級，不會寄出信件。`;
+    $("#email-switch-prompt").hidden = false;
+    elements.dialog.showModal(); return;
+  }
+  if (state.draftWorkspaceOpen && !state.draft && !state.emailHasTurns) {
+    state.draftWorkspaceOpen = false;
+    $("#email-dialogue").innerHTML = '';
+  }
+  await openDraft(name, purpose);
+}
+
+async function confirmEmailRecipientSwitch() {
+  const target = state.emailSwitchTarget;
+  if (!target || state.emailBusy || state.revising || state.applyingDraft) return;
+  clearAppliedDraft();
+  draftField('request_details').value = '';
+  draftField('background').value = '';
+  elements.purpose.value = '';
+  state.emailSwitchTarget = null;
+  $("#email-switch-prompt").hidden = true;
+  state.draftWorkspaceOpen = false;
+  state.emailFormDirty = false;
+  $("#email-dialogue").innerHTML = '';
+  await openDraft(target.name, target.purpose);
+}
+
+function resetCompletedEmailWorkspace() {
+  // Keep the receipt visible until the user opens the assistant again. Only a
+  // confirmed successful write ends a workspace; closing an unsent draft does not.
+  if (!state.completedDraftId) return;
+  supersedeDraftGeneration();
+  clearEmailConversationUI();
+  state.completedDraftId = null;
+  state.draftWorkspaceOpen = false;
+  state.draft = null;
+  state.draftDirty = false;
+  state.selectedMemories = [];
+  clearTemplateApplication();
+  elements.draftForm.reset();
+  ['student_name', 'student_grade', 'student_department', 'request_details', 'background'].forEach(key => { draftField(key).value = ''; });
+  elements.purpose.value = '';
+  elements.teacher.value = '';
+  if (state.emailDirectory) setRecipientMode('office');
+  ['#draft-to', '#draft-subject', '#draft-letter-body', '#draft-generation-note', '#tool-trace-note',
+    '#draft-edit-note', '#form-error', '#send-error', '#receipt-status', '#receipt-request-id',
+    '#receipt-message-id', '#receipt-time'].forEach(selector => { $(selector).textContent = ''; });
+  ['#draft-subject-editor', '#draft-body-editor', '#reuse-teacher'].forEach(selector => { $(selector).value = ''; });
+  $('#saved-draft-picker').open = false;
+  $('#draft-editor').hidden = true;
+  $('#send-receipt').hidden = true;
+  $('#confirmation-panel').hidden = true;
+  $('#confirm-send').checked = false;
+  $('#confirm-send').disabled = true;
+  $('#send-email').disabled = true;
+  $('#send-email').textContent = '確認並模擬寄出';
+  $('#update-draft').hidden = true;
+  $('#draft-status-title').textContent = '草稿已建立';
+  elements.draftForm.hidden = false;
+  elements.draftResult.hidden = true;
+  elements.dialog.scrollTop = 0;
+  lockDraftEditor(false);
+  renderMemoryChoices();
+}
+
+async function openDraft(teacher = "", purpose = "") {
+  resetCompletedEmailWorkspace();
   $("#confirm-send").checked = false;
   $("#send-email").disabled = true;
   if (state.draftWorkspaceOpen) {
@@ -630,11 +957,22 @@ async function openDraft(teacher = "", purpose = "other") {
   state.draftWorkspaceOpen = true;
   elements.draftForm.hidden = false;
   elements.draftResult.hidden = true;
+  $("#email-conversation").hidden = true;
+  state.emailRecipientHint = teacher;
+  state.emailTargetName = teacher;
+  if (teacher || !$("#email-dialogue").innerHTML.trim()) {
+    $("#email-dialogue").innerHTML = '';
+    appendEmailTurn('assistant', teacher
+      ? `這封信要寫給${teacher}。你想詢問或告訴對方什麼？`
+      : '這封信想寫給誰、想說什麼？你可以分幾次補充，我會先確認官方聯絡資料。');
+  }
   state.draft = null;
   state.selectedMemories = [];
   clearTemplateApplication();
   $("#form-error").textContent = "";
-  if (teacher && [...elements.teacher.options].some((option) => option.value === teacher)) elements.teacher.value = teacher;
+  if (teacher) {
+    if (!selectRecipientByName(teacher)) $("#recipient-note").textContent = '此收件人的分類名錄尚未載入或已失效，請重新選擇已收錄對象。';
+  }
   if ([...elements.purpose.options].some((option) => option.value === purpose)) elements.purpose.value = purpose;
   elements.dialog.showModal();
   try { await loadMemories(); } catch (error) { if (!error.stale) $("#form-error").textContent = error.message; }
@@ -655,6 +993,7 @@ function lockDraftEditor(locked) {
 }
 
 function markDraftEdited() {
+  state.completedDraftId = null;
   state.draftDirty = true;
   $("#confirm-send").checked = false;
   $("#confirm-send").disabled = true;
@@ -668,6 +1007,8 @@ function markDraftEdited() {
 }
 
 function renderDraft(result) {
+  state.completedDraftId = null;
+  $("#email-conversation").hidden = true;
   state.draftWorkspaceOpen = true;
   state.draft = result;
   state.draftDirty = false;
@@ -771,6 +1112,8 @@ async function reviseDraftWithAI() {
 }
 
 function supersedeDraftGeneration() {
+  state.draftSubmitting = false;
+  lockRecipientForm(false);
   state.draftGeneration = (state.draftGeneration || 0) + 1;
   elements.draftForm.querySelector('[type="submit"]').disabled = false;
   return state.draftGeneration;
@@ -779,6 +1122,8 @@ function supersedeDraftGeneration() {
 async function submitDraft(event) {
   event.preventDefault();
   if (state.applyingDraft || state.revising) return;
+  if (state.draftSubmitting) return;
+  if (!validRecipientSelection()) { $("#form-error").textContent = '請先選擇已驗證的處室，或依序選學系與老師。'; return; }
   if (selectionsKey(state.selectedMemories) !== selectionsKey(state.appliedMemories)) {
     $("#form-error").textContent = "選取已變更，請先預覽並確認套用，再產生草稿。"; return;
   }
@@ -786,9 +1131,12 @@ async function submitDraft(event) {
   const draftGeneration = supersedeDraftGeneration();
   const submit = elements.draftForm.querySelector('[type="submit"]');
   submit.disabled = true;
+  state.draftSubmitting = true;
   $("#form-error").textContent = "";
   const payload = Object.fromEntries(new FormData(elements.draftForm).entries());
+  delete payload.recipient_mode;
   payload.memory_selections = state.appliedMemories;
+  lockRecipientForm(true);
   try {
     const result = await sessionRequest("/api/email-draft", payload);
     if (draftGeneration === state.draftGeneration) renderDraft(result);
@@ -796,19 +1144,23 @@ async function submitDraft(event) {
     if (error.stale || draftGeneration !== state.draftGeneration) return;
     $("#form-error").textContent = error.message;
   } finally {
-    if (epoch === state.epoch && draftGeneration === state.draftGeneration) submit.disabled = false;
+    if (epoch === state.epoch && draftGeneration === state.draftGeneration) { submit.disabled = false; state.draftSubmitting = false; lockRecipientForm(false); }
   }
 }
 
 async function sendSandboxEmail() {
-  if (!state.draft || state.draftDirty || state.revising || state.applyingDraft || !$("#confirm-send").checked) return;
+  if (!state.draft || state.emailSendPending || state.completedDraftId === state.draft.draft_id
+      || state.draftDirty || state.revising || state.applyingDraft || !$("#confirm-send").checked) return;
+  const pending = {draftId: state.draft.draft_id, epoch: state.epoch};
+  state.emailSendPending = pending;
   const sendButton = $("#send-email");
   sendButton.disabled = true;
   sendButton.textContent = "Sandbox 執行中…";
   lockDraftEditor(true);
   $("#send-error").textContent = "";
   try {
-    const result = await sessionRequest("/api/email-send", { draft_id: state.draft.draft_id, confirmed: true });
+    const result = await sessionRequest("/api/email-send", { draft_id: pending.draftId, confirmed: true });
+    if (state.epoch !== pending.epoch || state.draft?.draft_id !== pending.draftId) return;
     const receipt = result.receipt;
     $("#draft-status-title").textContent = result.status === "already_processed"
       ? "Sandbox 已處理（未重複寫入）"
@@ -822,14 +1174,17 @@ async function sendSandboxEmail() {
     $("#send-receipt").hidden = false;
     $("#confirmation-panel").hidden = true;
     sendButton.textContent = "已寫入 Sandbox";
+    if (['simulated_sent', 'already_processed'].includes(result.status)) state.completedDraftId = pending.draftId;
     lockDraftEditor(false);
     showToast("Sandbox 執行完成；沒有寄出真實郵件");
   } catch (error) {
-    if (error.stale) return;
+    if (error.stale || state.epoch !== pending.epoch || state.draft?.draft_id !== pending.draftId) return;
     $("#send-error").textContent = `${error.payload?.error?.code || "TOOL_FAILED"}：${error.message}`;
     sendButton.disabled = false;
     sendButton.textContent = "重試 Sandbox 執行";
     lockDraftEditor(false);
+  } finally {
+    if (state.emailSendPending === pending) state.emailSendPending = null;
   }
 }
 
@@ -848,7 +1203,12 @@ function showToast(message) {
 async function resetChat() {
   if (!state.session || state.authBusy) return;
   state.draftWorkspaceOpen = false;
+  state.completedDraftId = null;
+  state.emailSendPending = null;
   state.epoch += 1;
+  state.chatComposing = false;
+  clearEmailConversationUI();
+  if (state.emailDirectory) setRecipientMode('office');
   state.revising = false;
   state.applyingDraft = false;
   lockDraftEditor(false);
@@ -884,21 +1244,40 @@ async function resetChat() {
 elements.form.addEventListener("submit", (event) => { event.preventDefault(); sendMessage(elements.input.value); });
 elements.input.addEventListener("input", resizeInput);
 elements.input.addEventListener("keydown", (event) => {
+  // Enter used to commit Chinese IME text is not a submit action. Otherwise
+  // compositionend can put the just-cleared message back into the textarea.
+  if (event.isComposing || event.keyCode === 229 || state.chatComposing) return;
   if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); elements.form.requestSubmit(); }
 });
+elements.input.addEventListener('compositionstart', () => { state.chatComposing = true; });
+elements.input.addEventListener('compositionend', () => { state.chatComposing = false; });
 $$('[data-query]').forEach((button) => button.addEventListener("click", () => sendMessage(button.dataset.query)));
 $("#quick-email").addEventListener("click", () => openDraft());
 $("#nav-email").addEventListener("click", () => openDraft());
 $("#new-chat").addEventListener("click", resetChat);
 $("#dialog-close").addEventListener("click", closeDraft);
 $("#cancel-draft").addEventListener("click", closeDraft);
-$("#edit-draft").addEventListener("click", clearAppliedDraft);
+$("#edit-draft").addEventListener("click", () => { clearAppliedDraft(); });
+$("#recipient-office").addEventListener('change', () => { setRecipientMode('office'); state.emailFormDirty = true; });
+$("#recipient-academic").addEventListener('change', () => { setRecipientMode('academic'); state.emailFormDirty = true; });
+$("#office-select").addEventListener('change', updateOfficeSections);
+$("#office-section-select").addEventListener('change', updateOfficeRecipient);
+$("#department-select").addEventListener('change', updateDepartmentTeachers);
+$("#academic-teacher-select").addEventListener('change', updateAcademicRecipient);
+elements.draftForm.addEventListener('input', () => { state.emailFormDirty = true; });
+elements.draftForm.addEventListener('change', () => { state.emailFormDirty = true; });
 $("#copy-draft").addEventListener("click", copyDraft);
 $("#confirm-send").addEventListener("change", (event) => {
   $("#send-email").disabled = !event.currentTarget.checked || state.draftDirty || !state.draft;
 });
 $("#send-email").addEventListener("click", sendSandboxEmail);
 elements.draftForm.addEventListener("submit", submitDraft);
+$("#email-conversation-form").addEventListener('submit', sendEmailConversation);
+$("#email-start-over").addEventListener('click', restartEmailConversation);
+$("#email-switch-confirm").addEventListener('click', confirmEmailRecipientSwitch);
+$("#email-switch-cancel").addEventListener('click', () => {
+  state.emailSwitchTarget = null; $("#email-switch-prompt").hidden = true;
+});
 elements.dialog.addEventListener("click", (event) => { if (event.target === elements.dialog) closeDraft(); });
 $("#mobile-menu").addEventListener("click", () => $(".sidebar").classList.toggle("open"));
 $("#account-login").addEventListener("click", () => { $("#auth-error").textContent = ""; $("#auth-dialog").showModal(); });

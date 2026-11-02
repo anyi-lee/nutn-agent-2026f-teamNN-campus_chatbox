@@ -1,0 +1,279 @@
+{
+  "department": "國語文學系",
+  "retrieved_at": "2026-11-02T23:30:57+08:00",
+  "contacts": [
+    {
+      "teacher_name": "鄭憲仁",
+      "title": "副教授",
+      "public_email": "bronzeware@mail.nutn.edu.tw",
+      "research_areas": [
+        "文字學",
+        "禮學",
+        "古器物學",
+        "先秦史",
+        "國語文教學"
+      ],
+      "chunk_id": "campus-person-3a1c8913fc0173",
+      "source_id": "nutn-campus-1d132bd2c69a",
+      "department": "國語文學系",
+      "content": "姓名：鄭憲仁；職稱：副教授；電子信箱：bronzeware@mail.nutn.edu.tw；專業領域：文字學、禮學、古器物學、先秦史、國語文教學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=40&index=1",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "蔡玲婉",
+      "title": "教授",
+      "public_email": "lingwan@mail.nutn.edu.tw",
+      "research_areas": [
+        "古典詩詞",
+        "語文教學"
+      ],
+      "chunk_id": "campus-person-5c363ba6c84269",
+      "source_id": "nutn-campus-ca2d0057e479",
+      "department": "國語文學系",
+      "content": "姓名：蔡玲婉；職稱：教授；電子信箱：lingwan@mail.nutn.edu.tw；專業領域：古典詩詞、語文教學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=133&index=2",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "林登順",
+      "title": "教授",
+      "public_email": "linem@mail.nutn.edu.tw",
+      "research_areas": [
+        "儒學史",
+        "六朝〈魏晉南北朝〉文學",
+        "民間文學",
+        "兒童讀經教育",
+        "古代小說",
+        "神話",
+        "國語文教學"
+      ],
+      "chunk_id": "campus-person-5f23afe6b11d51",
+      "source_id": "nutn-campus-98f079617f87",
+      "department": "國語文學系",
+      "content": "姓名：林登順；職稱：教授；電子信箱：linem@mail.nutn.edu.tw；專業領域：儒學史、六朝〈魏晉南北朝〉文學、民間文學、兒童讀經教育、古代小說、神話、國語文教學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=131&index=3",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "張惠貞",
+      "title": "教授",
+      "public_email": "h5015@mail.nutn.edu.tw",
+      "research_areas": [
+        "經學史",
+        "閩南語文教學",
+        "清代乾嘉歷史考據學",
+        "左傳",
+        "臺灣閩南語歌仔冊研究......"
+      ],
+      "chunk_id": "campus-person-dee9918f737c8d",
+      "source_id": "nutn-campus-8a1e8b1ce60f",
+      "department": "國語文學系",
+      "content": "姓名：張惠貞；職稱：教授；電子信箱：h5015@mail.nutn.edu.tw；專業領域：經學史、閩南語文教學、清代乾嘉歷史考據學、左傳、臺灣閩南語歌仔冊研究......",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=132&index=4",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "王建國",
+      "title": "教授",
+      "public_email": "ckwang@mail.nutn.edu.tw",
+      "research_areas": [
+        "臺灣文學╱臺南文學(史)",
+        "現代文學",
+        "文學研究與詮釋",
+        "文學理論與批評",
+        "修辭學理論等"
+      ],
+      "chunk_id": "campus-person-bcc94cae2e9aca",
+      "source_id": "nutn-campus-2b71c15c2d3b",
+      "department": "國語文學系",
+      "content": "姓名：王建國；職稱：教授；電子信箱：ckwang@mail.nutn.edu.tw；專業領域：臺灣文學╱臺南文學(史)、現代文學、文學研究與詮釋、文學理論與批評、修辭學理論等",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=137&index=5",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "王琅",
+      "title": "副教授",
+      "public_email": "lanny@mail.nutn.edu.tw",
+      "research_areas": [
+        "明代學術",
+        "古典文學"
+      ],
+      "chunk_id": "campus-person-85a3db48a72b2a",
+      "source_id": "nutn-campus-d1b007f99031",
+      "department": "國語文學系",
+      "content": "姓名：王琅；職稱：副教授；電子信箱：lanny@mail.nutn.edu.tw；專業領域：明代學術、古典文學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=134&index=6",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "陳光明",
+      "title": "副教授",
+      "public_email": "ckming63@yahoo.com.tw",
+      "research_areas": [
+        "詞彙學",
+        "句法學",
+        "語言學"
+      ],
+      "chunk_id": "campus-person-3ec8acfac338f5",
+      "source_id": "nutn-campus-48737fb4760e",
+      "department": "國語文學系",
+      "content": "姓名：陳光明；職稱：副教授；電子信箱：ckming63@yahoo.com.tw；專業領域：詞彙學、句法學、語言學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=135&index=7",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "楊素姿",
+      "title": "副教授",
+      "public_email": "branch@mail.nutn.edu.tw",
+      "research_areas": [
+        "聲韻學",
+        "語音學"
+      ],
+      "chunk_id": "campus-person-2cdfdcc0a51cd9",
+      "source_id": "nutn-campus-4fdd115db253",
+      "department": "國語文學系",
+      "content": "姓名：楊素姿；職稱：副教授；電子信箱：branch@mail.nutn.edu.tw；專業領域：聲韻學、語音學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=136&index=8",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "莊千慧",
+      "title": "副教授",
+      "public_email": "chchuang@gm2.nutn.edu.tw",
+      "research_areas": [
+        "書法史",
+        "書法美學",
+        "中國文學理論與批評",
+        "文選學"
+      ],
+      "chunk_id": "campus-person-e09f0bb8d25ff3",
+      "source_id": "nutn-campus-d4dd83dfdc76",
+      "department": "國語文學系",
+      "content": "姓名：莊千慧；職稱：副教授；電子信箱：chchuang@gm2.nutn.edu.tw；專業領域：書法史、書法美學、中國文學理論與批評、文選學",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=138&index=9",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    },
+    {
+      "teacher_name": "陳昭吟",
+      "title": "副教授",
+      "public_email": "6136ingrid@gmail.com",
+      "research_areas": [
+        "兒童文學",
+        "女性文學",
+        "宋詩",
+        "現代文學",
+        "文學理論"
+      ],
+      "chunk_id": "campus-person-db346e1c915f42",
+      "source_id": "nutn-campus-4bd913e57b6b",
+      "department": "國語文學系",
+      "content": "姓名：陳昭吟；職稱：副教授；電子信箱：6136ingrid@gmail.com；專業領域：兒童文學、女性文學、宋詩、現代文學、文學理論",
+      "source_url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=139&index=10",
+      "retrieved_at": "2026-11-02T23:30:57+08:00",
+      "index_version": "campus-index-v1",
+      "authority": "official",
+      "validity": "active",
+      "recipient_kind": "faculty"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://chinese.nutn.edu.tw/",
+      "sha256": "13340227fe68de86ddb7c1e7326b5809061eb3abeb3cd24b40e79f65b3fb9506",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=showlist&id=16&index=1",
+      "sha256": "2616872d1566c7adf936f9d40d915e41bfd63b0f9ce8b49b1ab08d07736261f5",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=40&index=1",
+      "sha256": "49815421180301c9748f981a95f479a37a3dd5ab4fed4d2e67719d3cc620513c",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=133&index=2",
+      "sha256": "b407e36f1d75507c5ad7a04eedfff2e3d40eda23d47bc94dc7030b35011e29a3",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=131&index=3",
+      "sha256": "46699b1fd2f3b9a781b1b416de959f380e9f462c3101e74d987fb478f44bca64",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=132&index=4",
+      "sha256": "cad0759421f4ddaa6abb7147d0ed0f92fa9e6fbd87d7a544f41f090f1a4b0346",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=137&index=5",
+      "sha256": "0aa3b3705ff1a4f89171e01b7e1a73d1b2f153aab7fed066e59459bdab2a2279",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=134&index=6",
+      "sha256": "6cd24786daf54cb08c452b37db7d77bc550ce497479af1ed7c2a81b159ce691c",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=135&index=7",
+      "sha256": "2b3d7ebce4f3f88196776703475815d898824b5d9f8a3177d2fc1dcbe0983d1e",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=136&index=8",
+      "sha256": "46b442b7d156a0efc538e207fe3d354ac7dd5a091110dca9d907d65be19d9363",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=138&index=9",
+      "sha256": "3eacbd4866edb8bbca90cb26ca0b79e410d7b08f9989b069a37abfbe90cb2077",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    },
+    {
+      "url": "https://chinese.nutn.edu.tw/index.php?option=module&lang=cht&task=pageinfo&id=139&index=10",
+      "sha256": "21f569e6b32b81fa8bd483f369dd730922ee7bf152caca758cd3d2a2efd17f39",
+      "retrieved_at": "2026-11-02T23:30:57+08:00"
+    }
+  ],
+  "page_status": "fetched"
+}

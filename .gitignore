@@ -5,6 +5,7 @@ __pycache__/
 .env.*
 !.env.example
 runtime/
+.DS_Store
 
 # Local architecture investigation; excluded from coursework delivery.
 /docs/architecture/

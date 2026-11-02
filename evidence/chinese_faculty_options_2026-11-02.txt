@@ -1,0 +1,104 @@
+Browser tab: 6, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+	1 container draft-dialog
+		2 container
+			3 text GROUNDED EMAIL DRAFT
+			4 heading Email 草稿助手, Value: 2
+				5 text Email 草稿助手
+			6 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			7 text Manual · Gemini · gemini-3.5-flash
+			8 text Sandbox · 不寄真實信箱
+			9 button Description: 關閉, ID: dialog-close
+		10 button (collapsed) 套用已存完整草稿（選用）, Secondary Actions: Expand
+			11 text 套用已存完整草稿（選用）
+		12 container draft-form
+			13 container 收件對象 *
+				14 text 收件對象 *
+				15 radio button (settable, integer) Description: 處室, Value: 0, ID: recipient-office
+				16 radio button (settable, integer) Description: 學系, Value: 1, ID: recipient-academic
+			83 container academic-picker
+				84 container
+					85 text 選擇學系 *
+					86 pop up button (collapsed, settable) 選擇學系 *, Value: 國語文學系, ID: department-select, Secondary Actions: Expand
+						87 menu
+							88 請先選擇學系
+							89 教育學系
+							90 特殊教育學系
+							91 幼兒教育學系
+							92 體育學系
+							93 諮商與輔導學系
+							94 文化與自然資源學系
+							95 (selected) 國語文學系
+							96 英語學系
+							97 電機工程學系
+							98 應用數學系
+							99 數位學習科技學系
+							100 材料科學系
+							101 資訊工程學系
+							102 智慧製造在職學位學程
+							103 生態暨環境資源學系
+							104 生物科技學系
+							105 綠色能源科技學系
+							106 音樂學系
+							107 視覺藝術與設計學系
+							108 戲劇創作與應用學系
+							109 經營與管理學系
+							110 行政管理學系
+				111 container
+					112 text 選擇老師／系辦窗口 *
+					113 pop up button (collapsed, settable) 選擇老師／系辦窗口 *, Value: 請選擇收件老師／系辦窗口, ID: academic-teacher-select, Secondary Actions: Expand
+						114 menu
+							115 (disabled) 請選擇收件老師／系辦窗口
+							116 (disabled) 鄭憲仁 · 副教授
+							117 (disabled) 蔡玲婉 · 教授
+							118 (disabled) 林登順 · 教授
+							119 (disabled) 張惠貞 · 教授
+							120 (disabled) 王建國 · 教授
+							121 (disabled) 王琅 · 副教授
+							122 (disabled) 陳光明 · 副教授
+							123 (disabled) 楊素姿 · 副教授
+							124 (disabled) 莊千慧 · 副教授
+							125 (disabled) 陳昭吟 · 副教授
+							126 (disabled) 國語文學系 · 系辦公開窗口
+			127 text 請選老師；只顯示本系所已收錄的官方教師與公開窗口。
+			128 link Description: 查看該單位官網 ↗, Value: chinese.nutn.edu.tw/, ID: recipient-source
+			45 container
+				46 text 你的姓名 *
+				47 text field (settable) 你的姓名 *
+			48 container
+				49 text 寄信目的 *
+				50 pop up button (collapsed, settable) 寄信目的 *, Value: 其他事項詢問, ID: purpose, Secondary Actions: Expand
+					51 menu
+						52 請選擇寄信目的
+						53 詢問專題名額
+						54 詢問研究方向
+						55 詢問課程問題
+						56 預約討論時間
+						57 申請課程加簽
+						58 申請補交作業
+						59 詢問題目答案或解題說明
+						60 詢問成績
+						61 (selected) 其他事項詢問
+			62 container
+				63 text 年級
+				64 text field (settable) 年級
+			65 container
+				66 text 你自己的系所
+				67 text field (settable) 你自己的系所
+			68 container
+				69 text 想詢問的內容 *
+				70 text entry area (settable) 想詢問的內容 *
+			71 container
+				72 text 補充背景（選填）
+				73 text entry area (settable) 補充背景（選填）
+			74 container 加入自己的常用文字（選填）
+				75 text 加入自己的常用文字（選填）
+				76 text 只加入勾選的文字段落。若要重用整封信，直接勾選上方已存完整草稿。
+				77 text 登入後可保存與使用自己的常用文字、草稿。
+				78 button 預覽套用效果, ID: preview-template
+			79 button 取消, ID: cancel-draft
+			80 button 產生草稿 →
+				81 text 產生草稿
+				82 text →
+
+The focused UI element is 86 pop up button (collapsed, settable) 選擇學系 *, Value: 國語文學系, ID: department-select, Secondary Actions: Expand
