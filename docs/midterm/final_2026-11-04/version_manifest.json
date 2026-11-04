@@ -1,0 +1,21 @@
+{
+  "source": "使用者提供的代理式人工智慧.pdf（Canva，28頁）",
+  "source_sha256": "88b849ae8081a839a604cd53a8b469c3f31758ae383c890155892f45c3c86ea1",
+  "final_pdf": "NUTN_Campus_Agent_Midterm_Team05_2026-11-04.pdf",
+  "final_sha256": "96bf28a27532315ef66480e0bd5324707c0d8538c7e03bc3eae78ecbda20ec21",
+  "page_count": 28,
+  "modified_pages": [
+    1,
+    25,
+    28
+  ],
+  "system_code_commit": "4d7469e0cb6fcba9e0827f122d48b8436bd7703e",
+  "removed_text_show_operators": {
+    "1": 30,
+    "25": 4,
+    "28": 109
+  },
+  "unchanged_page_content_streams": 25,
+  "date": "2026-11-04",
+  "timezone": "Asia/Taipei"
+}

@@ -1,0 +1,248 @@
+執行日期：2026-11-03 Asia/Taipei
+實際 UI 操作，訪客及合成學生，不讀取私人記憶。
+目前配置：manual Gemini gemini-3.5-flash；聊天 baseline BM25。API Key transport，非 ADC。
+查詢／表單／草稿／AI 修改／人工確認／Sandbox／重開／未知教師均由本次操作截圖。
+Gemini 草稿與修改：UI 顯示 functionCall/functionResponse passed，原文作業二已改作業三。
+Sandbox：simulated_sent，Request ID mail-330933d345d74abdb9e29d26f434281c；Message ID sandbox-6c7b5752aceb4ed9；無真實郵件。
+
+查詢：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 9, 18, 29-54
++			60 text 訪客模式
++		61 text 本次對話：許世昌（電機工程學系）老師 · 新對話會清除
++		62 container messages
++			63 text 許世昌老師的公開信箱
++			64 container answer-1793639451270
++				65 text AI
++				66 text 許世昌（電機工程學系）老師的公開 Email 是 scshei@mail.nutn.edu.tw。這筆資料來自電機工程學系官方教師頁面。
++				67 link Description: ✓ 官方來源 · 南大官方－電機工程學系 ↗, Value: ee.nutn.edu.tw/?page_id=34
++				68 text 沿用脈絡：許世昌（電機工程學系）老師
++				69 button 寫信給許世昌（電機工程學系） →
++				70 text BM25 · Top 3 Evidence Gate · PASS
++				71 button (collapsed) 查看檢索軌跡與分數, Secondary Actions: Expand
++					72 text 查看檢索軌跡與分數
+The focused UI element is 56 text entry area (settable) Description: 輸入校園問題, ID: message-input
+
+表單：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~				60 text field (settable) 你的姓名 *, Value: 合成展示學生
+~				63 pop up button (collapsed, settable) 寄信目的 *, Value: 申請補交作業, ID: purpose, Secondary Actions: Expand
+~						71 (selected) 申請補交作業
+~						74 其他事項詢問
+~				77 text field (settable) 年級, Value: 大四
+~				80 text field (settable) 你自己的系所, Value: 合成測試學系
+~				83 text entry area (settable) 想詢問的內容 *, Value: 期中展示用合成情境：想詢問作業二的補交方式。
+The focused UI element is 83 text entry area (settable) 想詢問的內容 *, Value: 期中展示用合成情境：想詢問作業二的補交方式。
+
+草稿：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+	1 container draft-dialog
+		2 container
+			3 text GROUNDED EMAIL DRAFT
+			4 heading Email 草稿助手, Value: 2
+				5 text Email 草稿助手
+			6 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			7 text Manual · Gemini · gemini-3.5-flash
+			8 text Sandbox · 不寄真實信箱
+			9 button Description: 關閉, ID: dialog-close
+		10 button (collapsed) 套用已存完整草稿（選用）, Secondary Actions: Expand
+			11 text 套用已存完整草稿（選用）
+		12 container draft-result
+			13 text ✓
+			14 text 草稿已建立
+			15 text 由 gemini-3.5-flash 潤稿；收件人已驗證，目前尚未寄出。
+			16 text GEMINI · functionCall → functionResponse · passed
+			17 definition list
+				18 container 收件人
+					19 text 收件人
+				20 text scshei@mail.nutn.edu.tw
+				21 container 主旨
+					22 text 主旨
+				23 text 作業二補交方式詢問
+			24 text 許老師您好：
+
+我是合成測試學系大四學生合成展示學生。想向老師詢問關於作業二的補交事宜。
+
+不知道目前是否仍能申請補交，若可以補交，再麻煩老師告知具體的補交方式或需要說明的程序。
+
+感謝老師撥冗閱讀與處理。
+
+學生 合成展示學生 敬上
+			25 button 編輯本次信件, ID: edit-email-content
+			26 container
+				27 text 讓 AI 完善這封信（選填）
+				28 text entry area (settable) 讓 AI 完善這封信（選填）, ID: revision-instructions
+				29 text 只調整本次草稿，不更換收件人、不覆寫已保存模板，也不會自動寄送。需要可用的 Gemini 設定。
+				30 button 請 AI 調整, ID: revise-email
+			31 container confirmation-panel
+				32 checkbox (settable, integer) Description: 我已確認收件人、主旨與正文 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。, Value: 0, ID: confirm-send
+				33 text 我已確認收件人、主旨與正文
+				34 text 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。
+			35 button 返回修改資料, ID: edit-draft
+			36 button 複製草稿, ID: copy-draft
+			37 button 草稿另存為模板, ID: save-draft-template
+			38 button (disabled) 確認並模擬寄出, ID: send-email
+
+The focused UI element is 0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+
+修改：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 14-16, 20, 23-24, 39
++			39 text 草稿已建立
++			40 text 由 gemini-3.5-flash 潤稿；收件人已驗證，目前尚未寄出。
++			41 text GEMINI · functionCall → functionResponse · passed
++				42 text scshei@mail.nutn.edu.tw
++				43 text 作業三補交方式詢問
++			44 text 許老師您好：
+
+我是合成測試學系大四學生合成展示學生。想向老師詢問關於作業三的補交事宜。
+
+不知道目前是否仍能申請補交，若可以補交，再麻煩老師告知具體的補交方式或需要完成的程序。
+
+感謝老師撥冗閱讀與處理。
+
+學生 合成展示學生 敬上
+~			25 button 編輯本次信件, ID: edit-email-content
+~				28 text entry area (settable) 讓 AI 完善這封信（選填）, Value: 改作業三, ID: revision-instructions
+~				30 button 請 AI 調整, ID: revise-email
++				45 text AI 已產生新版草稿，原保存模板未變更。請檢查新內容，並重新確認寄送。
+~				32 checkbox (settable, integer) Description: 我已確認收件人、主旨與正文 執行後只會寫入本機 Sandbox outbox，不會寄到真實信箱。, Value: 0, ID: confirm-send
+~			35 button 返回修改資料, ID: edit-draft
+~			37 button 草稿另存為模板, ID: save-draft-template
+The focused UI element is 0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+
+Sandbox：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 31-34, 39-41
++			46 text Sandbox 執行完成
++			47 text Write Tool 已回傳執行結果；未寄到真實信箱。
++			48 text WRITE · send_email · simulated_sent
++			49 container send-receipt
++				50 text Sandbox 執行證據
++				51 definition list
++					52 container 狀態
++						53 text 狀態
++					54 text simulated_sent
++					55 container Request ID
++						56 text Request ID
++					57 text mail-330933d345d74abdb9e29d26f434281c
++					58 container Message ID
++						59 text Message ID
++					60 text sandbox-6c7b5752aceb4ed9
++					61 container 時間
++						62 text 時間
++					63 text 2026-11-02T17:14:23.027201+00:00
++				64 text 這是本機模擬結果，沒有郵件寄到外部信箱。
+~			38 button (disabled) 已寫入 Sandbox, ID: send-email
+The focused UI element is 0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+
+重開：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+0 AXWebArea 南大校務通｜Campus Agent, URL: 127.0.0.1:8000/
+	1 container draft-dialog
+		2 container
+			3 text GROUNDED EMAIL DRAFT
+			4 heading Email 草稿助手, Value: 2
+				5 text Email 草稿助手
+			6 text 先選處室或學系，再填寫你的資料與詢問事項。收件信箱由官方資料取得，草稿不會自動寄出。
+			7 text Manual · Gemini · gemini-3.5-flash
+			8 text Sandbox · 不寄真實信箱
+			9 button Description: 關閉, ID: dialog-close
+		10 button (collapsed) 套用已存完整草稿（選用）, Secondary Actions: Expand
+			11 text 套用已存完整草稿（選用）
+		12 container draft-form
+			13 container 收件對象 *
+				14 text 收件對象 *
+				15 radio button (settable, integer) Description: 處室, Value: 1, ID: recipient-office
+				16 radio button (settable, integer) Description: 學系, Value: 0, ID: recipient-academic
+			17 container office-picker
+				18 container
+					19 text 選擇處室 *
+					20 pop up button (collapsed, settable) 選擇處室 *, Value: 請先選擇處室, ID: office-select, Secondary Actions: Expand
+						21 menu
+							22 (selected) 請先選擇處室
+							23 校長室
+							24 教務處
+							25 學務處
+							26 總務處
+							27 研究發展處
+							28 國際事務處
+							29 圖資處
+							30 體育室
+							31 秘書室
+							32 人事室
+							33 主計室
+							34 校友服務中心
+							35 通識教育中心
+							36 師資培育中心
+							37 特殊教育中心
+							38 視障教育與重建中心
+				39 container
+					40 text 選擇組別／聯絡窗口 *
+					41 pop up button (disabled, collapsed, settable) 選擇組別／聯絡窗口 *, Value: 請先選擇處室, ID: office-section-select, Secondary Actions: Expand
+						42 menu
+							43 (disabled) 請先選擇處室
+			44 text 先選處室，再選所屬組別或處室公開窗口；收件信箱由官方資料取得。
+			45 container
+				46 text 你的姓名 *
+				47 text field (settable) 你的姓名 *
+			48 container
+				49 text 寄信目的 *
+				50 pop up button (collapsed, settable) 寄信目的 *, Value: 請選擇寄信目的, ID: purpose, Secondary Actions: Expand
+					51 menu
+						52 (selected) 請選擇寄信目的
+						53 詢問專題名額
+						54 詢問研究方向
+						55 詢問課程問題
+						56 預約討論時間
+						57 申請課程加簽
+						58 申請補交作業
+						59 詢問題目答案或解題說明
+						60 詢問成績
+						61 其他事項詢問
+			62 container
+				63 text 年級
+				64 text field (settable) 年級
+			65 container
+				66 text 你自己的系所
+				67 text field (settable) 你自己的系所
+			68 container
+				69 text 想詢問的內容 *
+				70 text entry area (settable) 想詢問的內容 *
+			71 container
+				72 text 補充背景（選填）
+				73 text entry area (settable) 補充背景（選填）
+			74 container 加入自己的常用文字（選填）
+				75 text 加入自己的常用文字（選填）
+				76 text 只加入勾選的文字段落。若要重用整封信，直接勾選上方已存完整草稿。
+				77 text 登入後可保存與使用自己的常用文字、草稿。
+				78 button 預覽套用效果, ID: preview-template
+			79 button 取消, ID: cancel-draft
+			80 button 產生草稿 →
+				81 text 產生草稿
+				82 text →
+
+The focused UI element is 9 button Description: 關閉, ID: dialog-close
+
+未知教師：
+Browser tab: 2, Title: "南大校務通｜Campus Agent", URL: "http://127.0.0.1:8000/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 9, 18
++			46 text 訪客模式
++		47 text 本次對話未保留教師 · 僅此瀏覽器可存取
++			48 text 國文系未知姓名老師的 Email
++			49 container answer-1793639691759
++				50 text AI
++				51 text 國語文學系：電話 06-2133111 轉 620、621；公開 Email tigerjudy@mail.nutn.edu.tw這筆單位聯絡資料不能代替特定教師的資料；目前師資收錄不完整，請提供教師全名，或查看該系官方師資頁。 官網：https://chinese.nutn.edu.tw/
++				52 link Description: ✓ 官方來源 · 南大官方－國語文學系 ↗, Value: web.nutn.edu.tw/teaching.html
++				53 link Description: ✓ 官方來源 · 南大官方－國語文學系 ↗, Value: personnel.nutn.edu.tw/mode02.asp?m=20220221163310133&t=list
++				54 link Description: ✓ 官方來源 · 南大官方－國語文學系 ↗, Value: chinese.nutn.edu.tw/
++				55 text DETAIL_NOT_IN_SOURCE 全校官方名錄 · Top 3 Evidence Gate · DETAIL_NOT_IN_SOURCE
++				56 button (collapsed) 查看檢索軌跡與分數, Secondary Actions: Expand
++					57 text 查看檢索軌跡與分數
+The focused UI element is 41 text entry area (settable) Description: 輸入校園問題, ID: message-input
